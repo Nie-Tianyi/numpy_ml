@@ -1,5 +1,11 @@
-import numpy as np
+"""
+Loss-functions pack
+"""
+
+import unittest
+
 import numba
+import numpy as np
 
 
 @numba.njit
@@ -13,6 +19,10 @@ def mean_square_error(y_predict, y_real):
     return 0.5 * np.mean((y_predict ** 2 - y_real ** 2))
 
 
+class Unittest(unittest.TestCase):
+    def test_mean_square_error(self):
+        assert mean_square_error(np.array([1, 1, 1]), np.array([0, 0, 0])), 1
+
+
 if __name__ == "__main__":
-    mse = mean_square_error(np.array([1,2,3,4]), np.array([11,4,2,1]))
-    print(mse)
+    unittest.main()
