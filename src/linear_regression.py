@@ -97,7 +97,7 @@ class LinearRegressionModel:
 class Unittest(unittest.TestCase):
     def test_linear_model(self):
         data_size = 1000
-        np.random.seed(77)
+        np.random.seed(777)
         x_1 = np.random.rand(data_size)
         x_2 = np.random.rand(data_size)
         noise = np.random.randn(data_size)  # 创建1维噪声数组
