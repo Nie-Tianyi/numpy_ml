@@ -27,6 +27,12 @@ class LinearRegressionModel:
         self.x_std = None
 
     def fit(self, x, y, regularization=RegularizationTerm.RIDGE):
+        """
+        fit function
+        :param x: training data
+        :param y: labels
+        :param regularization: regularization term
+        """
         assert x.shape[0] == y.shape[0], "x and y must be the same length"
         (m, dim) = x.shape
         y = y.flatten()
