@@ -49,6 +49,11 @@ class LinearRegressionModel:
                 print(f"Iteration {i}: Loss={loss:.4f}, Weights={self.weights}, Bias={self.bias[0]:.4f}")
 
     def predict(self, x):
+        """
+        Predict values for x
+        :param x: x should be the same length as weights
+        :return: float predicted value
+        """
         # 预测时自动标准化输入
         if self.x_mean is not None and self.x_std is not None:
             x = (x - self.x_mean) / self.x_std
@@ -97,12 +102,7 @@ class Unittest(unittest.TestCase):
         # 创建目标值 (1000,)
         y = 0.99 * x_1 + 2.3 * x_2 + noise + 1
 
-        # 使用更合理的超参数 (关键修复)
-        model = LinearRegressionModel(
-            niter=100,
-            learning_rate=0.1,
-            regula_param=0.1  # 适度的正则化
-        )
+        model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
         model.fit(x, y)
 
         # 测试点需要是2D数组
