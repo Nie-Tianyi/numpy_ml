@@ -98,8 +98,8 @@ class Unittest(unittest.TestCase):
     def test_linear_model(self):
         data_size = 1000
         np.random.seed(77)
-        x_1 = np.linspace(0, 1000, num=data_size)
-        x_2 = np.linspace(0, 999, num=data_size)
+        x_1 = np.random.rand(data_size)
+        x_2 = np.random.rand(data_size)
         noise = np.random.randn(data_size)  # 创建1维噪声数组
 
         # 创建特征矩阵 (1000, 2)
