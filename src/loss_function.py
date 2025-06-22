@@ -26,12 +26,12 @@ def mean_square_error(y_pred, y_true):
     :param y_true: real label value, a scalar or a numpy array
     :return: MSE loss
     """
-    return np.mean((y_pred - y_true) ** 2)
+    return 0.5 * np.mean((y_pred - y_true) ** 2)
 
 
 class Unittest(unittest.TestCase):
     def test_mean_square_error(self):
-        self.assertEqual(mean_square_error(np.array([1, 1, 1]), np.array([0, 0, 0])), 1)
+        self.assertEqual(mean_square_error(np.array([1, 1, 1]), np.array([0, 0, 0])), 0.5)
 
 
 if __name__ == "__main__":
