@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 from src.loss_function import mean_square_error
 from src.regularization import RegularizationTerm
 from src.standardizer import Standardizer
+from src.test_data_gen import linear_data
 
 
 class LinearRegressionModel:
@@ -81,23 +82,10 @@ class LinearRegressionModel:
         self.bias -= self.lr * float(dlt_b)
 
 
-def init_tests(data_size: int = 1000, seed=1):
-    np.random.seed(seed)
-    x_1 = np.random.rand(data_size)
-    x_2 = np.random.rand(data_size)
-    noise = np.random.randn(data_size)  # 创建1维噪声数组
-
-    # 创建特征矩阵 (1000, 2)
-    x = np.stack([x_1, x_2], axis=1)
-    # 创建目标值 (1000,)
-    y = 0.99 * x_1 + 2.3 * x_2 + noise + 1
-    return x, y
-
-
 class Unittest(unittest.TestCase):
 
     def test_linear_model(self):
-        x, y = init_tests(data_size=1000, seed=777)
+        x, y = linear_data(data_size=10000, seed=777)
 
         model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
         model.fit(x, y)
@@ -122,9 +110,9 @@ class Unittest(unittest.TestCase):
         self.assertAlmostEqual(res, 4.29, delta=0.5)
 
     def test_linear_model_with_scaler(self):
-        x, y = init_tests(data_size=1000, seed=777)
+        x, y = linear_data(data_size=100000, seed=777)
 
-        scaler =  Standardizer(x)
+        scaler = Standardizer(x)
         rescaled_x = scaler.rescale(x)
 
         model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
@@ -140,7 +128,7 @@ class Unittest(unittest.TestCase):
         print(f"Bias: {model.bias[0]:.4f}")
 
         # 允许数值误差
-        self.assertAlmostEqual(res, 4.29, delta=0.5)
+        self.assertAlmostEqual(res, 4.29, delta=0.5)  # predict with scaler: 4.2859, without scaler: 3.9075
 
 
 if __name__ == "__main__":
