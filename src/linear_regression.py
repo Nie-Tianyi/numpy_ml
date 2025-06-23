@@ -62,7 +62,6 @@ class LinearRegressionModel:
         self.weights = np.random.randn(dim) * 0.01
         self.bias = np.zeros(1)
 
-
     def _compute_gradient(self, x, y_pred, y_real, m, regularization):
         # 计算基础梯度
         error = y_pred - y_real
