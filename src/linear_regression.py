@@ -88,8 +88,7 @@ class Unittest(unittest.TestCase):
         noise = np.random.randn(data_size)  # 创建1维噪声数组
 
         # 创建特征矩阵 (1000, 2)
-        x = np.vstack([x_1, x_2]).T
-
+        x = np.stack([x_1, x_2], axis=1)
         # 创建目标值 (1000,)
         y = 0.99 * x_1 + 2.3 * x_2 + noise + 1
 
