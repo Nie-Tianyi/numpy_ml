@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 
 from src.loss_function import mean_square_error
 from src.regularization import RegularizationTerm
+from src.standardizer import Standardizer
 
 
 class LinearRegressionModel:
@@ -62,7 +63,8 @@ class LinearRegressionModel:
         self.weights = np.random.randn(dim) * 0.01
         self.bias = np.zeros(1)
 
-    def _compute_gradient(self, x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int, regularization: RegularizationTerm):
+    def _compute_gradient(self, x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
+                          regularization: RegularizationTerm):
         # 计算基础梯度
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
@@ -79,18 +81,23 @@ class LinearRegressionModel:
         self.bias -= self.lr * float(dlt_b)
 
 
-class Unittest(unittest.TestCase):
-    def test_linear_model(self):
-        data_size = 1000
-        np.random.seed(777)
-        x_1 = np.random.rand(data_size)
-        x_2 = np.random.rand(data_size)
-        noise = np.random.randn(data_size)  # 创建1维噪声数组
+def init_tests(data_size: int = 1000, seed=1):
+    np.random.seed(seed)
+    x_1 = np.random.rand(data_size)
+    x_2 = np.random.rand(data_size)
+    noise = np.random.randn(data_size)  # 创建1维噪声数组
 
-        # 创建特征矩阵 (1000, 2)
-        x = np.stack([x_1, x_2], axis=1)
-        # 创建目标值 (1000,)
-        y = 0.99 * x_1 + 2.3 * x_2 + noise + 1
+    # 创建特征矩阵 (1000, 2)
+    x = np.stack([x_1, x_2], axis=1)
+    # 创建目标值 (1000,)
+    y = 0.99 * x_1 + 2.3 * x_2 + noise + 1
+    return x, y
+
+
+class Unittest(unittest.TestCase):
+
+    def test_linear_model(self):
+        x, y = init_tests(data_size=1000, seed=777)
 
         model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
         model.fit(x, y)
@@ -110,6 +117,27 @@ class Unittest(unittest.TestCase):
         plt.xlabel("Iteration")
         plt.ylabel("MSE Loss")
         plt.show()
+
+        # 允许数值误差
+        self.assertAlmostEqual(res, 4.29, delta=0.5)
+
+    def test_linear_model_with_scaler(self):
+        x, y = init_tests(data_size=1000, seed=777)
+
+        scaler =  Standardizer(x)
+        rescaled_x = scaler.rescale(x)
+
+        model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
+        model.fit(rescaled_x, y)
+
+        # 测试点需要是2D数组
+        test_point = np.array([[1, 1]])
+        res = model.predict(scaler.rescale(test_point))[0]
+
+        print("\nFinal Results:")
+        print(f"Predicted: {res:.4f}")
+        print(f"Weights: {model.weights}")
+        print(f"Bias: {model.bias[0]:.4f}")
 
         # 允许数值误差
         self.assertAlmostEqual(res, 4.29, delta=0.5)
