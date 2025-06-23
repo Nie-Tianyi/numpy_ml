@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 
 from src.loss_function import mean_square_error
 from src.regularization import RegularizationTerm
-from src.standardizer import Standardizer
+from src.standardizer import standardization
 from src.test_data_gen import linear_data
 
 
@@ -112,8 +112,7 @@ class Unittest(unittest.TestCase):
     def test_linear_model_with_scaler(self):
         x, y = linear_data(data_size=100000, seed=777)
 
-        scaler = Standardizer(x)
-        rescaled_x = scaler.rescale(x)
+        rescaled_x, scaler = standardization(x)
 
         model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
         model.fit(rescaled_x, y)
