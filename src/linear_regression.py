@@ -57,7 +57,7 @@ class LinearRegressionModel:
     def predict(self, x):
         """
         Predict values for x
-        :param x: x should be the same length as weights
+        :param x:  should be the same length as weights
         :return: float predicted value
         """
         # 预测时自动标准化输入
