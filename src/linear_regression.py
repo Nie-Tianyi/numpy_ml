@@ -15,7 +15,7 @@ from src.test_data_gen import linear_data
 
 class LinearRegressionModel:
     """
-    Linear Regression Model (Fixed)
+    Linear Regression Model
     """
 
     def __init__(self, niter=1000, learning_rate=0.01, regula_param=0.3):
@@ -28,10 +28,10 @@ class LinearRegressionModel:
 
     def fit(self, x: np.ndarray, y: np.ndarray, regularization=RegularizationTerm.RIDGE):
         """
-        fit function
-        :param x: training data
-        :param y: labels
-        :param regularization: regularization term
+        训练模型，x对应着数据，y对应着label，regularization代表正则化方式
+        :param x: 假设是一个 (m,n) shape的 numpy.ndarray，m表示有多少数据，n表示数据的维度
+        :param y: labels，应该是一个 (m,1) shape的 numpy.ndarray
+        :param regularization: regularization term，可以是LASSO或者RIDGE
         """
         assert x.shape[0] == y.shape[0], "x and y must be the same length"
         (m, dim) = x.shape
@@ -53,7 +53,7 @@ class LinearRegressionModel:
 
     def predict(self, x: np.ndarray):
         """
-        Predict values for x
+        预测数据
         :param x:  should be the same length as weights
         :return: float predicted value
         """
