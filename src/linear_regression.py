@@ -23,8 +23,6 @@ class LinearRegressionModel:
         self.lambda_ = regula_param
         self.niter = niter
         self.loss_history = []
-        self.x_mean = None
-        self.x_std = None
 
     def fit(self, x, y, regularization=RegularizationTerm.RIDGE):
         """
@@ -37,9 +35,6 @@ class LinearRegressionModel:
         (m, dim) = x.shape
         y = y.flatten()
 
-        self._standardize_features(x)
-        x_scaled = (x - self.x_mean) / self.x_std
-
         self._init_weights_and_bias(dim)
 
         for i in range(self.niter):
@@ -48,7 +43,7 @@ class LinearRegressionModel:
             self.loss_history.append(loss)
 
             # 更新梯度 (包含正则化)
-            self._compute_gradient(x_scaled, y_hat, y, m, regularization)
+            self._compute_gradient(x, y_hat, y, m, regularization)
 
             # 每100次迭代打印进度
             if i % 10 == 0:
@@ -60,9 +55,6 @@ class LinearRegressionModel:
         :param x:  should be the same length as weights
         :return: float predicted value
         """
-        # 预测时自动标准化输入
-        if self.x_mean is not None and self.x_std is not None:
-            x = (x - self.x_mean) / self.x_std
         return np.dot(x, self.weights) + self.bias
 
     def _init_weights_and_bias(self, dim):
@@ -70,12 +62,6 @@ class LinearRegressionModel:
         self.weights = np.random.randn(dim) * 0.01
         self.bias = np.zeros(1)
 
-    def _standardize_features(self, x):
-        # 计算特征的均值和标准差
-        self.x_mean = np.mean(x, axis=0)
-        self.x_std = np.std(x, axis=0)
-        # 防止除零错误
-        self.x_std[self.x_std == 0] = 1.0
 
     def _compute_gradient(self, x, y_pred, y_real, m, regularization):
         # 计算基础梯度
