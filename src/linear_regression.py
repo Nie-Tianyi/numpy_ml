@@ -24,7 +24,7 @@ class LinearRegressionModel:
         self.niter = niter
         self.loss_history = []
 
-    def fit(self, x, y, regularization=RegularizationTerm.RIDGE):
+    def fit(self, x: np.ndarray, y: np.ndarray, regularization=RegularizationTerm.RIDGE):
         """
         fit function
         :param x: training data
@@ -49,7 +49,7 @@ class LinearRegressionModel:
             if i % 10 == 0:
                 print(f"Iteration {i}: Loss={loss:.4f}, Weights={self.weights}, Bias={self.bias[0]:.4f}")
 
-    def predict(self, x):
+    def predict(self, x: np.ndarray):
         """
         Predict values for x
         :param x:  should be the same length as weights
@@ -57,12 +57,12 @@ class LinearRegressionModel:
         """
         return np.dot(x, self.weights) + self.bias
 
-    def _init_weights_and_bias(self, dim):
+    def _init_weights_and_bias(self, dim: int):
         # 初始化权重和偏置
         self.weights = np.random.randn(dim) * 0.01
         self.bias = np.zeros(1)
 
-    def _compute_gradient(self, x, y_pred, y_real, m, regularization):
+    def _compute_gradient(self, x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int, regularization: RegularizationTerm):
         # 计算基础梯度
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
@@ -76,7 +76,7 @@ class LinearRegressionModel:
 
         # 更新参数
         self.weights -= self.lr * dlt_w
-        self.bias -= self.lr * dlt_b
+        self.bias -= self.lr * float(dlt_b)
 
 
 class Unittest(unittest.TestCase):
