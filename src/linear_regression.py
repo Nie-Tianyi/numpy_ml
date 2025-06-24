@@ -103,7 +103,7 @@ class Unittest(unittest.TestCase):
         x, y = linear_data(data_size=10000, seed=777)
 
         model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
-        model.fit(x, y, regularization=RegularizationTerm.RIDGE)
+        model.fit(x, y)
 
         # 测试点需要是2D数组
         test_point = np.array([[1, 1]])
