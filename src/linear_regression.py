@@ -3,6 +3,7 @@ Fixed Linear Regression Model
 """
 import unittest
 
+import numba
 import numpy as np
 import seaborn
 from matplotlib import pyplot as plt
@@ -45,7 +46,16 @@ class LinearRegressionModel:
             self.loss_history.append(loss)
 
             # 更新梯度 (包含正则化)
-            self._compute_gradient(x, y_hat, y, m, regularization)
+            if regularization != RegularizationTerm.RIDGE:
+                (dlt_w, dlt_b) = self._computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
+                                                                                self.weights)
+                self.weights -= self.lr * dlt_w
+                self.bias -= self.lr * float(dlt_b)
+            elif regularization != RegularizationTerm.LASSO:
+                (dlt_w, dlt_b) = self._computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
+                                                                                self.weights)
+                self.weights -= self.lr * dlt_w
+                self.bias -= self.lr * float(dlt_b)
 
             # 每100次迭代打印进度
             if i % 10 == 0:
@@ -64,22 +74,27 @@ class LinearRegressionModel:
         self.weights = np.random.randn(dim) * 0.01
         self.bias = np.zeros(1)
 
-    def _compute_gradient(self, x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                          regularization: RegularizationTerm):
-        # 计算基础梯度
+    @staticmethod
+    @numba.njit(fastmath=True)
+    def _computer_gradient_with_l2_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
+                                                  lambda_: float, weights: np.ndarray):
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
+        dlt_w += (lambda_ / m) * weights
 
-        # 添加正则化梯度 (关键修复)
-        if regularization == RegularizationTerm.RIDGE:
-            dlt_w += (self.lambda_ / m) * self.weights
-        elif regularization == RegularizationTerm.LASSO:
-            dlt_w += (self.lambda_ / m) * np.sign(self.weights)
+        return dlt_w, dlt_b
 
-        # 更新参数
-        self.weights -= self.lr * dlt_w
-        self.bias -= self.lr * float(dlt_b)
+    @staticmethod
+    @numba.njit(fastmath=True)
+    def _computer_gradient_with_l1_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
+                                                  lambda_: float, weights: np.ndarray):
+        error = y_pred - y_real
+        dlt_w = np.dot(x.T, error) / m
+        dlt_b = np.mean(error)
+        dlt_w += (lambda_ / m) * np.sign(weights)
+
+        return dlt_w, dlt_b
 
 
 class Unittest(unittest.TestCase):
