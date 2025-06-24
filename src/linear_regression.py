@@ -46,12 +46,12 @@ class LinearRegressionModel:
             self.loss_history.append(loss)
 
             # 更新梯度 (包含正则化)
-            if regularization != RegularizationTerm.RIDGE:
+            if regularization == RegularizationTerm.RIDGE:
                 (dlt_w, dlt_b) = self._computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * dlt_b
-            elif regularization != RegularizationTerm.LASSO:
+            elif regularization == RegularizationTerm.LASSO:
                 (dlt_w, dlt_b) = self._computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
@@ -103,7 +103,7 @@ class Unittest(unittest.TestCase):
         x, y = linear_data(data_size=10000, seed=777)
 
         model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
-        model.fit(x, y)
+        model.fit(x, y, regularization=RegularizationTerm.RIDGE)
 
         # 测试点需要是2D数组
         test_point = np.array([[1, 1]])
