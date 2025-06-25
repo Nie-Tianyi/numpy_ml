@@ -79,6 +79,7 @@ class LinearRegressionModel:
         self.bias = np.zeros(1)
 
     @staticmethod
+    @numba.jit(fastmath=True)
     def _compute_gradient_without_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int) -> (
             np.ndarray, float):
         error = y_pred - y_real
