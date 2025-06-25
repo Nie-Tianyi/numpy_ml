@@ -46,13 +46,13 @@ class LinearRegressionModel:
             self.loss_history.append(loss)
 
             # 更新梯度 (包含正则化)
-            if regularization == RegularizationTerm.RIDGE:
-                (dlt_w, dlt_b) = self._computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
+            if regularization == RegularizationTerm.LASSO:
+                (dlt_w, dlt_b) = self._computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * dlt_b
-            elif regularization == RegularizationTerm.LASSO:
-                (dlt_w, dlt_b) = self._computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
+            elif regularization == RegularizationTerm.RIDGE:
+                (dlt_w, dlt_b) = self._computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * dlt_b
