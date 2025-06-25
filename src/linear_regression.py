@@ -46,7 +46,11 @@ class LinearRegressionModel:
             self.loss_history.append(loss)
 
             # 更新梯度 (包含正则化)
-            if regularization == RegularizationTerm.LASSO:
+            if regularization == RegularizationTerm.No_REGULARIZATION:
+                (dlt_w, dlt_b) = self._compute_gradient_without_regularization(x, y_hat, y, m)
+                self.weights -= self.lr * dlt_w
+                self.bias -= self.lr * dlt_b
+            elif regularization == RegularizationTerm.LASSO:
                 (dlt_w, dlt_b) = self._computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
@@ -73,6 +77,15 @@ class LinearRegressionModel:
         # 初始化权重和偏置
         self.weights = np.random.randn(dim) * 0.01
         self.bias = np.zeros(1)
+
+    @staticmethod
+    def _compute_gradient_without_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int) -> (
+            np.ndarray, float):
+        error = y_pred - y_real
+        dlt_w = np.dot(x.T, error) / m
+        dlt_b = np.mean(error)
+
+        return dlt_w, dlt_b
 
     @staticmethod
     @numba.njit(fastmath=True)
