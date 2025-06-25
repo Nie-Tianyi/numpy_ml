@@ -11,7 +11,7 @@ def linear_data(data_size: int = 1000, seed=1):
     noise符合正态分布
     :param data_size: 生成多少条数据
     :param seed: 随机数生成的种子
-    :return:
+    :return: [x_1, x_2], y
     """
     np.random.seed(seed)
     x_1 = np.random.rand(data_size)
