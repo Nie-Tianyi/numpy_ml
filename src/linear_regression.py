@@ -96,6 +96,13 @@ class LinearRegressionModel:
 
         return dlt_w, dlt_b
 
+    def plot_loss_history(self):
+        seaborn.lineplot(self.loss_history)
+        plt.title("Training Loss History")
+        plt.xlabel("Iteration")
+        plt.ylabel("MSE Loss")
+        plt.show()
+
 
 class Unittest(unittest.TestCase):
 
@@ -115,12 +122,7 @@ class Unittest(unittest.TestCase):
         print(f"Bias: {model.bias[0]:.4f}")
 
         # 绘制损失曲线
-        seaborn.lineplot(model.loss_history)
-        plt.title("Training Loss History")
-        plt.xlabel("Iteration")
-        plt.ylabel("MSE Loss")
-        plt.show()
-
+        model.plot_loss_history()
         # 允许数值误差
         self.assertAlmostEqual(res, 4.29, delta=0.5)
 
@@ -141,6 +143,7 @@ class Unittest(unittest.TestCase):
         print(f"Weights: {model.weights}")
         print(f"Bias: {model.bias[0]:.4f}")
 
+        model.plot_loss_history()
         # 允许数值误差
         self.assertAlmostEqual(res, 4.29, delta=0.5)  # predict with scaler: 4.2859, without scaler: 3.9075
 
