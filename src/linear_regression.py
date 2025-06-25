@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 from src.loss_function import mean_square_error
 from src.regularization import RegularizationTerm
 from src.standardizer import standardization
-from src.test_data_gen import linear_data
+from test_data_set.test_data_gen import linear_data
 
 
 class LinearRegressionModel:
