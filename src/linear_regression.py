@@ -75,7 +75,7 @@ class LinearRegressionModel:
 
     def _init_weights_and_bias(self, dim: int):
         # 初始化权重和偏置
-        self.weights = np.random.randn(dim) * 0.01
+        self.weights = np.random.rand(dim)
         self.bias = np.zeros(1)
 
     @staticmethod
