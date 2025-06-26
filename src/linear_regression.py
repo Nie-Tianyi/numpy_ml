@@ -19,11 +19,11 @@ class LinearRegressionModel:
     Linear Regression Model
     """
 
-    def __init__(self, niter=1000, learning_rate=0.01, regula_param=0.3):
+    def __init__(self, niter=1000, learning_rate=0.01, reg_param=0.3):
         self.weights = None
         self.bias = None
         self.lr = learning_rate
-        self.lambda_ = regula_param
+        self.lambda_ = reg_param
         self.niter = niter
         self.loss_history = []
 
@@ -123,7 +123,7 @@ class Unittest(unittest.TestCase):
     def test_linear_model(self):
         x, y = linear_data(data_size=10000, seed=777)
 
-        model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
+        model = LinearRegressionModel(niter=100, learning_rate=0.1, reg_param=0.1)
         model.fit(x, y)
 
         # 测试点需要是2D数组
@@ -145,7 +145,7 @@ class Unittest(unittest.TestCase):
 
         rescaled_x, scaler = standardization(x)
 
-        model = LinearRegressionModel(niter=100, learning_rate=0.1, regula_param=0.1)
+        model = LinearRegressionModel(niter=100, learning_rate=0.1, reg_param=0.1)
         model.fit(rescaled_x, y)
 
         # 测试点需要是2D数组
