@@ -111,6 +111,9 @@ class LinearRegressionModel:
         return dlt_w, dlt_b
 
     def plot_loss_history(self):
+        """
+        plot loss history
+        """
         seaborn.lineplot(self.loss_history)
         plt.title("Training Loss History")
         plt.xlabel("Iteration")
