@@ -19,20 +19,20 @@ class LinearRegressionModel:
     Linear Regression Model
     """
 
-    def __init__(self, niter=1000, learning_rate=0.01, reg_param=0.3):
+    def __init__(self, niter=1000, learning_rate=0.01, reg_param=0.3, regularization=RegularizationTerm.RIDGE):
         self.weights = None
         self.bias = None
         self.lr = learning_rate
         self.lambda_ = reg_param
         self.niter = niter
+        self.regularization = regularization
         self.loss_history = []
 
-    def fit(self, x: np.ndarray, y: np.ndarray, regularization=RegularizationTerm.RIDGE):
+    def fit(self, x: np.ndarray, y: np.ndarray):
         """
         训练模型，x对应着数据，y对应着label，regularization代表正则化方式
         :param x: 假设是一个 (m,n) shape的 numpy.ndarray，m表示有多少数据，n表示数据的维度
         :param y: labels，应该是一个 (m,1) shape的 numpy.ndarray
-        :param regularization: regularization term，可以是LASSO或者RIDGE
         """
         assert x.shape[0] == y.shape[0], "x and y must be the same length"
         (m, dim) = x.shape
@@ -46,16 +46,16 @@ class LinearRegressionModel:
             self.loss_history.append(loss)
 
             # 更新梯度 (包含正则化)
-            if regularization == RegularizationTerm.No_REGULARIZATION:
+            if self.regularization == RegularizationTerm.No_REGULARIZATION:
                 (dlt_w, dlt_b) = self._compute_gradient_without_regularization(x, y_hat, y, m)
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * dlt_b
-            elif regularization == RegularizationTerm.LASSO:
+            elif self.regularization == RegularizationTerm.LASSO:
                 (dlt_w, dlt_b) = self._computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * dlt_b
-            elif regularization == RegularizationTerm.RIDGE:
+            elif self.regularization == RegularizationTerm.RIDGE:
                 (dlt_w, dlt_b) = self._computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
