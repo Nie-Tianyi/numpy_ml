@@ -1,5 +1,6 @@
 import unittest
 
+import numba
 import numpy as np
 
 from src.regularization import RegularizationTerm
@@ -32,9 +33,26 @@ class LogisticRegressionModel:
 
         self.__init_weights_and_bias(n)
 
+        pass
+
+    def predict(self, x: np.ndarray):
+        assert x.shape == self.weights.shape  # x 和 self.weights 应该是长度相等的两个一维数组，shape都应该是(n,)
+
+        return self.__predict(self.weights, x)
+
+    @staticmethod
+    @numba.njit
+    def __predict(weights, x):
+        return sigmoid(np.dot(weights, x))
+
     def __init_weights_and_bias(self, dim: int):
         self.weights = np.random.randn(dim)
         self.bias = np.zeros(1)
+
+
+@numba.njit
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
 
 class Unittest(unittest.TestCase):
