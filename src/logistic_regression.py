@@ -45,7 +45,7 @@ class LogisticRegressionModel:
         return self.__predict(self.weights, self.bias, x)
 
     @staticmethod
-    @numba.njit
+    @numba.njit(fastmath=True)
     def __predict(weights, bias, x):
         return sigmoid(np.dot(x, weights) + bias)
 
@@ -54,7 +54,7 @@ class LogisticRegressionModel:
         self.bias = np.zeros(1)
 
 
-@numba.njit
+@numba.njit(fastmath=True)
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
