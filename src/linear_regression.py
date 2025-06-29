@@ -71,6 +71,7 @@ class LinearRegressionModel:
         :param x:  should be the same length as weights
         :return: float predicted value
         """
+        assert x.shape[1] == self.weights.shape[0]
         return self.__predict(self.weights, self.bias, x)
 
     @staticmethod

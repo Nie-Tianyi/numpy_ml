@@ -36,14 +36,14 @@ class LogisticRegressionModel:
         pass
 
     def predict(self, x: np.ndarray):
-        assert x.shape == self.weights.shape  # x 和 self.weights 应该是长度相等的两个一维数组，shape都应该是(n,)
+        assert x.shape[1] == self.weights.shape[0]  # x 和 self.weights 应该是长度相等的两个一维数组，shape都应该是(n,)
 
-        return self.__predict(self.weights, x)
+        return self.__predict(self.weights, self.bias, x)
 
     @staticmethod
     @numba.njit
-    def __predict(weights, x):
-        return sigmoid(np.dot(weights, x))
+    def __predict(weights, bias, x):
+        return sigmoid(np.dot(x, weights) + bias)
 
     def __init_weights_and_bias(self, dim: int):
         self.weights = np.random.randn(dim)
