@@ -36,7 +36,11 @@ class LogisticRegressionModel:
         pass
 
     def predict(self, x: np.ndarray):
-        assert x.shape[1] == self.weights.shape[0]  # x 和 self.weights 应该是长度相等的两个一维数组，shape都应该是(n,)
+        """
+        :params x: 需要预测的数据， shape应该是(m,n)
+        :returns: 返回模型预测值
+        """
+        assert x.shape[1] == self.weights.shape[0]
 
         return self.__predict(self.weights, self.bias, x)
 
