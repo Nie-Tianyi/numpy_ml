@@ -52,12 +52,12 @@ class LinearRegressionModel:
                 self.bias -= self.lr * dlt_b
             elif self.regularization == RegularizationTerm.LASSO:
                 (dlt_w, dlt_b) = self.__computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
-                                                                                self.weights)
+                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * dlt_b
             elif self.regularization == RegularizationTerm.RIDGE:
                 (dlt_w, dlt_b) = self.__computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
-                                                                                self.weights)
+                                                                                 self.weights)
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * dlt_b
 
@@ -71,7 +71,12 @@ class LinearRegressionModel:
         :param x:  should be the same length as weights
         :return: float predicted value
         """
-        return np.dot(x, self.weights) + self.bias
+        return self.__predict(self.weights, self.bias, x)
+
+    @staticmethod
+    @numba.njit(fastmath=True)
+    def __predict(weights, bias, x):
+        return np.dot(x, weights) + bias
 
     def __init_weights_and_bias(self, dim: int):
         # 初始化权重和偏置
@@ -91,7 +96,7 @@ class LinearRegressionModel:
     @staticmethod
     @numba.njit(fastmath=True)
     def __computer_gradient_with_l2_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                  lambda_: float, weights: np.ndarray) -> (np.ndarray, float):
+                                                   lambda_: float, weights: np.ndarray) -> (np.ndarray, float):
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -102,7 +107,7 @@ class LinearRegressionModel:
     @staticmethod
     @numba.njit(fastmath=True)
     def __computer_gradient_with_l1_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                  lambda_: float, weights: np.ndarray) -> (np.ndarray, float):
+                                                   lambda_: float, weights: np.ndarray) -> (np.ndarray, float):
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
