@@ -72,6 +72,8 @@ class LinearRegressionModel:
         :param x:  should be the same length as weights
         :return: float predicted value
         """
+        if self.weights is None:
+            raise ValueError("Model has not been initialised yet")
         assert x.shape[1] == self.weights.shape[0]
         return self.__predict(self.weights, self.bias, x)
 

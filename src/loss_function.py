@@ -12,9 +12,9 @@ class LossFunctions(Enum):
     """
     Enum class of loss functions
     """
-    MEAN_SQUARED_ERROR = 1
-    CROSS_ENTROPY_LOSS = 2
-    SPARSE_CROSS_ENTROPY_LOSS = 3
+    MEAN_SQUARED_ERROR = 1 # 线性回归
+    CROSS_ENTROPY_LOSS = 2 # 二分类问题
+    SPARSE_CROSS_ENTROPY_LOSS = 3 # 多分类问题
 
 
 @numba.njit(fastmath=True)
