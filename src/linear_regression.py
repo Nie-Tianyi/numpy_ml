@@ -39,6 +39,7 @@ class LinearRegressionModel:
         y = y.flatten()
 
         self.__init_weights_and_bias(dim)
+        assert self.weights is not None and self.bias is not None, "Weights and bias must be initialized"
 
         for i in range(self.niter):
             y_hat = self.predict(x)
@@ -48,18 +49,18 @@ class LinearRegressionModel:
             # 更新梯度 (包含正则化)
             if self.regularization == RegularizationTerm.No_REGULARIZATION:
                 (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_hat, y, m)
-                self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * dlt_b
+                self.weights = self.weights - self.lr * dlt_w
+                self.bias = self.bias - self.lr * dlt_b
             elif self.regularization == RegularizationTerm.LASSO:
                 (dlt_w, dlt_b) = self.__computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
-                self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * dlt_b
+                self.weights = self.weights - self.lr * dlt_w
+                self.bias = self.bias - self.lr * dlt_b
             elif self.regularization == RegularizationTerm.RIDGE:
                 (dlt_w, dlt_b) = self.__computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
                                                                                 self.weights)
-                self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * dlt_b
+                self.weights = self.weights - self.lr * dlt_w
+                self.bias = self.bias - self.lr * dlt_b
 
             # 每100次迭代打印进度
             if i % 10 == 0:
@@ -71,6 +72,8 @@ class LinearRegressionModel:
         :param x:  should be the same length as weights
         :return: float predicted value
         """
+        if self.weights is None:
+            raise ValueError("Model has not been initialized yet.")
         return np.dot(x, self.weights) + self.bias
 
     def __init_weights_and_bias(self, dim: int):
@@ -136,7 +139,7 @@ class Unittest(unittest.TestCase):
         print("\nFinal Results:")
         print(f"Predicted: {res:.4f}")
         print(f"Weights: {model.weights}")
-        print(f"Bias: {model.bias[0]:.4f}")
+        print(f"Bias: {model.bias:.4f}")
 
         # 绘制损失曲线
         model.plot_loss_history()
@@ -158,7 +161,7 @@ class Unittest(unittest.TestCase):
         print("\nFinal Results:")
         print(f"Predicted: {res:.4f}")
         print(f"Weights: {model.weights}")
-        print(f"Bias: {model.bias[0]:.4f}")
+        print(f"Bias: {model.bias:.4f}")
 
         model.plot_loss_history()
         # 允许数值误差
