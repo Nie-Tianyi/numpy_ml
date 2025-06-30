@@ -50,17 +50,17 @@ class LinearRegressionModel:
             if self.regularization == RegularizationTerm.No_REGULARIZATION:
                 (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_hat, y, m)
                 self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * dlt_b
+                self.bias -= self.lr * float(dlt_b)
             elif self.regularization == RegularizationTerm.LASSO:
                 (dlt_w, dlt_b) = self.__computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
                                                                                  self.weights)
                 self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * dlt_b
+                self.bias -= self.lr * float(dlt_b)
             elif self.regularization == RegularizationTerm.RIDGE:
                 (dlt_w, dlt_b) = self.__computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
                                                                                  self.weights)
                 self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * dlt_b
+                self.bias -= self.lr * float(dlt_b)
 
             # 每100次迭代打印进度
             if i % 10 == 0:
