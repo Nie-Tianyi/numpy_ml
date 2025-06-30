@@ -80,8 +80,8 @@ class LinearRegressionModel:
 
     @staticmethod
     @numba.jit(fastmath=True)
-    def __compute_gradient_without_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int) -> (
-            np.ndarray, float):
+    def __compute_gradient_without_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int) -> tuple[
+        np.ndarray, np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -91,7 +91,7 @@ class LinearRegressionModel:
     @staticmethod
     @numba.njit(fastmath=True)
     def __computer_gradient_with_l2_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                  lambda_: float, weights: np.ndarray) -> (np.ndarray, float):
+                                                  lambda_: float, weights: np.ndarray) -> tuple[np.ndarray, np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -102,7 +102,7 @@ class LinearRegressionModel:
     @staticmethod
     @numba.njit(fastmath=True)
     def __computer_gradient_with_l1_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                  lambda_: float, weights: np.ndarray) -> (np.ndarray, float):
+                                                  lambda_: float, weights: np.ndarray) -> tuple[np.ndarray, np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
