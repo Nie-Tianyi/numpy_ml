@@ -62,3 +62,7 @@ def sigmoid(x):
 class Unittest(unittest.TestCase):
     def test_logistic_regression(self):
         self.assertEqual(1 + 1, 2)
+
+
+if __name__ == "__main__":
+    unittest.main()
