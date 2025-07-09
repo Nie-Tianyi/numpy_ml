@@ -42,12 +42,7 @@ class LogisticRegressionModel:
         """
         assert x.shape[1] == self.weights.shape[0]
 
-        return self.__predict(self.weights, self.bias, x)
-
-    @staticmethod
-    @numba.njit(fastmath=True)
-    def __predict(weights, bias, x):
-        return sigmoid(np.dot(x, weights) + bias)
+        return sigmoid(np.dot(x, self.weights) + self.bias)
 
     def __init_weights_and_bias(self, dim: int):
         self.weights = np.random.randn(dim)
