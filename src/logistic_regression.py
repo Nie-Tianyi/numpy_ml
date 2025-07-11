@@ -136,6 +136,9 @@ class Unittest(unittest.TestCase):
 
         model.plot_loss_history()
         model_no_scaled.plot_loss_history()
+        print(f"Rescaled model's final loss: {model.loss_history[-1]:.4f}")
+        print(f"Un-rescaled model's final loss: {model_no_scaled.loss_history[-1]:.4f}")
+
         self.assertAlmostEqual(res, 1, delta=0.1)
 
 
