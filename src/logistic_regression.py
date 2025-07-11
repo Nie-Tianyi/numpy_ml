@@ -1,9 +1,17 @@
+"""
+logistic regression model
+"""
 import unittest
 
-import numba
 import numpy as np
+import seaborn
+from matplotlib import pyplot as plt
 
+from src.activision_functions import sigmoid
+from src.loss_function import cross_entropy_loss
 from src.regularization import RegularizationTerm
+from src.standardizer import standardization
+from test_data_set.test_data_gen import binary_data
 
 
 class LogisticRegressionModel:
@@ -21,6 +29,19 @@ class LogisticRegressionModel:
         self.regularization = regularization
         self.loss_history = []
 
+    def __init_weights_and_bias(self, dim: int):
+        self.weights = np.random.randn(dim)
+        self.bias = np.zeros(1)
+
+    def predict(self, x: np.ndarray):
+        """
+        :params x: 需要预测的数据， shape应该是(m,n)
+        :returns: 返回模型预测值
+        """
+        assert x.shape[1] == self.weights.shape[0]
+
+        return sigmoid(np.dot(x, self.weights) + self.bias)
+
     def fit(self, x: np.ndarray, y: np.ndarray):
         """
         训练模型
@@ -32,31 +53,86 @@ class LogisticRegressionModel:
         assert y.shape[0] == m, "x & y should have same length"
 
         self.__init_weights_and_bias(n)
+        assert self.weights is not None and self.bias is not None, "weights and bias should not be None"
 
-        pass
+        for i in range(self.niter):
+            y_hat = self.predict(x)
+            loss = cross_entropy_loss(y_hat, y)
+            self.loss_history.append(loss)
 
-    def predict(self, x: np.ndarray):
+            if self.regularization != RegularizationTerm.No_REGULARIZATION:
+                (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_hat, y, m)
+                self.weights -= self.lr * dlt_w
+                self.bias -= self.lr * float(dlt_b)
+            elif self.regularization != RegularizationTerm.LASSO:
+                (dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
+                                                                                self.weights)
+                self.weights -= self.lr * dlt_w
+                self.bias -= self.lr * float(dlt_b)
+            elif self.regularization != RegularizationTerm.RIDGE:
+                (dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
+                                                                                self.weights)
+                self.weights -= self.lr * dlt_w
+                self.bias -= self.lr * float(dlt_b)
+
+    @staticmethod
+    def __compute_gradient_without_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int):
+        error = y_pred - y_real
+        dlt_w = np.dot(x.T, error) / m
+        dlt_b = np.mean(error)
+        return dlt_w, dlt_b
+
+    @staticmethod
+    def __compute_gradient_with_l1_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
+                                                  lambda_: float, weights: np.ndarray):
+        error = y_pred - y_real
+        dlt_w = np.dot(x.T, error) / m
+        dlt_b = np.mean(error)
+
+        dlt_w += np.sign(weights) * lambda_ / m
+
+        return dlt_w, dlt_b
+
+    @staticmethod
+    def __compute_gradient_with_l2_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
+                                                  lambda_: float, weights: np.ndarray):
+        error = y_pred - y_real
+        dlt_w = np.dot(x.T, error) / m
+        dlt_b = np.mean(error)
+
+        dlt_w += weights * lambda_ / m
+
+        return dlt_w, dlt_b
+
+    def plot_loss_history(self):
         """
-        :params x: 需要预测的数据， shape应该是(m,n)
-        :returns: 返回模型预测值
+        plot loss history
         """
-        assert x.shape[1] == self.weights.shape[0]
-
-        return sigmoid(np.dot(x, self.weights) + self.bias)
-
-    def __init_weights_and_bias(self, dim: int):
-        self.weights = np.random.randn(dim)
-        self.bias = np.zeros(1)
-
-
-@numba.njit(fastmath=True)
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+        seaborn.lineplot(self.loss_history)
+        plt.title("Training Loss History")
+        plt.xlabel("Iteration")
+        plt.ylabel("Cross-Entropy Loss")
+        plt.show()
 
 
 class Unittest(unittest.TestCase):
     def test_logistic_regression(self):
-        self.assertEqual(1 + 1, 2)
+        (x, y) = binary_data(data_size=10000, seed=777)
+
+        rescaled_x, scalar = standardization(x)
+
+        model = LogisticRegressionModel(niter=1000, learning_rate=0.1, reg_param=0.01)
+        model.fit(rescaled_x, y)
+
+        test_point = np.array([[1, 1]])
+        res = model.predict(scalar.rescale(test_point))[0]
+        print("\nFinal Results:")
+        print(f"Predicted: {res:.4f}")
+        print(f"Weights: {model.weights}")
+        print(f"Bias: {model.bias[0]:.4f}")
+
+        model.plot_loss_history()
+        self.assertAlmostEqual(res, 1, delta=0.1)
 
 
 if __name__ == "__main__":
