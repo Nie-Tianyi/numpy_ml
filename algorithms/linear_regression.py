@@ -8,9 +8,9 @@ import numpy as np
 import seaborn
 from matplotlib import pyplot as plt
 
-from src.loss_function import mean_square_error
-from src.regularization import RegularizationTerm
-from src.standardizer import standardization
+from algorithms.loss_function import mean_square_error
+from algorithms.regularization import RegularizationTerm
+from algorithms.standardizer import standardization
 from test_data_set.test_data_gen import linear_data
 
 

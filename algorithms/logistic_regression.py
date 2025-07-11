@@ -7,10 +7,10 @@ import numpy as np
 import seaborn
 from matplotlib import pyplot as plt
 
-from src.activision_functions import sigmoid
-from src.loss_function import cross_entropy_loss
-from src.regularization import RegularizationTerm
-from src.standardizer import standardization
+from algorithms.activision_functions import sigmoid
+from algorithms.loss_function import cross_entropy_loss
+from algorithms.regularization import RegularizationTerm
+from algorithms.standardizer import standardization
 from test_data_set.test_data_gen import binary_data
 
 
