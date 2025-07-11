@@ -121,8 +121,11 @@ class Unittest(unittest.TestCase):
 
         rescaled_x, scalar = standardization(x)
 
-        model = LogisticRegressionModel(niter=1000, learning_rate=0.1, reg_param=0.01)
+        model = LogisticRegressionModel(niter=500, learning_rate=0.1, reg_param=0.01)
         model.fit(rescaled_x, y)
+
+        model_no_scaled = LogisticRegressionModel(niter=500, learning_rate=1, reg_param=0.01)
+        model_no_scaled.fit(x, y)
 
         test_point = np.array([[1, 1]])
         res = model.predict(scalar.rescale(test_point))[0]
@@ -132,6 +135,7 @@ class Unittest(unittest.TestCase):
         print(f"Bias: {model.bias[0]:.4f}")
 
         model.plot_loss_history()
+        model_no_scaled.plot_loss_history()
         self.assertAlmostEqual(res, 1, delta=0.1)
 
 
