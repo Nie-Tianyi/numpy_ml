@@ -124,18 +124,21 @@ class Unittest(unittest.TestCase):
         model = LogisticRegressionModel(niter=500, learning_rate=0.1, reg_param=0.01)
         model.fit(rescaled_x, y)
 
+        # 使用没有缩放过的数据训练的模型，作为对比
         model_no_scaled = LogisticRegressionModel(niter=500, learning_rate=1, reg_param=0.01)
         model_no_scaled.fit(x, y)
 
+        # 处于 x_1 + x_2 = 1 右边的点预测结果应该大于0.5，并且离决策边际越远，预测结果越接近于1
         test_point = np.array([[1, 1]])
         res = model.predict(scalar.rescale(test_point))[0]
         print("\nFinal Results:")
-        print(f"Predicted: {res:.4f}")
+        print(f"Predicted: {res:.4f}") # 0.9958，有99.58%的概率这个点是1
         print(f"Weights: {model.weights}")
         print(f"Bias: {model.bias[0]:.4f}")
 
         model.plot_loss_history()
         model_no_scaled.plot_loss_history()
+        # 使用缩放后的数据训练的模型收敛的又快又好
         print(f"Rescaled model's final loss: {model.loss_history[-1]:.4f}")
         print(f"Un-rescaled model's final loss: {model_no_scaled.loss_history[-1]:.4f}")
 
