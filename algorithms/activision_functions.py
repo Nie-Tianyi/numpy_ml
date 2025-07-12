@@ -1,3 +1,7 @@
+"""
+常见激活函数
+"""
+
 import numba
 import numpy as np
 
