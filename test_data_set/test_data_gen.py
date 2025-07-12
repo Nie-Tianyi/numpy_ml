@@ -27,6 +27,7 @@ def linear_data(data_size: int = 1000, seed=1):
 
 def binary_data(data_size=1000, seed=1):
     """
+    binary data generator
     """
     np.random.seed(seed)
 

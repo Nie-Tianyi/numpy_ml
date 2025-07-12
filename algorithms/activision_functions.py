@@ -1,6 +1,7 @@
 import numba
 import numpy as np
 
+
 @numba.njit(fastmath=True)
 def sigmoid(x):
     """
