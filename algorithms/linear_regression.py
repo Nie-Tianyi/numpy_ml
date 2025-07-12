@@ -1,6 +1,7 @@
 """
 Fixed Linear Regression Model
 """
+
 import unittest
 
 import numba
@@ -19,7 +20,13 @@ class LinearRegressionModel:
     Linear Regression Model
     """
 
-    def __init__(self, niter=1000, learning_rate=0.01, reg_param=0.3, regularization=RegularizationTerm.RIDGE):
+    def __init__(
+        self,
+        niter=1000,
+        learning_rate=0.01,
+        reg_param=0.3,
+        regularization=RegularizationTerm.RIDGE,
+    ):
         self.weights = None
         self.bias = None
         self.lr = learning_rate
@@ -39,7 +46,9 @@ class LinearRegressionModel:
         y = y.flatten()
 
         self.__init_weights_and_bias(dim)
-        assert self.weights is not None and self.bias is not None, "Weights and bias must be initialized"
+        assert self.weights is not None and self.bias is not None, (
+            "Weights and bias must be initialized"
+        )
 
         for i in range(self.niter):
             y_hat = self.predict(x)
@@ -48,23 +57,29 @@ class LinearRegressionModel:
 
             # 更新梯度 (包含正则化)
             if self.regularization == RegularizationTerm.No_REGULARIZATION:
-                (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_hat, y, m)
+                (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(
+                    x, y_hat, y, m
+                )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
             elif self.regularization == RegularizationTerm.LASSO:
-                (dlt_w, dlt_b) = self.__computer_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
-                                                                                 self.weights)
+                (dlt_w, dlt_b) = self.__computer_gradient_with_l1_regularization(
+                    x, y_hat, y, m, self.lambda_, self.weights
+                )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
             elif self.regularization == RegularizationTerm.RIDGE:
-                (dlt_w, dlt_b) = self.__computer_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
-                                                                                 self.weights)
+                (dlt_w, dlt_b) = self.__computer_gradient_with_l2_regularization(
+                    x, y_hat, y, m, self.lambda_, self.weights
+                )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
 
             # 每100次迭代打印进度
             if i % 10 == 0:
-                print(f"Iteration {i}: Loss={loss:.4f}, Weights={self.weights}, Bias={self.bias[0]:.4f}")
+                print(
+                    f"Iteration {i}: Loss={loss:.4f}, Weights={self.weights}, Bias={self.bias[0]:.4f}"
+                )
 
     def predict(self, x: np.ndarray):
         """
@@ -84,8 +99,9 @@ class LinearRegressionModel:
 
     @staticmethod
     @numba.jit(fastmath=True)
-    def __compute_gradient_without_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int) -> \
-            tuple[np.ndarray, np.floating]:
+    def __compute_gradient_without_regularization(
+        x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int
+    ) -> tuple[np.ndarray, np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -94,10 +110,14 @@ class LinearRegressionModel:
 
     @staticmethod
     @numba.njit(fastmath=True)
-    def __computer_gradient_with_l2_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                   lambda_: float, weights: np.ndarray) -> tuple[
-        np.ndarray, np.floating]:
-
+    def __computer_gradient_with_l2_regularization(
+        x: np.ndarray,
+        y_pred: np.ndarray,
+        y_real: np.ndarray,
+        m: int,
+        lambda_: float,
+        weights: np.ndarray,
+    ) -> tuple[np.ndarray, np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -107,10 +127,14 @@ class LinearRegressionModel:
 
     @staticmethod
     @numba.njit(fastmath=True)
-    def __computer_gradient_with_l1_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                   lambda_: float, weights: np.ndarray) -> tuple[
-        np.ndarray, np.floating]:
-
+    def __computer_gradient_with_l1_regularization(
+        x: np.ndarray,
+        y_pred: np.ndarray,
+        y_real: np.ndarray,
+        m: int,
+        lambda_: float,
+        weights: np.ndarray,
+    ) -> tuple[np.ndarray, np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -130,7 +154,6 @@ class LinearRegressionModel:
 
 
 class Unittest(unittest.TestCase):
-
     def test_linear_model(self):
         x, y = linear_data(data_size=10000, seed=777)
 
@@ -170,7 +193,9 @@ class Unittest(unittest.TestCase):
 
         model.plot_loss_history()
         # 允许数值误差
-        self.assertAlmostEqual(res, 4.29, delta=0.5)  # predict with scaler: 4.2859, without scaler: 3.9075
+        self.assertAlmostEqual(
+            res, 4.29, delta=0.5
+        )  # predict with scaler: 4.2859, without scaler: 3.9075
 
 
 if __name__ == "__main__":

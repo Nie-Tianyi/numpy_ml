@@ -12,3 +12,8 @@ dependencies = [
     "scipy>=1.13.1",
     "seaborn",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.3",
+]

@@ -1,6 +1,7 @@
 """
 logistic regression model
 """
+
 import unittest
 
 import numpy as np
@@ -19,8 +20,13 @@ class LogisticRegressionModel:
     Logistic Regression Model
     """
 
-    def __init__(self, niter: int = 1000, learning_rate: float = 0.01, reg_param: float = 0.3,
-                 regularization=RegularizationTerm.RIDGE):
+    def __init__(
+        self,
+        niter: int = 1000,
+        learning_rate: float = 0.01,
+        reg_param: float = 0.3,
+        regularization=RegularizationTerm.RIDGE,
+    ):
         self.weights = None
         self.bias = None
         self.niter = niter
@@ -53,7 +59,9 @@ class LogisticRegressionModel:
         assert y.shape[0] == m, "x & y should have same length"
 
         self.__init_weights_and_bias(n)
-        assert self.weights is not None and self.bias is not None, "weights and bias should not be None"
+        assert self.weights is not None and self.bias is not None, (
+            "weights and bias should not be None"
+        )
 
         for i in range(self.niter):
             y_hat = self.predict(x)
@@ -61,30 +69,42 @@ class LogisticRegressionModel:
             self.loss_history.append(loss)
 
             if self.regularization != RegularizationTerm.No_REGULARIZATION:
-                (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_hat, y, m)
+                (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(
+                    x, y_hat, y, m
+                )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
             elif self.regularization != RegularizationTerm.LASSO:
-                (dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(x, y_hat, y, m, self.lambda_,
-                                                                                self.weights)
+                (dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(
+                    x, y_hat, y, m, self.lambda_, self.weights
+                )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
             elif self.regularization != RegularizationTerm.RIDGE:
-                (dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(x, y_hat, y, m, self.lambda_,
-                                                                                self.weights)
+                (dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(
+                    x, y_hat, y, m, self.lambda_, self.weights
+                )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
 
     @staticmethod
-    def __compute_gradient_without_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int):
+    def __compute_gradient_without_regularization(
+        x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int
+    ):
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
         return dlt_w, dlt_b
 
     @staticmethod
-    def __compute_gradient_with_l1_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                  lambda_: float, weights: np.ndarray):
+    def __compute_gradient_with_l1_regularization(
+        x: np.ndarray,
+        y_pred: np.ndarray,
+        y_real: np.ndarray,
+        m: int,
+        lambda_: float,
+        weights: np.ndarray,
+    ):
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -94,8 +114,14 @@ class LogisticRegressionModel:
         return dlt_w, dlt_b
 
     @staticmethod
-    def __compute_gradient_with_l2_regularization(x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int,
-                                                  lambda_: float, weights: np.ndarray):
+    def __compute_gradient_with_l2_regularization(
+        x: np.ndarray,
+        y_pred: np.ndarray,
+        y_real: np.ndarray,
+        m: int,
+        lambda_: float,
+        weights: np.ndarray,
+    ):
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -125,14 +151,16 @@ class Unittest(unittest.TestCase):
         model.fit(rescaled_x, y)
 
         # 使用没有缩放过的数据训练的模型，作为对比
-        model_no_scaled = LogisticRegressionModel(niter=500, learning_rate=1, reg_param=0.01)
+        model_no_scaled = LogisticRegressionModel(
+            niter=500, learning_rate=1, reg_param=0.01
+        )
         model_no_scaled.fit(x, y)
 
         # 处于 x_1 + x_2 = 1 右边的点预测结果应该大于0.5，并且离决策边际越远，预测结果越接近于1
         test_point = np.array([[1, 1]])
         res = model.predict(scalar.rescale(test_point))[0]
         print("\nFinal Results:")
-        print(f"Predicted: {res:.4f}") # 0.9958，有99.58%的概率这个点是1
+        print(f"Predicted: {res:.4f}")  # 0.9958，有99.58%的概率这个点是1
         print(f"Weights: {model.weights}")
         print(f"Bias: {model.bias[0]:.4f}")
 

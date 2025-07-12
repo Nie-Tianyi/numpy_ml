@@ -1,6 +1,7 @@
 """
 Loss-functions pack
 """
+
 import unittest
 from enum import Enum
 
@@ -12,6 +13,7 @@ class LossFunctions(Enum):
     """
     Enum class of loss functions
     """
+
     MEAN_SQUARED_ERROR = 1  # 线性回归
     CROSS_ENTROPY_LOSS = 2  # 二分类问题
     SPARSE_CROSS_ENTROPY_LOSS = 3  # 多分类问题
@@ -41,7 +43,9 @@ def cross_entropy_loss(y_pred, y_true):
 
 class Unittest(unittest.TestCase):
     def test_mean_square_error(self):
-        self.assertEqual(mean_square_error(np.array([1, 1, 1]), np.array([0, 0, 0])), 0.5)
+        self.assertEqual(
+            mean_square_error(np.array([1, 1, 1]), np.array([0, 0, 0])), 0.5
+        )
 
 
 if __name__ == "__main__":

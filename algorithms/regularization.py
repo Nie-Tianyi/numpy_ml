@@ -1,6 +1,7 @@
 """
 Regularization terms
 """
+
 from enum import Enum
 
 import numba
@@ -11,6 +12,7 @@ class RegularizationTerm(Enum):
     """
     Enum class for regularization terms
     """
+
     No_REGULARIZATION = 0
     LASSO = 1
     RIDGE = 2
@@ -25,7 +27,7 @@ def ridge(weights, rg_param, m):
     :param m: number of data
     :return: loss brought by regularization
     """
-    return (rg_param / 2 * m) * np.sum(weights ** 2)
+    return (rg_param / 2 * m) * np.sum(weights**2)
 
 
 @numba.njit
