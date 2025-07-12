@@ -3,8 +3,10 @@ logistic regression model
 """
 
 import unittest
+from typing import Optional, Tuple
 
 import numpy as np
+from numpy.typing import NDArray
 import seaborn
 from matplotlib import pyplot as plt
 
@@ -27,8 +29,8 @@ class LogisticRegressionModel:
         reg_param: float = 0.3,
         regularization=RegularizationTerm.RIDGE,
     ):
-        self.weights = None
-        self.bias = None
+        self.weights: Optional[NDArray[np.float64]] = None
+        self.bias: Optional[NDArray[np.float64]] = None
         self.niter = niter
         self.lr = learning_rate
         self.lambda_ = reg_param
@@ -39,7 +41,7 @@ class LogisticRegressionModel:
         self.weights = np.random.randn(dim)
         self.bias = np.zeros(1)
 
-    def predict(self, x: np.ndarray):
+    def predict(self, x: NDArray[np.float64]) -> NDArray[np.float64]:
         """
         :params x: 需要预测的数据， shape应该是(m,n)
         :returns: 返回模型预测值
@@ -48,7 +50,7 @@ class LogisticRegressionModel:
 
         return sigmoid(np.dot(x, self.weights) + self.bias)
 
-    def fit(self, x: np.ndarray, y: np.ndarray):
+    def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]) -> None:
         """
         训练模型
         :param x: 假设是一个 (m,n) shape的 numpy.ndarray，m表示有多少数据，n表示数据的维度
@@ -89,8 +91,11 @@ class LogisticRegressionModel:
 
     @staticmethod
     def __compute_gradient_without_regularization(
-        x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int
-    ):
+        x: NDArray[np.float64],
+        y_pred: NDArray[np.float64],
+        y_real: NDArray[np.float64],
+        m: int,
+    ) -> Tuple[NDArray[np.float64], np.float64]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -98,13 +103,13 @@ class LogisticRegressionModel:
 
     @staticmethod
     def __compute_gradient_with_l1_regularization(
-        x: np.ndarray,
-        y_pred: np.ndarray,
-        y_real: np.ndarray,
+        x: NDArray[np.float64],
+        y_pred: NDArray[np.float64],
+        y_real: NDArray[np.float64],
         m: int,
         lambda_: float,
-        weights: np.ndarray,
-    ):
+        weights: NDArray[np.float64],
+    ) -> Tuple[NDArray[np.float64], np.float64]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -115,13 +120,13 @@ class LogisticRegressionModel:
 
     @staticmethod
     def __compute_gradient_with_l2_regularization(
-        x: np.ndarray,
-        y_pred: np.ndarray,
-        y_real: np.ndarray,
+        x: NDArray[np.float64],
+        y_pred: NDArray[np.float64],
+        y_real: NDArray[np.float64],
         m: int,
         lambda_: float,
-        weights: np.ndarray,
-    ):
+        weights: NDArray[np.float64],
+    ) -> Tuple[NDArray[np.float64], np.float64]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -130,7 +135,7 @@ class LogisticRegressionModel:
 
         return dlt_w, dlt_b
 
-    def plot_loss_history(self):
+    def plot_loss_history(self) -> None:
         """
         plot loss history
         """

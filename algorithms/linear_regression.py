@@ -3,11 +3,13 @@ Fixed Linear Regression Model
 """
 
 import unittest
+from typing import Optional
 
 import numba
 import numpy as np
 import seaborn
 from matplotlib import pyplot as plt
+from numpy.typing import NDArray
 
 from algorithms.loss_function import mean_square_error
 from algorithms.regularization import RegularizationTerm
@@ -27,15 +29,15 @@ class LinearRegressionModel:
         reg_param=0.3,
         regularization=RegularizationTerm.RIDGE,
     ):
-        self.weights = None
-        self.bias = None
+        self.weights: Optional[NDArray[np.float64]] = None
+        self.bias: Optional[NDArray[np.float64]] = None
         self.lr = learning_rate
         self.lambda_ = reg_param
         self.niter = niter
         self.regularization = regularization
         self.loss_history = []
 
-    def fit(self, x: np.ndarray, y: np.ndarray):
+    def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]):
         """
         训练模型，x对应着数据，y对应着label，regularization代表正则化方式
         :param x: 假设是一个 (m,n) shape的 numpy.ndarray，m表示有多少数据，n表示数据的维度
@@ -81,7 +83,7 @@ class LinearRegressionModel:
                     f"Iteration {i}: Loss={loss:.4f}, Weights={self.weights}, Bias={self.bias[0]:.4f}"
                 )
 
-    def predict(self, x: np.ndarray):
+    def predict(self, x: NDArray[np.float64]):
         """
         预测数据
         :param x:  should be the same length as weights
@@ -100,8 +102,11 @@ class LinearRegressionModel:
     @staticmethod
     @numba.jit(fastmath=True)
     def __compute_gradient_without_regularization(
-        x: np.ndarray, y_pred: np.ndarray, y_real: np.ndarray, m: int
-    ) -> tuple[np.ndarray, np.floating]:
+        x: NDArray[np.float64],
+        y_pred: NDArray[np.float64],
+        y_real: NDArray[np.float64],
+        m: int,
+    ) -> tuple[NDArray[np.float64], np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -111,13 +116,13 @@ class LinearRegressionModel:
     @staticmethod
     @numba.njit(fastmath=True)
     def __computer_gradient_with_l2_regularization(
-        x: np.ndarray,
-        y_pred: np.ndarray,
-        y_real: np.ndarray,
+        x: NDArray[np.float64],
+        y_pred: NDArray[np.float64],
+        y_real: NDArray[np.float64],
         m: int,
         lambda_: float,
-        weights: np.ndarray,
-    ) -> tuple[np.ndarray, np.floating]:
+        weights: NDArray[np.float64],
+    ) -> tuple[NDArray[np.float64], np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -128,13 +133,13 @@ class LinearRegressionModel:
     @staticmethod
     @numba.njit(fastmath=True)
     def __computer_gradient_with_l1_regularization(
-        x: np.ndarray,
-        y_pred: np.ndarray,
-        y_real: np.ndarray,
+        x: NDArray[np.float64],
+        y_pred: NDArray[np.float64],
+        y_real: NDArray[np.float64],
         m: int,
         lambda_: float,
-        weights: np.ndarray,
-    ) -> tuple[np.ndarray, np.floating]:
+        weights: NDArray[np.float64],
+    ) -> tuple[NDArray[np.float64], np.floating]:
         error = y_pred - y_real
         dlt_w = np.dot(x.T, error) / m
         dlt_b = np.mean(error)
@@ -142,7 +147,7 @@ class LinearRegressionModel:
 
         return dlt_w, dlt_b
 
-    def plot_loss_history(self):
+    def plot_loss_history(self) -> None:
         """
         plot loss history
         """
