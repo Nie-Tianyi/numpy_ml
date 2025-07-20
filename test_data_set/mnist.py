@@ -1,6 +1,10 @@
 import os.path
+from typing import Union, Any
 
 import numpy as np
+from numpy import ndarray, dtype, signedinteger
+from numpy._typing import _64Bit
+from numpy.random import Generator
 
 
 def mnist(data_size: int = 1000, seed=1):
@@ -16,15 +20,17 @@ def mnist(data_size: int = 1000, seed=1):
         "Incompatible data size, data size should be in (0, 70000]"
     )
 
-    data_path = os.path.join(os.path.dirname(__file__), "./data/mnist.npz")
+    data_path: str = os.path.join(os.path.dirname(__file__), "./data/mnist.npz")
     data = np.load(data_path)
     x = data["images"]
     y = data["labels"]
 
     # 使用随机数生成器（确保可重复性）
-    rng = np.random.default_rng(seed=seed)
+    rng: Union[Generator, Generator] = np.random.default_rng(seed=seed)
 
     # 无放回随机采样索引
-    indices = rng.choice(len(x), size=data_size, replace=False)
+    indices: ndarray[Any, dtype[signedinteger[_64Bit]]] = rng.choice(
+        len(x), size=data_size, replace=False
+    )
 
     return x[indices], y[indices]
