@@ -1,7 +1,6 @@
 import os.path
 
 import numpy as np
-from importlib import resources
 
 
 def mnist(data_size: int = 1000, seed=1):
