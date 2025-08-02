@@ -1,7 +1,8 @@
 import unittest
+import numpy as np
+from numpy.typing import NDArray
 
 from algorithms.regularization import Regularization
-from test_data_set.mnist import mnist
 
 
 class PolynomialLogisticRegression:
@@ -22,9 +23,10 @@ class PolynomialLogisticRegression:
 
     def __init_weights_and_bias(self, dim: int, k: int):
         # dim 数据有多少个维度；k 多分类问题里面有多少个预测分类
-        pass
+        self.weights = np.random.rand(dim, k)
+        self.bias = np.zeros(k)
 
-    def fit(self):
+    def fit(self, x, y):
         pass
 
     def predict(self, x):
@@ -32,9 +34,8 @@ class PolynomialLogisticRegression:
 
 
 class Unittest(unittest.TestCase):
-    def test_mnist(self):
-        data = mnist()
-        self.assertEqual(1 + 1, 2)
+    def test_softmax(self):
+        pass
 
 
 if __name__ == "__main__":
