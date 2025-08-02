@@ -27,6 +27,16 @@ def softmax(x: NDArray[np.float64]):
 
 
 class Unittest(unittest.TestCase):
+    def test_sigmoid(self):
+        x = np.array([-1, -0.1, 0, 0.1, 1])
+        print(sigmoid(x))
+        self.assertTrue(
+            np.allclose(
+                sigmoid(x),
+                np.array([0.26894142, 0.47502081, 0.5, 0.52497919, 0.73105858]),
+            )
+        )
+
     def test_softmax(self):
         x = np.array([999, 1000, 1001], dtype=np.float64)
         self.assertTrue(
