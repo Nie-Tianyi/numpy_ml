@@ -10,7 +10,7 @@ from numpy.typing import NDArray
 import seaborn
 from matplotlib import pyplot as plt
 
-from algorithms.activision_functions import sigmoid
+from algorithms.activation_functions import sigmoid
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.regularization import Regularization
 from algorithms.standardizer import standardization
