@@ -200,7 +200,7 @@ class Unittest(unittest.TestCase):
         # 允许数值误差
         self.assertAlmostEqual(
             res, 4.29, delta=0.5
-        )  # predict with scaler: 4.2859, without scaler: 3.9075
+        )  # predict with scaler: 4.2859, without a scaler: 3.9075
 
 
 if __name__ == "__main__":
