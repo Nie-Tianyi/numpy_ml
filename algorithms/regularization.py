@@ -8,7 +8,7 @@ import numba
 import numpy as np
 
 
-class RegularizationTerm(Enum):
+class Regularization(Enum):
     """
     Enum class for regularization terms
     """
