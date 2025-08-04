@@ -12,7 +12,7 @@ from matplotlib import pyplot as plt
 
 from algorithms.activation_functions import sigmoid
 from algorithms.loss_function import cross_entropy_loss
-from algorithms.regularization import Regularization
+from algorithms.regularization import Regularization, lasso, ridge
 from algorithms.standardizer import standardization
 from test_data_set.test_data_gen import binary_data
 
@@ -67,22 +67,33 @@ class LogisticRegressionModel:
 
         for i in range(self.niter):
             y_hat = self.predict(x)
-            loss = cross_entropy_loss(y_hat, y)
-            self.loss_history.append(loss)
 
             if self.regularization != Regularization.No_REGULARIZATION:
+                loss = cross_entropy_loss(y_hat, y)
+                self.loss_history.append(loss)
+
                 (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(
                     x, y_hat, y, m
                 )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
             elif self.regularization != Regularization.LASSO:
+                loss = cross_entropy_loss(y_hat, y) + lasso(
+                    self.weights, self.lambda_, m
+                )
+                self.loss_history.append(loss)
+
                 (dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(
                     x, y_hat, y, m, self.lambda_, self.weights
                 )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
             elif self.regularization != Regularization.RIDGE:
+                loss = cross_entropy_loss(y_hat, y) + ridge(
+                    self.weights, self.lambda_, m
+                )
+                self.loss_history.append(loss)
+
                 (dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(
                     x, y_hat, y, m, self.lambda_, self.weights
                 )

@@ -18,7 +18,12 @@ class Regularization(Enum):
     RIDGE = 2
 
 
-@numba.njit
+@numba.njit(fastmath=True)
+def lasso(weights, rg_param, m):
+    return (rg_param / m) * np.sum(weights)
+
+
+@numba.njit(fastmath=True)
 def ridge(weights, rg_param, m):
     """
     L2 regularization term
@@ -27,7 +32,7 @@ def ridge(weights, rg_param, m):
     :param m: number of data
     :return: loss brought by regularization
     """
-    return (rg_param / 2 * m) * np.sum(weights**2)
+    return (rg_param / 2 / m) * np.sum(weights**2)
 
 
 @numba.njit
