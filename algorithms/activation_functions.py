@@ -19,11 +19,10 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-@numba.njit(fastmath=True)
-def softmax(x: NDArray[np.float64]):
-    x = x - x.max()  # 平移防止溢出
+def softmax(x: NDArray[np.float64], axis):
+    x = x - np.max(x, axis=axis, keepdims=True)  # 平移防止溢出
     ex = np.exp(x)
-    return ex / ex.sum()
+    return ex / ex.sum(axis=axis, keepdims=True)
 
 
 class Unittest(unittest.TestCase):
@@ -38,9 +37,11 @@ class Unittest(unittest.TestCase):
         )
 
     def test_softmax(self):
-        x = np.array([999, 1000, 1001], dtype=np.float64)
+        x = np.array([[999, 1000, 1001]], dtype=np.float64)
         self.assertTrue(
-            np.allclose(softmax(x), np.array([0.09003057, 0.24472847, 0.66524096]))
+            np.allclose(
+                softmax(x, axis=1), np.array([[0.09003057, 0.24472847, 0.66524096]])
+            )
         )
 
 
