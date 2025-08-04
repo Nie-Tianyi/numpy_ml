@@ -43,6 +43,12 @@ def cross_entropy_loss(y_pred, y_true):
 
 @numba.njit(fastmath=True)
 def sparse_cross_entropy_loss(y_pred, y_real):
+    """
+    sparse cross entropy loss
+    :param y_pred: predicted value, a scalar or a numpy array
+    :param y_real: real label value, a scalar or a numpy array
+    :return: loss value, a scalar or a numpy array
+    """
     assert y_pred.shape == y_real.shape, (
         "Unmatched shape between predicted value and real label"
     )

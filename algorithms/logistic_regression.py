@@ -6,9 +6,9 @@ import unittest
 from typing import Optional, Tuple
 
 import numpy as np
-from numpy.typing import NDArray
 import seaborn
 from matplotlib import pyplot as plt
+from numpy.typing import NDArray
 from tqdm import tqdm
 
 from algorithms.activation_functions import sigmoid
@@ -147,12 +147,12 @@ class LogisticRegressionModel:
 
         return dlt_w, dlt_b
 
-    def plot_loss_history(self) -> None:
+    def plot_loss_history(self, title="Training Loss History") -> None:
         """
         plot loss history
         """
         seaborn.lineplot(self.loss_history)
-        plt.title("Training Loss History")
+        plt.title(title)
         plt.xlabel("Iteration")
         plt.ylabel("Cross-Entropy Loss")
         plt.show()

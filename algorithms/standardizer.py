@@ -31,7 +31,7 @@ def standardization(x):
     :param x: 需要缩放的数据
     :return: 返回缩放后的数据，以及一个缩放器，用于缩放验证数据
     """
-    scaler = Standardizer(np.mean(x, axis=0), np.std(x, axis=0))
+    scaler = Standardizer(np.mean(x), np.std(x))
     return scaler.rescale(x), scaler
 
 
