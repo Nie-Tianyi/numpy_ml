@@ -10,6 +10,7 @@ import numpy as np
 import seaborn
 from matplotlib import pyplot as plt
 from numpy.typing import NDArray
+from tqdm import tqdm
 
 from algorithms.loss_function import mean_square_error
 from algorithms.regularization import Regularization, lasso, ridge
@@ -52,7 +53,7 @@ class LinearRegressionModel:
             "Weights and bias must be initialized"
         )
 
-        for i in range(self.niter):
+        for i in tqdm(range(self.niter)):
             y_hat = self.predict(x)
 
             # 更新梯度 (包含正则化)
@@ -87,12 +88,6 @@ class LinearRegressionModel:
                 )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
-
-            # 每100次迭代打印进度
-            if i % 10 == 0:
-                print(
-                    f"Iteration {i}: Loss={loss:.4f}, Weights={self.weights}, Bias={self.bias[0]:.4f}"
-                )
 
     def predict(self, x: NDArray[np.float64]):
         """

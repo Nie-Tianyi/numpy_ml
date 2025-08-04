@@ -9,6 +9,7 @@ import numpy as np
 from numpy.typing import NDArray
 import seaborn
 from matplotlib import pyplot as plt
+from tqdm import tqdm
 
 from algorithms.activation_functions import sigmoid
 from algorithms.loss_function import cross_entropy_loss
@@ -65,7 +66,7 @@ class LogisticRegressionModel:
             "weights and bias should not be None"
         )
 
-        for i in range(self.niter):
+        for i in tqdm(range(self.niter)):
             y_hat = self.predict(x)
 
             if self.regularization != Regularization.No_REGULARIZATION:
