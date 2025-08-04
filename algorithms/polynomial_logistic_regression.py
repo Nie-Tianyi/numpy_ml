@@ -155,7 +155,7 @@ class Unittest(unittest.TestCase):
         res = model.predict(test_point)
         # 检验结果
         model.plot_loss_history()
-        self.assertTrue(np.allclose(np.array([[0, 1]]), res, atol=0.1))
+        self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
 
     def test_mnist(self):
         (x, y) = mnist(data_size=100, seed=7)
