@@ -69,7 +69,7 @@ class LogisticRegressionModel:
         for i in tqdm(range(self.niter)):
             y_hat = self.predict(x)
 
-            if self.regularization != Regularization.No_REGULARIZATION:
+            if self.regularization != Regularization.NO_REGULARIZATION:
                 loss = cross_entropy_loss(y_hat, y)
                 self.loss_history.append(loss)
 

@@ -57,7 +57,7 @@ class LinearRegressionModel:
             y_hat = self.predict(x)
 
             # 更新梯度 (包含正则化)
-            if self.regularization == Regularization.No_REGULARIZATION:
+            if self.regularization == Regularization.NO_REGULARIZATION:
                 loss = mean_square_error(y_hat, y)
                 self.loss_history.append(loss)
 

@@ -13,7 +13,7 @@ class Regularization(Enum):
     Enum class for regularization terms
     """
 
-    No_REGULARIZATION = 0
+    NO_REGULARIZATION = 0
     LASSO = 1
     RIDGE = 2
 

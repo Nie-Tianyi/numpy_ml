@@ -1,7 +1,5 @@
 import unittest
 from typing import Optional
-
-import numba
 import numpy as np
 import seaborn
 from matplotlib import pyplot as plt
@@ -56,7 +54,7 @@ class PolynomialLogisticRegression:
             y_pred = self.predict(x)
 
             # 计算梯度
-            if self.reg == Regularization.No_REGULARIZATION:
+            if self.reg == Regularization.NO_REGULARIZATION:
                 loss = sparse_cross_entropy_loss(y_pred, y)  # 计算损失
                 self.loss_history.append(loss)  # 记录损失
 
@@ -158,7 +156,7 @@ class Unittest(unittest.TestCase):
         self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
 
     def test_mnist(self):
-        (x, y) = mnist(data_size=100, seed=7)
+        (x, y) = mnist(data_size=1000, seed=7)
 
         def reshape_x(arr):
             # 将 n*28*28 的 image 拍平成 n*784 的二维数组
@@ -166,10 +164,12 @@ class Unittest(unittest.TestCase):
 
         x = reshape_x(x)
         model = PolynomialLogisticRegression(
-            niter=1000, learning_rate=1, reg_param=0.01
+            niter=1000, learning_rate=1, reg_param=0.01, regularization=Regularization.NO_REGULARIZATION
         )
         model.fit(x, y)
+
         model.plot_loss_history()
+        print(model.loss_history)
 
         self.assertEqual(1 + 1, 2)
 
