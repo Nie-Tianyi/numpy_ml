@@ -41,6 +41,16 @@ def cross_entropy_loss(y_pred, y_true):
     return np.mean(-y_true * np.log(y_pred) - (1 - y_true) * np.log(1 - y_pred))
 
 
+@numba.njit(fastmath=True)
+def sparse_cross_entropy_loss(y_pred, y_real):
+    assert y_pred.shape == y_real.shape, (
+        "Unmatched shape between predicted value and real label"
+    )
+
+    res = -y_real * np.log(y_pred)
+    return np.sum(res, axis=1)
+
+
 class Unittest(unittest.TestCase):
     def test_mean_square_error(self):
         self.assertEqual(
