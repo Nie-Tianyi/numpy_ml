@@ -22,7 +22,7 @@ class PolynomialLogisticRegression:
     def __init__(
         self,
         niter=1000,
-        learning_rate=1,
+        learning_rate: float =1,
         reg_param=0.03,
         regularization=Regularization.RIDGE,
     ):
@@ -156,7 +156,7 @@ class Unittest(unittest.TestCase):
         self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
 
     def test_mnist(self):
-        (x, y) = mnist(data_size=1000, seed=7)
+        (x, y) = mnist(data_size=10000, seed=7)
 
         def reshape_x(arr):
             # 将 n*28*28 的 image 拍平成 n*784 的二维数组
@@ -164,7 +164,7 @@ class Unittest(unittest.TestCase):
 
         x = reshape_x(x)
         model = PolynomialLogisticRegression(
-            niter=1000, learning_rate=1, reg_param=0.01, regularization=Regularization.NO_REGULARIZATION
+            niter=1000, learning_rate=0.1, reg_param=0.01
         )
         model.fit(x, y)
 
