@@ -24,7 +24,7 @@ class PolynomialLogisticRegression:
     def __init__(
         self,
         niter=1000,
-        learning_rate= 1,
+        learning_rate=1,
         reg_param=0.03,
         regularization=Regularization.RIDGE,
     ):
@@ -145,12 +145,17 @@ class Unittest(unittest.TestCase):
         (x, y) = binary_data(
             data_size=10000, seed=7
         )  # 多分类问题当然也能处理而分类问题啦
-        model = PolynomialLogisticRegression(niter=1000, learning_rate=1, reg_param=0.01)
+        # 训练模型
+        model = PolynomialLogisticRegression(
+            niter=1000, learning_rate=1, reg_param=0.01
+        )
         model.fit(x, y)
-
+        # 测试数据
         test_point = np.array([[1, 1]])
-        print(model.predict(test_point))
+        res = model.predict(test_point)
+        # 检验结果
         model.plot_loss_history()
+        self.assertTrue(np.allclose(np.array([[0, 1]]), res, atol=0.1))
 
     def test_mnist(self):
         (x, y) = mnist(data_size=100, seed=7)
@@ -160,7 +165,9 @@ class Unittest(unittest.TestCase):
             return arr.reshape(arr.shape[0], -1)
 
         x = reshape_x(x)
-        model = PolynomialLogisticRegression(niter=1000, learning_rate=1, reg_param=0.01)
+        model = PolynomialLogisticRegression(
+            niter=1000, learning_rate=1, reg_param=0.01
+        )
         model.fit(x, y)
         model.plot_loss_history()
 
