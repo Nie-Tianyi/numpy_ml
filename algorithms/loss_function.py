@@ -46,9 +46,9 @@ def sparse_cross_entropy_loss(y_pred, y_real):
     assert y_pred.shape == y_real.shape, (
         "Unmatched shape between predicted value and real label"
     )
-
+    # y_pred.shape = y.shape = (m, k)
     res = -y_real * np.log(y_pred)
-    return np.sum(res, axis=1)
+    return np.sum(res)
 
 
 class Unittest(unittest.TestCase):
