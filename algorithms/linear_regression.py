@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 from algorithms.loss_function import mean_square_error
 from algorithms.regularization import Regularization, lasso, ridge
-from algorithms.standardizer import z_score_standardization
+from algorithms.normaliser import z_score_normalisation
 from test_data_set.test_data_gen import linear_data
 
 
@@ -188,7 +188,7 @@ class Unittest(unittest.TestCase):
     def test_linear_model_with_scaler(self):
         x, y = linear_data(data_size=100000, seed=777)
 
-        rescaled_x, scaler = z_score_standardization(x)
+        rescaled_x, scaler = z_score_normalisation(x)
 
         model = LinearRegressionModel(niter=100, learning_rate=0.1, reg_param=0.1)
         model.fit(rescaled_x, y)

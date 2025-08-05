@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 from algorithms.activation_functions import softmax
 from algorithms.loss_function import sparse_cross_entropy_loss
-from algorithms.standardizer import z_score_standardization
+from algorithms.normaliser import z_score_normalisation
 from test_data_set.mnist import mnist
 from test_data_set.test_data_gen import binary_data
 from algorithms.regularization import Regularization, lasso, ridge
@@ -168,7 +168,7 @@ class Unittest(unittest.TestCase):
             return arr.reshape(arr.shape[0], -1)
 
         x = reshape_x(x)
-        x, scaler = z_score_standardization(x)
+        x, scaler = z_score_normalisation(x)
         model = PolynomialLogisticRegression(
             niter=100, learning_rate=1, reg_param=0.01
         )
