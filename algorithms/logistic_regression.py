@@ -14,7 +14,7 @@ from tqdm import tqdm
 from algorithms.activation_functions import sigmoid
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.regularization import Regularization, lasso, ridge
-from algorithms.standardizer import standardization
+from algorithms.standardizer import z_score_standardization
 from test_data_set.test_data_gen import binary_data
 
 
@@ -162,7 +162,7 @@ class Unittest(unittest.TestCase):
     def test_logistic_regression(self):
         (x, y) = binary_data(data_size=10000, seed=777)
 
-        rescaled_x, scalar = standardization(x)
+        rescaled_x, scalar = z_score_standardization(x)
 
         model = LogisticRegressionModel(niter=500, learning_rate=0.1, reg_param=0.01)
         model.fit(rescaled_x, y)
