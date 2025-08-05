@@ -147,7 +147,7 @@ class Unittest(unittest.TestCase):
     def test_polynomial_logistic_regression(self):
         (x, y) = binary_data(
             data_size=10000, seed=7
-        )  # 多分类问题当然也能处理而分类问题啦
+        )  # 多分类问题当然也能处理二分类问题啦
         # 训练模型
         model = PolynomialLogisticRegression(
             niter=1000, learning_rate=1, reg_param=0.01
@@ -161,7 +161,7 @@ class Unittest(unittest.TestCase):
         self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
 
     def test_mnist(self):
-        (x, y) = mnist(data_size=10000, seed=7)
+        (x, y) = mnist(data_size=70000, seed=7)
 
         def reshape_x(arr):
             # 将 n*28*28 的 image 拍平成 n*784 的二维数组
@@ -170,7 +170,7 @@ class Unittest(unittest.TestCase):
         x = reshape_x(x)
         x, scaler = standardization(x)
         model = PolynomialLogisticRegression(
-            niter=1000, learning_rate=1, reg_param=0.01
+            niter=100, learning_rate=1, reg_param=0.01
         )
         model.fit(x, y)
 
