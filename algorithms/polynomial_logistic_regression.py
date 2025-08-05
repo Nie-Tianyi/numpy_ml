@@ -52,7 +52,7 @@ class PolynomialLogisticRegression:
 
         self.__init_weights_and_bias(n, k)
         for _ in tqdm(range(self.niter)):
-            y_pred = self.predict(x)
+            y_pred = self.predict_possibility(x)
 
             # 计算梯度
             if self.reg == Regularization.NO_REGULARIZATION:
@@ -121,12 +121,16 @@ class PolynomialLogisticRegression:
 
         return dlt_w, dlt_b
 
-    def predict(self, x):
+    def predict_possibility(self, x):
         if self.weights is None or self.bias is None:
             raise ValueError("Model has not been initialised yet")
         # x.shape = (m, n) self.weights.shape = (n, K)
         z = np.dot(x, self.weights) + self.bias
         return softmax(z, axis=1)
+
+    def predict_label(self, x):
+        poss = self.predict_possibility(x)
+        return self.labels[np.argmax(poss, axis=1)]
 
     def plot_loss_history(self) -> None:
         """
@@ -151,7 +155,7 @@ class Unittest(unittest.TestCase):
         model.fit(x, y)
         # 测试数据
         test_point = np.array([[1, 1]])
-        res = model.predict(test_point)
+        res = model.predict_possibility(test_point)
         # 检验结果
         model.plot_loss_history()
         self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
@@ -171,9 +175,18 @@ class Unittest(unittest.TestCase):
         model.fit(x, y)
 
         model.plot_loss_history()
-        print(model.loss_history)
 
-        self.assertEqual(1 + 1, 2)
+        # 测试数据
+        (test_x, test_y) = mnist(data_size=1, seed=138)
+        reshaped_test_x = reshape_x(test_x)
+        rescaled_test_x = scaler.rescale(reshaped_test_x)
+        y_hat = model.predict_label(rescaled_test_x)
+
+        plt.imshow(test_x[0], cmap="grey")
+        plt.title(f"Predicted Label: {y_hat[0]}, Real Label: {test_y[0]}")
+        plt.show()
+
+        self.assertEqual(test_y[0], y_hat[0])
 
 
 if __name__ == "__main__":
