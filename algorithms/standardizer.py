@@ -54,5 +54,6 @@ class Unittest(unittest.TestCase):
         self.assertEqual(arr.shape, rescaled_arr.shape)
         np.testing.assert_almost_equal(rescaled_arr, arr)
 
+
 if __name__ == "__main__":
     unittest.main()
