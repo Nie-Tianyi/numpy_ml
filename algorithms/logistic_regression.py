@@ -181,8 +181,8 @@ class Unittest(unittest.TestCase):
         print(f"Weights: {model.weights}")
         print(f"Bias: {model.bias[0]:.4f}")
 
-        model.plot_loss_history()
-        model_no_scaled.plot_loss_history()
+        model.plot_loss_history(title="Loss History with Rescaling")
+        model_no_scaled.plot_loss_history(title="Loss History without Rescaling")
         # 使用缩放后的数据训练的模型收敛的又快又好
         print(f"Rescaled model's final loss: {model.loss_history[-1]:.4f}")
         print(f"Un-rescaled model's final loss: {model_no_scaled.loss_history[-1]:.4f}")
