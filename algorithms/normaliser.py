@@ -9,6 +9,7 @@ import numpy as np
 
 
 class Normaliser(Enum):
+    NoRescale = 0
     ZScore = 1
     MaxMin = 2
 
