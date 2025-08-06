@@ -35,6 +35,10 @@ class MachineLearningModel(ABC):
     def predict(self, x):
         pass
 
+    @abstractmethod
+    def evaluate(self, x_test, y_test) -> float:
+        pass
+
     def plot_loss_history(self, title="Training Loss History") -> None:
         """
         plot loss history

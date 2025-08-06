@@ -92,6 +92,17 @@ class LinearRegressionModel(MachineLearningModel):
         assert x.shape[1] == self.weights.shape[0]
         return np.dot(x, self.weights) + self.bias
 
+
+    def evaluate(self, x_test, y_test) -> float:
+        """
+        评估模型，返回测试数据集上的 Mean Square Error
+        :param x_test: 测试数据x
+        :param y_test: 测试数据y
+        :return: 返回 MSE
+        """
+        y_hat = self.predict(x_test)
+        return mean_square_error(y_hat, y_test)
+
     def __init_weights_and_bias(self, dim: int):
         # 初始化权重和偏置
         self.weights = np.random.rand(dim)
@@ -185,6 +196,7 @@ class Unittest(unittest.TestCase):
         print(f"Bias: {model.bias[0]:.4f}")
 
         model.plot_loss_history()
+
         # 允许数值误差
         self.assertAlmostEqual(
             res, 4.29, delta=0.5
