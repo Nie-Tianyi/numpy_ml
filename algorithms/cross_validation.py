@@ -24,5 +24,3 @@ def cross_validation(data, model: MachineLearningModel, seed=1, ratio=0.6):
 def k_fold_cross_validation(data, model: MachineLearningModel, k=10, seed=1):
     np.random.seed(seed)  # 设置种子
     np.random.shuffle(data)  # 先打乱顺序
-
-    

@@ -204,12 +204,14 @@ class Unittest(unittest.TestCase):
         x_train, x_test = x[:60000], x[60000:]
         y_train, y_test = y[:60000], y[60000:]
 
-        model = PolynomialLogisticRegression(niter=10000, learning_rate=0.3, reg_param=0.01)
+        model = PolynomialLogisticRegression(
+            niter=10000, learning_rate=0.3, reg_param=0.01
+        )
         model.fit(x_train, y_train)
         model.plot_loss_history()
 
         acc = model.evaluate(x_test, y_test)
-        print("Accuracy:", acc) # 0.9128
+        print("Accuracy:", acc)  # 0.9128
         self.assertGreaterEqual(acc, 0.8)  # 确保准确率 > 90%
 
 

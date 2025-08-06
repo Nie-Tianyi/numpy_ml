@@ -205,7 +205,6 @@ class Unittest(unittest.TestCase):
         acc_unrescaled = model_no_scaled.evaluate(test_x, test_y)
         print("Un-rescaled model's Accuracy", acc_unrescaled)
 
-
         self.assertAlmostEqual(res, 0, delta=0.1)
 
 
