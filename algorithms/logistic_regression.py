@@ -18,195 +18,187 @@ from test_data_set.test_data_gen import binary_data
 
 
 class LogisticRegressionModel(MachineLearningModel):
-    """
-    Logistic Regression Model
-    """
+	"""
+	Logistic Regression Model
+	"""
 
-    def __init__(
-        self,
-        niter: int = 1000,
-        learning_rate: float = 0.01,
-        reg_param: float = 0.3,
-        regularization=Regularization.RIDGE,
-        threshold=0.5,
-    ):
-        super().__init__(niter, learning_rate, reg_param, regularization)
-        self.threshold = threshold
+	def __init__(
+		self,
+		niter: int = 1000,
+		learning_rate: float = 0.01,
+		reg_param: float = 0.3,
+		regularization=Regularization.RIDGE,
+		threshold=0.5,
+	):
+		super().__init__(niter, learning_rate, reg_param, regularization)
+		self.threshold = threshold
 
-    def __init_weights_and_bias(self, dim: int):
-        self.weights = np.random.randn(dim)
-        self.bias = np.zeros(1)
+	def __init_weights_and_bias(self, dim: int):
+		self.weights = np.random.randn(dim)
+		self.bias = np.zeros(1)
 
-    def predict_possibility(self, x: NDArray[np.float64]) -> NDArray[np.float64]:
-        """
-        :params x: 需要预测的数据， shape应该是(m,n)
-        :returns: 返回模型预测值
-        """
-        assert x.shape[1] == self.weights.shape[0]
+	def predict_possibility(self, x: NDArray[np.float64]) -> NDArray[np.float64]:
+		"""
+		:params x: 需要预测的数据， shape应该是(m,n)
+		:returns: 返回模型预测值
+		"""
+		assert x.shape[1] == self.weights.shape[0]
 
-        return sigmoid(np.dot(x, self.weights) + self.bias)
+		return sigmoid(np.dot(x, self.weights) + self.bias)
 
-    def predict(self, x):
-        """
-        预测数据，大于 self.threshold 的预测为1，其余为0
-        :param x: 需要预测的数据，最好是二维NDArray
-        :return: 返回一个一维的预测结果 0 或者是 1
-        """
-        y_hat = self.predict_possibility(x)
-        return (y_hat >= self.threshold).astype(float)
+	def predict(self, x):
+		"""
+		预测数据，大于 self.threshold 的预测为1，其余为0
+		:param x: 需要预测的数据，最好是二维NDArray
+		:return: 返回一个一维的预测结果 0 或者是 1
+		"""
+		y_hat = self.predict_possibility(x)
+		return (y_hat >= self.threshold).astype(float)
 
-    def evaluate(self, x_test, y_test) -> float:
-        """
-        评估模型性能，计算准确率
-        :param x_test: 测试特征
-        :param y_test: 测试标签（0/1）
-        :return: 准确率 (0.0-1.0)
-        """
-        # 确保y_test是整数类型（避免浮点比较问题）
-        y_test = y_test.astype(int)
+	def evaluate(self, x_test, y_test) -> float:
+		"""
+		评估模型性能，计算准确率
+		:param x_test: 测试特征
+		:param y_test: 测试标签（0/1）
+		:return: 准确率 (0.0-1.0)
+		"""
+		# 确保y_test是整数类型（避免浮点比较问题）
+		y_test = y_test.astype(int)
 
-        # 预测并计算准确率
-        y_hat = self.predict(x_test)
-        res = (y_hat == y_test).astype(float)
-        accuracy = np.mean(res)
+		# 预测并计算准确率
+		y_hat = self.predict(x_test)
+		res = (y_hat == y_test).astype(float)
+		accuracy = np.mean(res)
 
-        return float(accuracy)
+		return float(accuracy)
 
-    def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]) -> None:
-        """
-        训练模型
-        :param x: 假设是一个 (m,n) shape的 numpy.ndarray，m表示有多少数据，n表示数据的维度
-        :param y: labels，应该是一个 (m,1) shape的 numpy.ndarray
-        """
-        (m, n) = x.shape
+	def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]) -> None:
+		"""
+		训练模型
+		:param x: 假设是一个 (m,n) shape的 numpy.ndarray，m表示有多少数据，n表示数据的维度
+		:param y: labels，应该是一个 (m,1) shape的 numpy.ndarray
+		"""
+		(m, n) = x.shape
 
-        assert y.shape[0] == m, "x & y should have same length"
+		assert y.shape[0] == m, "x & y should have same length"
 
-        self.__init_weights_and_bias(n)
-        assert self.weights is not None and self.bias is not None, (
-            "weights and bias should not be None"
-        )
+		self.__init_weights_and_bias(n)
+		assert self.weights is not None and self.bias is not None, (
+			"weights and bias should not be None"
+		)
 
-        for _ in tqdm(range(self.niter)):
-            y_hat = self.predict_possibility(x)
+		for _ in tqdm(range(self.niter)):
+			y_hat = self.predict_possibility(x)
 
-            if self.reg == Regularization.NO_REGULARIZATION:
-                loss = cross_entropy_loss(y_hat, y)
-                self.loss_history.append(loss)
+			if self.reg == Regularization.NO_REGULARIZATION:
+				loss = cross_entropy_loss(y_hat, y)
+				self.loss_history.append(loss)
 
-                (dlt_w, dlt_b) = self.__compute_gradient_without_regularization(
-                    x, y_hat, y, m
-                )
-                self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * float(dlt_b)
-            elif self.reg == Regularization.LASSO:
-                loss = cross_entropy_loss(y_hat, y) + lasso(
-                    self.weights, self.lambda_, m
-                )
-                self.loss_history.append(loss)
+				(dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_hat, y, m)
+				self.weights -= self.lr * dlt_w
+				self.bias -= self.lr * float(dlt_b)
+			elif self.reg == Regularization.LASSO:
+				loss = cross_entropy_loss(y_hat, y) + lasso(self.weights, self.lambda_, m)
+				self.loss_history.append(loss)
 
-                (dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(
-                    x, y_hat, y, m, self.lambda_, self.weights
-                )
-                self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * float(dlt_b)
-            elif self.reg == Regularization.RIDGE:
-                loss = cross_entropy_loss(y_hat, y) + ridge(
-                    self.weights, self.lambda_, m
-                )
-                self.loss_history.append(loss)
+				(dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(
+					x, y_hat, y, m, self.lambda_, self.weights
+				)
+				self.weights -= self.lr * dlt_w
+				self.bias -= self.lr * float(dlt_b)
+			elif self.reg == Regularization.RIDGE:
+				loss = cross_entropy_loss(y_hat, y) + ridge(self.weights, self.lambda_, m)
+				self.loss_history.append(loss)
 
-                (dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(
-                    x, y_hat, y, m, self.lambda_, self.weights
-                )
-                self.weights -= self.lr * dlt_w
-                self.bias -= self.lr * float(dlt_b)
+				(dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(
+					x, y_hat, y, m, self.lambda_, self.weights
+				)
+				self.weights -= self.lr * dlt_w
+				self.bias -= self.lr * float(dlt_b)
 
-    @staticmethod
-    def __compute_gradient_without_regularization(
-        x: NDArray[np.float64],
-        y_pred: NDArray[np.float64],
-        y_real: NDArray[np.float64],
-        m: int,
-    ) -> Tuple[NDArray[np.float64], np.float64]:
-        error = y_pred - y_real
-        dlt_w = np.dot(x.T, error) / m
-        dlt_b = np.mean(error)
-        return dlt_w, dlt_b
+	@staticmethod
+	def __compute_gradient_without_regularization(
+		x: NDArray[np.float64],
+		y_pred: NDArray[np.float64],
+		y_real: NDArray[np.float64],
+		m: int,
+	) -> Tuple[NDArray[np.float64], np.float64]:
+		error = y_pred - y_real
+		dlt_w = np.dot(x.T, error) / m
+		dlt_b = np.mean(error)
+		return dlt_w, dlt_b
 
-    @staticmethod
-    def __compute_gradient_with_l1_regularization(
-        x: NDArray[np.float64],
-        y_pred: NDArray[np.float64],
-        y_real: NDArray[np.float64],
-        m: int,
-        lambda_: float,
-        weights: NDArray[np.float64],
-    ) -> Tuple[NDArray[np.float64], np.float64]:
-        error = y_pred - y_real
-        dlt_w = np.dot(x.T, error) / m
-        dlt_b = np.mean(error)
+	@staticmethod
+	def __compute_gradient_with_l1_regularization(
+		x: NDArray[np.float64],
+		y_pred: NDArray[np.float64],
+		y_real: NDArray[np.float64],
+		m: int,
+		lambda_: float,
+		weights: NDArray[np.float64],
+	) -> Tuple[NDArray[np.float64], np.float64]:
+		error = y_pred - y_real
+		dlt_w = np.dot(x.T, error) / m
+		dlt_b = np.mean(error)
 
-        dlt_w += np.sign(weights) * lambda_ / m
+		dlt_w += np.sign(weights) * lambda_ / m
 
-        return dlt_w, dlt_b
+		return dlt_w, dlt_b
 
-    @staticmethod
-    def __compute_gradient_with_l2_regularization(
-        x: NDArray[np.float64],
-        y_pred: NDArray[np.float64],
-        y_real: NDArray[np.float64],
-        m: int,
-        lambda_: float,
-        weights: NDArray[np.float64],
-    ) -> Tuple[NDArray[np.float64], np.float64]:
-        error = y_pred - y_real
-        dlt_w = np.dot(x.T, error) / m
-        dlt_b = np.mean(error)
+	@staticmethod
+	def __compute_gradient_with_l2_regularization(
+		x: NDArray[np.float64],
+		y_pred: NDArray[np.float64],
+		y_real: NDArray[np.float64],
+		m: int,
+		lambda_: float,
+		weights: NDArray[np.float64],
+	) -> Tuple[NDArray[np.float64], np.float64]:
+		error = y_pred - y_real
+		dlt_w = np.dot(x.T, error) / m
+		dlt_b = np.mean(error)
 
-        dlt_w += weights * lambda_ / m
+		dlt_w += weights * lambda_ / m
 
-        return dlt_w, dlt_b
+		return dlt_w, dlt_b
 
 
 class Unittest(unittest.TestCase):
-    def test_logistic_regression(self):
-        (x, y) = binary_data(data_size=10000, seed=777)
+	def test_logistic_regression(self):
+		(x, y) = binary_data(data_size=10000, seed=777)
 
-        rescaled_x, scalar = z_score_normalisation(x)
+		rescaled_x, scalar = z_score_normalisation(x)
 
-        model = LogisticRegressionModel(niter=5000, learning_rate=0.1, reg_param=0.01)
-        model.fit(rescaled_x, y)
+		model = LogisticRegressionModel(niter=5000, learning_rate=0.1, reg_param=0.01)
+		model.fit(rescaled_x, y)
 
-        # 使用没有缩放过的数据训练的模型，作为对比
-        model_no_scaled = LogisticRegressionModel(
-            niter=5000, learning_rate=0.1, reg_param=0.01
-        )
-        model_no_scaled.fit(x, y)
+		# 使用没有缩放过的数据训练的模型，作为对比
+		model_no_scaled = LogisticRegressionModel(niter=5000, learning_rate=0.1, reg_param=0.01)
+		model_no_scaled.fit(x, y)
 
-        # 处于 x_1 + x_2 = 1 右边的点预测结果应该大于0.5，并且离决策边际越远，预测结果越接近于1
-        test_point = np.array([[0, 0]])
-        res = model.predict_possibility(scalar.rescale(test_point))[0]
-        print("\nFinal Results:")
-        print(f"Predicted: {res:.4f}")  # 0.9958，有99.58%的概率这个点是1
-        print(f"Weights: {model.weights}")
-        print(f"Bias: {model.bias[0]:.4f}")
+		# 处于 x_1 + x_2 = 1 右边的点预测结果应该大于0.5，并且离决策边际越远，预测结果越接近于1
+		test_point = np.array([[0, 0]])
+		res = model.predict_possibility(scalar.rescale(test_point))[0]
+		print("\nFinal Results:")
+		print(f"Predicted: {res:.4f}")  # 0.9958，有99.58%的概率这个点是1
+		print(f"Weights: {model.weights}")
+		print(f"Bias: {model.bias[0]:.4f}")
 
-        model.plot_loss_history(title="Loss History with Rescaling")
-        model_no_scaled.plot_loss_history(title="Loss History without Rescaling")
-        # 使用缩放后的数据训练的模型收敛的又快又好
-        print(f"Rescaled model's final loss: {model.loss_history[-1]:.4f}")
-        print(f"Un-rescaled model's final loss: {model_no_scaled.loss_history[-1]:.4f}")
+		model.plot_loss_history(title="Loss History with Rescaling")
+		model_no_scaled.plot_loss_history(title="Loss History without Rescaling")
+		# 使用缩放后的数据训练的模型收敛的又快又好
+		print(f"Rescaled model's final loss: {model.loss_history[-1]:.4f}")
+		print(f"Un-rescaled model's final loss: {model_no_scaled.loss_history[-1]:.4f}")
 
-        (test_x, test_y) = binary_data(data_size=10000, seed=1)
-        rescaled_test_x = scalar.rescale(test_x)
-        acc_rescaled = model.evaluate(rescaled_test_x, test_y)
-        print("Rescaled model's Accuracy:", acc_rescaled)
-        acc_unrescaled = model_no_scaled.evaluate(test_x, test_y)
-        print("Un-rescaled model's Accuracy", acc_unrescaled)
+		(test_x, test_y) = binary_data(data_size=10000, seed=1)
+		rescaled_test_x = scalar.rescale(test_x)
+		acc_rescaled = model.evaluate(rescaled_test_x, test_y)
+		print("Rescaled model's Accuracy:", acc_rescaled)
+		acc_unrescaled = model_no_scaled.evaluate(test_x, test_y)
+		print("Un-rescaled model's Accuracy", acc_unrescaled)
 
-        self.assertAlmostEqual(res, 0, delta=0.1)
+		self.assertAlmostEqual(res, 0, delta=0.1)
 
 
 if __name__ == "__main__":
-    unittest.main()
+	unittest.main()
