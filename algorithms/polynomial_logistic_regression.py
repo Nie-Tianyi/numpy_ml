@@ -16,6 +16,9 @@ from algorithms.regularization import Regularization, lasso, ridge
 
 
 class PolynomialLogisticRegression(MachineLearningModel):
+	"""
+	多项式逻辑回归，处理多分类问题
+	"""
 	labels: Optional[NDArray[np.float64]]
 
 	def __init__(
