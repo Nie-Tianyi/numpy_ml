@@ -1,3 +1,5 @@
+import os
+import pickle
 from abc import ABC, abstractmethod
 from typing import Optional, List
 
@@ -42,3 +44,16 @@ class MachineLearningModel(ABC):
         plt.xlabel("Iteration")
         plt.ylabel("Cross-Entropy Loss")
         plt.show()
+
+    def save(self, path: str) -> None:
+        """保存模型到文件（使用 pickle 格式）"""
+        # 确保目录存在
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+
+        with open(path, "wb") as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def load(path: str):
+        with open(path, "rb") as f:
+            return pickle.load(f)
