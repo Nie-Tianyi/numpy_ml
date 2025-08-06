@@ -1,7 +1,6 @@
 import unittest
 from typing import Optional
 import numpy as np
-import seaborn
 from matplotlib import pyplot as plt
 
 from numpy.typing import NDArray

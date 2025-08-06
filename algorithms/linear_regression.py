@@ -3,12 +3,9 @@ Fixed Linear Regression Model
 """
 
 import unittest
-from typing import Optional
 
 import numba
 import numpy as np
-import seaborn
-from matplotlib import pyplot as plt
 from numpy.typing import NDArray
 from tqdm import tqdm
 
