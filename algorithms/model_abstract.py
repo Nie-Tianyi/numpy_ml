@@ -29,6 +29,10 @@ class MachineLearningModel(ABC):
     def fit(self, x, y):
         pass
 
+    @abstractmethod
+    def predict(self, x):
+        pass
+
     def plot_loss_history(self, title="Training Loss History") -> None:
         """
         plot loss history

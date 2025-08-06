@@ -2,8 +2,10 @@
 交叉验证
 """
 
+from algorithms.model_abstract import MachineLearningModel
 
-def cross_validation(data, model, seed=1, ratio=0.6):
+
+def cross_validation(data, model: MachineLearningModel, seed=1, ratio=0.6):
     """
     交叉验证，将数据划分为 6、2、2三个部分，分别用于训练，验证和测试
 
