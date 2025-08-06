@@ -129,6 +129,18 @@ class PolynomialLogisticRegression(MachineLearningModel):
         poss = self.predict_possibility(x)
         return self.labels[np.argmax(poss, axis=1)]
 
+    def evaluate(self, x_test, y_test) -> float:
+        """
+        评估模型性能，计算准确率
+        :param x_test: 测试特征
+        :param y_test: 测试标签（0/1）
+        :return: 准确率 (0.0-1.0)
+        """
+        # 预测并计算准确率
+        y_hat = self.predict(x_test)
+        accuracy = np.mean(y_hat == y_test)
+        return float(accuracy)
+
 
 class Unittest(unittest.TestCase):
     def test_polynomial_logistic_regression(self):
@@ -137,8 +149,9 @@ class Unittest(unittest.TestCase):
         )  # 多分类问题当然也能处理二分类问题啦
         # 训练模型
         model = PolynomialLogisticRegression(
-            niter=1000, learning_rate=1, reg_param=0.01
+            niter=1000, learning_rate=0.1, reg_param=0.01
         )
+        x, scaler = z_score_normalisation(x)
         model.fit(x, y)
         # 测试数据
         test_point = np.array([[1, 1]])
@@ -146,6 +159,11 @@ class Unittest(unittest.TestCase):
         # 检验结果
         model.plot_loss_history()
         self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
+
+        test_x, test_y = binary_data(data_size=1000, seed=138)
+        test_x = scaler.rescale(test_x)
+        acc = model.evaluate(test_x, test_y)
+        print("Accuracy:", acc)
 
     def test_mnist(self):
         (x, y) = mnist(data_size=70000, seed=7)
@@ -162,7 +180,7 @@ class Unittest(unittest.TestCase):
         model.plot_loss_history()
 
         # 测试数据
-        (test_x, test_y) = mnist(data_size=1, seed=138)
+        (test_x, test_y) = mnist(data_size=100, seed=138)
         reshaped_test_x = reshape_x(test_x)
         rescaled_test_x = scaler.rescale(reshaped_test_x)
         y_hat = model.predict(rescaled_test_x)
