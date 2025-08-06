@@ -13,12 +13,13 @@ from numpy.typing import NDArray
 from tqdm import tqdm
 
 from algorithms.loss_function import mean_square_error
+from algorithms.model_abstract import MachineLearningModel
 from algorithms.regularization import Regularization, lasso, ridge
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.test_data_gen import linear_data
 
 
-class LinearRegressionModel:
+class LinearRegressionModel(MachineLearningModel):
     """
     Linear Regression Model
     """
@@ -30,13 +31,7 @@ class LinearRegressionModel:
         reg_param=0.3,
         regularization=Regularization.RIDGE,
     ):
-        self.weights: Optional[NDArray[np.float64]] = None
-        self.bias: Optional[NDArray[np.float64]] = None
-        self.lr = learning_rate
-        self.lambda_ = reg_param
-        self.niter = niter
-        self.regularization = regularization
-        self.loss_history = []
+        super().__init__(niter, learning_rate, reg_param, regularization)
 
     def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]):
         """
@@ -53,11 +48,11 @@ class LinearRegressionModel:
             "Weights and bias must be initialized"
         )
 
-        for i in tqdm(range(self.niter)):
+        for _ in tqdm(range(self.niter)):
             y_hat = self.predict(x)
 
             # 更新梯度 (包含正则化)
-            if self.regularization == Regularization.NO_REGULARIZATION:
+            if self.reg == Regularization.NO_REGULARIZATION:
                 loss = mean_square_error(y_hat, y)
                 self.loss_history.append(loss)
 
@@ -66,7 +61,7 @@ class LinearRegressionModel:
                 )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
-            elif self.regularization == Regularization.LASSO:
+            elif self.reg == Regularization.LASSO:
                 loss = mean_square_error(y_hat, y) + lasso(
                     self.weights, self.lambda_, m
                 )
@@ -77,7 +72,7 @@ class LinearRegressionModel:
                 )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
-            elif self.regularization == Regularization.RIDGE:
+            elif self.reg == Regularization.RIDGE:
                 loss = mean_square_error(y_hat, y) + ridge(
                     self.weights, self.lambda_, m
                 )
@@ -152,16 +147,6 @@ class LinearRegressionModel:
         dlt_w += (lambda_ / m) * np.sign(weights)
 
         return dlt_w, dlt_b
-
-    def plot_loss_history(self) -> None:
-        """
-        plot loss history
-        """
-        seaborn.lineplot(self.loss_history)
-        plt.title("Training Loss History")
-        plt.xlabel("Iteration")
-        plt.ylabel("MSE Loss")
-        plt.show()
 
 
 class Unittest(unittest.TestCase):

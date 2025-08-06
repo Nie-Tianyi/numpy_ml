@@ -13,12 +13,13 @@ from tqdm import tqdm
 
 from algorithms.activation_functions import sigmoid
 from algorithms.loss_function import cross_entropy_loss
+from algorithms.model_abstract import MachineLearningModel
 from algorithms.regularization import Regularization, lasso, ridge
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.test_data_gen import binary_data
 
 
-class LogisticRegressionModel:
+class LogisticRegressionModel(MachineLearningModel):
     """
     Logistic Regression Model
     """
@@ -30,13 +31,7 @@ class LogisticRegressionModel:
         reg_param: float = 0.3,
         regularization=Regularization.RIDGE,
     ):
-        self.weights: Optional[NDArray[np.float64]] = None
-        self.bias: Optional[NDArray[np.float64]] = None
-        self.niter = niter
-        self.lr = learning_rate
-        self.lambda_ = reg_param
-        self.regularization = regularization
-        self.loss_history = []
+        super().__init__(niter, learning_rate, reg_param, regularization)
 
     def __init_weights_and_bias(self, dim: int):
         self.weights = np.random.randn(dim)
@@ -69,7 +64,7 @@ class LogisticRegressionModel:
         for i in tqdm(range(self.niter)):
             y_hat = self.predict(x)
 
-            if self.regularization != Regularization.NO_REGULARIZATION:
+            if self.reg != Regularization.NO_REGULARIZATION:
                 loss = cross_entropy_loss(y_hat, y)
                 self.loss_history.append(loss)
 
@@ -78,7 +73,7 @@ class LogisticRegressionModel:
                 )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
-            elif self.regularization != Regularization.LASSO:
+            elif self.reg != Regularization.LASSO:
                 loss = cross_entropy_loss(y_hat, y) + lasso(
                     self.weights, self.lambda_, m
                 )
@@ -89,7 +84,7 @@ class LogisticRegressionModel:
                 )
                 self.weights -= self.lr * dlt_w
                 self.bias -= self.lr * float(dlt_b)
-            elif self.regularization != Regularization.RIDGE:
+            elif self.reg != Regularization.RIDGE:
                 loss = cross_entropy_loss(y_hat, y) + ridge(
                     self.weights, self.lambda_, m
                 )
@@ -146,16 +141,6 @@ class LogisticRegressionModel:
         dlt_w += weights * lambda_ / m
 
         return dlt_w, dlt_b
-
-    def plot_loss_history(self, title="Training Loss History") -> None:
-        """
-        plot loss history
-        """
-        seaborn.lineplot(self.loss_history)
-        plt.title(title)
-        plt.xlabel("Iteration")
-        plt.ylabel("Cross-Entropy Loss")
-        plt.show()
 
 
 class Unittest(unittest.TestCase):

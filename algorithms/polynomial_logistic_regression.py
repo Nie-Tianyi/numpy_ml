@@ -9,15 +9,14 @@ from tqdm import tqdm
 
 from algorithms.activation_functions import softmax
 from algorithms.loss_function import sparse_cross_entropy_loss
+from algorithms.model_abstract import MachineLearningModel
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.mnist import mnist
 from test_data_set.test_data_gen import binary_data
 from algorithms.regularization import Regularization, lasso, ridge
 
 
-class PolynomialLogisticRegression:
-    weights: Optional[NDArray[np.float64]]
-    bias: Optional[NDArray[np.float64]]
+class PolynomialLogisticRegression(MachineLearningModel):
     labels: Optional[NDArray[np.float64]]
 
     def __init__(
@@ -27,14 +26,8 @@ class PolynomialLogisticRegression:
         reg_param=0.03,
         regularization=Regularization.RIDGE,
     ):
-        self.weights = None
-        self.bias = None
+        super().__init__(niter, learning_rate, reg_param, regularization)
         self.labels = None
-        self.niter = niter
-        self.lr = learning_rate
-        self.lambda_ = reg_param
-        self.reg = regularization
-        self.loss_history = []
 
     def __init_weights_and_bias(self, dim: int, k: int):
         # dim 数据有多少个维度；k 多分类问题里面有多少个预测分类
@@ -52,7 +45,7 @@ class PolynomialLogisticRegression:
 
         self.__init_weights_and_bias(n, k)
         for _ in tqdm(range(self.niter)):
-            y_pred = self.predict_possibility(x)
+            y_pred = self.predict(x)
 
             # 计算梯度
             if self.reg == Regularization.NO_REGULARIZATION:
@@ -121,7 +114,12 @@ class PolynomialLogisticRegression:
 
         return dlt_w, dlt_b
 
-    def predict_possibility(self, x):
+    def predict(self, x):
+        """
+        预测概率，返回一个softmax处理后的概率NDArray
+        :param x: 训练数据
+        :return: 一个softmax处理后的概率NDArray，例如 [[0.1, 0.2, 0.7]]
+        """
         if self.weights is None or self.bias is None:
             raise ValueError("Model has not been initialised yet")
         # x.shape = (m, n) self.weights.shape = (n, K)
@@ -129,18 +127,8 @@ class PolynomialLogisticRegression:
         return softmax(z, axis=1)
 
     def predict_label(self, x):
-        poss = self.predict_possibility(x)
+        poss = self.predict(x)
         return self.labels[np.argmax(poss, axis=1)]
-
-    def plot_loss_history(self) -> None:
-        """
-        plot loss history
-        """
-        seaborn.lineplot(self.loss_history)
-        plt.title("Training Loss History")
-        plt.xlabel("Iteration")
-        plt.ylabel("Sparse Cross-Entropy Loss")
-        plt.show()
 
 
 class Unittest(unittest.TestCase):
@@ -155,7 +143,7 @@ class Unittest(unittest.TestCase):
         model.fit(x, y)
         # 测试数据
         test_point = np.array([[1, 1]])
-        res = model.predict_possibility(test_point)
+        res = model.predict(test_point)
         # 检验结果
         model.plot_loss_history()
         self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
@@ -169,9 +157,7 @@ class Unittest(unittest.TestCase):
 
         x = reshape_x(x)
         x, scaler = z_score_normalisation(x)
-        model = PolynomialLogisticRegression(
-            niter=100, learning_rate=1, reg_param=0.01
-        )
+        model = PolynomialLogisticRegression(niter=100, learning_rate=1, reg_param=0.01)
         model.fit(x, y)
 
         model.plot_loss_history()

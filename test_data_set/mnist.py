@@ -1,9 +1,7 @@
 import os.path
-from typing import Union, Any
+from typing import Union
 
 import numpy as np
-from numpy import ndarray, dtype, signedinteger
-from numpy._typing import _64Bit
 from numpy.random import Generator
 
 
@@ -29,8 +27,6 @@ def mnist(data_size: int = 1000, seed=1):
     rng: Union[Generator, Generator] = np.random.default_rng(seed=seed)
 
     # 无放回随机采样索引
-    indices: ndarray[Any, dtype[signedinteger[_64Bit]]] = rng.choice(
-        len(x), size=data_size, replace=False
-    )
+    indices = rng.choice(len(x), size=data_size, replace=False)
 
     return x[indices], y[indices]
