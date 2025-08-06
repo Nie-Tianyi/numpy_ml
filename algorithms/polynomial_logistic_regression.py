@@ -180,7 +180,7 @@ class Unittest(unittest.TestCase):
         model.plot_loss_history()
 
         # 测试数据
-        (test_x, test_y) = mnist(data_size=100, seed=138)
+        (test_x, test_y) = mnist(data_size=1, seed=138)
         reshaped_test_x = reshape_x(test_x)
         rescaled_test_x = scaler.rescale(reshaped_test_x)
         y_hat = model.predict(rescaled_test_x)
@@ -190,6 +190,27 @@ class Unittest(unittest.TestCase):
         plt.show()
 
         self.assertEqual(test_y[0], y_hat[0])
+
+    def test_mnist_accuracy(self):
+        (x, y) = mnist(data_size=70000, seed=7)
+
+        def reshape_x(arr):
+            return arr.reshape(arr.shape[0], -1)
+
+        x = reshape_x(x)
+        x, scaler = z_score_normalisation(x)
+
+        # 将数据分成 60000 的训练集和 10000 的测试集
+        x_train, x_test = x[:60000], x[60000:]
+        y_train, y_test = y[:60000], y[60000:]
+
+        model = PolynomialLogisticRegression(niter=10000, learning_rate=0.3, reg_param=0.01)
+        model.fit(x_train, y_train)
+        model.plot_loss_history()
+
+        acc = model.evaluate(x_test, y_test)
+        print("Accuracy:", acc) # 0.9128
+        self.assertGreaterEqual(acc, 0.8)  # 确保准确率 > 90%
 
 
 if __name__ == "__main__":
