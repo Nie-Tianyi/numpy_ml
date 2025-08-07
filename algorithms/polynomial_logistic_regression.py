@@ -202,8 +202,8 @@ class Unittest(unittest.TestCase):
 		model.plot_loss_history()
 
 		acc = model.evaluate(x_test, y_test)
-		print("Accuracy:", acc)  # 0.9128
-		self.assertGreaterEqual(acc, 0.8)  # 确保准确率 > 90%
+		print("Accuracy:", acc)  # 0.9153
+		self.assertGreaterEqual(acc, 0.9)  # 确保准确率 > 90%
 
 
 if __name__ == "__main__":
