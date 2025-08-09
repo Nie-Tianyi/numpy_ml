@@ -19,7 +19,7 @@ def sigmoid(x):
 	return 1 / (1 + np.exp(-x))
 
 
-# numba不支持axis属性，所以这个函数不能使numba加速
+# numba不支持axis属性，所以这个函数不能使用numba加速
 def softmax(x: NDArray[np.float64], axis=0):
 	x = x - np.max(x, axis=axis, keepdims=True)  # 平移防止溢出
 	ex = np.exp(x)
