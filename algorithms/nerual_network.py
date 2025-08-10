@@ -11,6 +11,7 @@ class NeuralNetwork(MachineLearningModel):
 	"""
 	神经网络
 	"""
+
 	def __init__(
 		self,
 		layers,
@@ -36,6 +37,7 @@ class LinearLayer:
 	"""
 	线性层，默认使用ReLU作为激活函数
 	"""
+
 	def __init__(self, num, activation_function=relu):
 		self.num = num  # 一个线性层
 		self.activation_function = activation_function  # 激活函数，默认是ReLU

@@ -4,7 +4,6 @@ Fixed Linear Regression Model
 
 import unittest
 
-import numba
 import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
@@ -102,7 +101,6 @@ class LinearRegressionModel(MachineLearningModel):
 		self.bias = np.zeros(1)
 
 	@staticmethod
-	@numba.jit(fastmath=True)
 	def __compute_gradient_without_regularization(
 		x: NDArray[np.float64],
 		y_pred: NDArray[np.float64],
@@ -116,7 +114,6 @@ class LinearRegressionModel(MachineLearningModel):
 		return dlt_w, dlt_b
 
 	@staticmethod
-	@numba.njit(fastmath=True)
 	def __computer_gradient_with_l2_regularization(
 		x: NDArray[np.float64],
 		y_pred: NDArray[np.float64],
@@ -133,7 +130,6 @@ class LinearRegressionModel(MachineLearningModel):
 		return dlt_w, dlt_b
 
 	@staticmethod
-	@numba.njit(fastmath=True)
 	def __computer_gradient_with_l1_regularization(
 		x: NDArray[np.float64],
 		y_pred: NDArray[np.float64],
@@ -167,7 +163,7 @@ class Unittest(unittest.TestCase):
 		print(f"Bias: {model.bias[0]:.4f}")
 
 		# 绘制损失曲线
-		model.plot_loss_history()
+		# model.plot_loss_history()
 		# 允许数值误差
 		self.assertAlmostEqual(res, 4.29, delta=0.5)
 
@@ -188,7 +184,7 @@ class Unittest(unittest.TestCase):
 		print(f"Weights: {model.weights}")
 		print(f"Bias: {model.bias[0]:.4f}")
 
-		model.plot_loss_history()
+		# model.plot_loss_history()
 
 		# 允许数值误差
 		self.assertAlmostEqual(

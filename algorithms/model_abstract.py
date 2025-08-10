@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 from typing import Optional, List
 
 import numpy as np
-import seaborn
 from matplotlib import pyplot as plt
 from numpy.typing import NDArray
 
@@ -43,11 +42,14 @@ class MachineLearningModel(ABC):
 		"""
 		plot loss history
 		"""
-		seaborn.lineplot(self.loss_history)
+		plt.figure()  # 创建新的图形
+		plt.clf()  # 清除当前图形
+		plt.plot(np.array(self.loss_history))  # 确保使用numpy数组
 		plt.title(title)
 		plt.xlabel("Iteration")
 		plt.ylabel("Cross-Entropy Loss")
-		plt.show()
+		plt.draw()  # 绘制图形
+		plt.pause(0.1)  # 添加短暂暂停使图形能够显示
 
 	def save(self, path: str) -> None:
 		"""保存模型到文件（使用 pickle 格式）"""

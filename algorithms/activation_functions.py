@@ -4,12 +4,10 @@
 
 import unittest
 
-import numba
 import numpy as np
 from numpy.typing import NDArray
 
 
-@numba.njit(fastmath=True)
 def sigmoid(x):
 	"""
 	sigmoid function
@@ -26,7 +24,6 @@ def softmax(x: NDArray[np.float64], axis=0):
 	return ex / ex.sum(axis=axis, keepdims=True)
 
 
-@numba.njit(fastmath=True)
 def relu(x):
 	"""
 	ReLU Rectified Linear Unit 激活函数

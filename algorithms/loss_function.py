@@ -5,7 +5,6 @@ Loss-functions pack
 import unittest
 from enum import Enum
 
-import numba
 import numpy as np
 
 
@@ -19,7 +18,6 @@ class LossFunctions(Enum):
 	SPARSE_CROSS_ENTROPY_LOSS = 3  # 多分类问题
 
 
-@numba.njit(fastmath=True)
 def mean_square_error(y_pred, y_true):
 	r"""
 	\frac{1}{m} * \sum (y_pred - y_true)^2
@@ -31,7 +29,6 @@ def mean_square_error(y_pred, y_true):
 	return 0.5 * np.mean((y_pred - y_true) ** 2)
 
 
-@numba.njit(fastmath=True)
 def cross_entropy_loss(y_pred, y_true):
 	"""
 	cross-entropy loss
@@ -41,7 +38,6 @@ def cross_entropy_loss(y_pred, y_true):
 	return np.mean(-y_true * np.log(y_pred) - (1 - y_true) * np.log(1 - y_pred))
 
 
-@numba.njit(fastmath=True)
 def sparse_cross_entropy_loss(y_pred, y_real):
 	"""
 	sparse cross-entropy loss
