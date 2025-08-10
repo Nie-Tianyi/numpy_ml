@@ -124,10 +124,10 @@ class Unittest(unittest.TestCase):
 		model_no_scaled.fit(x, y)
 
 		# 处于 x_1 + x_2 = 1 右边的点预测结果应该大于0.5，并且离决策边际越远，预测结果越接近于1
-		test_point = np.array([[0, 0]])
+		test_point = np.array([[1, 1]])
 		res = model.predict_possibility(scalar.rescale(test_point))[0]
 		print("\nFinal Results:")
-		print(f"Predicted: {res:.4f}")  # 0.9958，有99.58%的概率这个点是1
+		print(f"Predicted: {res:.4f}")  # 0.9967，有99.67%的概率这个点是1
 		print(f"Weights: {model.weights}")
 		print(f"Bias: {model.bias[0]:.4f}")
 
@@ -144,7 +144,7 @@ class Unittest(unittest.TestCase):
 		acc_unrescaled = model_no_scaled.evaluate(test_x, test_y)
 		print("Un-rescaled model's Accuracy", acc_unrescaled)
 
-		self.assertAlmostEqual(res, 0, delta=0.1)
+		self.assertAlmostEqual(res, 1.0, delta=0.1)
 
 
 if __name__ == "__main__":
