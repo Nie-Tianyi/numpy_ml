@@ -10,9 +10,10 @@ from numpy.typing import NDArray
 from tqdm import tqdm
 
 from algorithms.activation_functions import sigmoid
+from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.regularization import Regularization, lasso, ridge
+from algorithms.regularization import Regularization, lasso, ridge, lasso_gradient, ridge_gradient
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.test_data_gen import binary_data
 
@@ -90,77 +91,23 @@ class LogisticRegressionModel(MachineLearningModel):
 		for _ in tqdm(range(self.niter)):
 			y_hat = self.predict_possibility(x)
 
-			if self.reg == Regularization.NO_REGULARIZATION:
-				loss = cross_entropy_loss(y_hat, y)
-				self.loss_history.append(loss)
+			# 计算记录损失
+			loss = cross_entropy_loss(y_hat, y)
+			(dlt_w, dlt_b) = compute_gradient(x, y_hat, y)
+			match self.reg:
+				case Regularization.LASSO:
+					loss += lasso(self.weights, self.lambda_, m)
+					dlt_w += lasso_gradient(self.weights, self.lambda_, m)
+				case Regularization.RIDGE:
+					loss += ridge(self.weights, self.lambda_, m)
+					dlt_w += ridge_gradient(self.weights, self.lambda_, m)
+				case Regularization.NO_REGULARIZATION:
+					pass
 
-				(dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_hat, y, m)
-				self.weights -= self.lr * dlt_w
-				self.bias -= self.lr * float(dlt_b)
-			elif self.reg == Regularization.LASSO:
-				loss = cross_entropy_loss(y_hat, y) + lasso(self.weights, self.lambda_, m)
-				self.loss_history.append(loss)
-
-				(dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(
-					x, y_hat, y, m, self.lambda_, self.weights
-				)
-				self.weights -= self.lr * dlt_w
-				self.bias -= self.lr * float(dlt_b)
-			elif self.reg == Regularization.RIDGE:
-				loss = cross_entropy_loss(y_hat, y) + ridge(self.weights, self.lambda_, m)
-				self.loss_history.append(loss)
-
-				(dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(
-					x, y_hat, y, m, self.lambda_, self.weights
-				)
-				self.weights -= self.lr * dlt_w
-				self.bias -= self.lr * float(dlt_b)
-
-	@staticmethod
-	def __compute_gradient_without_regularization(
-		x: NDArray[np.float64],
-		y_pred: NDArray[np.float64],
-		y_real: NDArray[np.float64],
-		m: int,
-	) -> Tuple[NDArray[np.float64], np.float64]:
-		error = y_pred - y_real
-		dlt_w = np.dot(x.T, error) / m
-		dlt_b = np.mean(error)
-		return dlt_w, dlt_b
-
-	@staticmethod
-	def __compute_gradient_with_l1_regularization(
-		x: NDArray[np.float64],
-		y_pred: NDArray[np.float64],
-		y_real: NDArray[np.float64],
-		m: int,
-		lambda_: float,
-		weights: NDArray[np.float64],
-	) -> Tuple[NDArray[np.float64], np.float64]:
-		error = y_pred - y_real
-		dlt_w = np.dot(x.T, error) / m
-		dlt_b = np.mean(error)
-
-		dlt_w += np.sign(weights) * lambda_ / m
-
-		return dlt_w, dlt_b
-
-	@staticmethod
-	def __compute_gradient_with_l2_regularization(
-		x: NDArray[np.float64],
-		y_pred: NDArray[np.float64],
-		y_real: NDArray[np.float64],
-		m: int,
-		lambda_: float,
-		weights: NDArray[np.float64],
-	) -> Tuple[NDArray[np.float64], np.float64]:
-		error = y_pred - y_real
-		dlt_w = np.dot(x.T, error) / m
-		dlt_b = np.mean(error)
-
-		dlt_w += weights * lambda_ / m
-
-		return dlt_w, dlt_b
+			self.loss_history.append(loss)
+			# 更新梯度
+			self.weights -= self.lr * dlt_w
+			self.bias -= self.lr * dlt_b
 
 
 class Unittest(unittest.TestCase):

@@ -7,12 +7,13 @@ from numpy.typing import NDArray
 from tqdm import tqdm
 
 from algorithms.activation_functions import softmax
+from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import sparse_cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.mnist import mnist
 from test_data_set.test_data_gen import binary_data
-from algorithms.regularization import Regularization, lasso, ridge
+from algorithms.regularization import Regularization, lasso, ridge, lasso_gradient, ridge_gradient
 
 
 class PolynomialLogisticRegression(MachineLearningModel):
@@ -50,66 +51,23 @@ class PolynomialLogisticRegression(MachineLearningModel):
 		for _ in tqdm(range(self.niter)):
 			y_pred = self.predict_possibility(x)
 
-			# 计算梯度
-			if self.reg == Regularization.NO_REGULARIZATION:
-				loss = sparse_cross_entropy_loss(y_pred, y)  # 计算损失
-				self.loss_history.append(loss)  # 记录损失
+			# 计算记录损失
+			loss = sparse_cross_entropy_loss(y_pred, y)
+			(dlt_w, dlt_b) = compute_gradient(x, y_pred, y)
+			match self.reg:
+				case Regularization.LASSO:
+					loss += lasso(self.weights, self.lambda_, m)
+					dlt_w += lasso_gradient(self.weights, self.lambda_, m)
+				case Regularization.RIDGE:
+					loss += ridge(self.weights, self.lambda_, m)
+					dlt_w += ridge_gradient(self.weights, self.lambda_, m)
+				case Regularization.NO_REGULARIZATION:
+					pass
 
-				(dlt_w, dlt_b) = self.__compute_gradient_without_regularization(x, y_pred, y)
-				self.weights -= self.lr * dlt_w
-				self.bias -= self.lr * dlt_b
-			elif self.reg == Regularization.LASSO:
-				loss = sparse_cross_entropy_loss(y_pred, y) + lasso(self.weights, self.lambda_, m)
-				self.loss_history.append(loss)
-
-				(dlt_w, dlt_b) = self.__compute_gradient_with_l1_regularization(
-					x, y_pred, y, self.weights, self.lambda_
-				)
-				self.weights -= self.lr * dlt_w
-				self.bias -= self.lr * dlt_b
-			elif self.reg == Regularization.RIDGE:
-				loss = sparse_cross_entropy_loss(y_pred, y) + ridge(self.weights, self.lambda_, m)
-				self.loss_history.append(loss)
-
-				(dlt_w, dlt_b) = self.__compute_gradient_with_l2_regularization(
-					x, y_pred, y, self.weights, self.lambda_
-				)
-				self.weights -= self.lr * dlt_w
-				self.bias -= self.lr * dlt_b
-
-	@staticmethod
-	def __compute_gradient_without_regularization(x, y_pred, y_real):
-		m = x.shape[0]  # x.shape = (m, n)
-
-		err = y_pred - y_real  # err.shape = (m, K)
-		dlt_w = np.dot(x.T, err) / m
-		dlt_b = np.sum(err, axis=0) / m
-
-		return dlt_w, dlt_b
-
-	@staticmethod
-	def __compute_gradient_with_l2_regularization(x, y_pred, y_real, weights, lambda_):
-		m = x.shape[0]  # x.shape = (m, n)
-
-		err = y_pred - y_real  # err.shape = (m, K)
-		dlt_w = np.dot(x.T, err) / m
-		dlt_b = np.sum(err, axis=0) / m
-
-		dlt_w += (lambda_ / m) * weights  # l2 gradient
-
-		return dlt_w, dlt_b
-
-	@staticmethod
-	def __compute_gradient_with_l1_regularization(x, y_pred, y_real, weights, lambda_):
-		m = x.shape[0]  # x.shape = (m, n)
-
-		err = y_pred - y_real  # err.shape = (m, K)
-		dlt_w = np.dot(x.T, err) / m
-		dlt_b = np.sum(err, axis=0) / m
-
-		dlt_w += (lambda_ / m) * np.sign(weights)  # l1 gradient
-
-		return dlt_w, dlt_b
+			self.loss_history.append(loss)
+			# 更新梯度
+			self.weights -= self.lr * dlt_w
+			self.bias -= self.lr * dlt_b
 
 	def predict_possibility(self, x):
 		"""

@@ -10,6 +10,7 @@ from numpy.typing import NDArray
 from algorithms.regularization import Regularization
 import seaborn
 
+
 class MachineLearningModel(ABC):
 	def __init__(
 		self,

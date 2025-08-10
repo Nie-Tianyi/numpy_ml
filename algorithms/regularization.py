@@ -18,7 +18,25 @@ class Regularization(Enum):
 
 
 def lasso(weights, rg_param, m):
+	"""
+	L1 regularization term
+	:param weights: model weights
+	:param rg_param: hyperparameter
+	:param m: number of data
+	:return: loss brought by regularization
+	"""
 	return (rg_param / m) * np.sum(weights)
+
+
+def lasso_gradient(weights, rg_param, m):
+	"""
+	L1 regularization gradient term
+	:param weights: model weights
+	:param rg_param: hyperparameter
+	:param m: number of data
+	:return: gradients brought by regularization
+	"""
+	return (rg_param / m) * np.sign(weights)
 
 
 def ridge(weights, rg_param, m):
