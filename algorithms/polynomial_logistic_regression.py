@@ -1,6 +1,7 @@
 import unittest
 from typing import Optional
 import numpy as np
+from matplotlib import pyplot as plt
 
 from numpy.typing import NDArray
 from tqdm import tqdm
@@ -150,7 +151,7 @@ class Unittest(unittest.TestCase):
 		test_point = np.array([[1, 1]])
 		res = model.predict_possibility(test_point)
 		# 检验结果
-		# model.plot_loss_history()
+		model.plot_loss_history()
 		self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
 
 		test_x, test_y = binary_data(data_size=1000, seed=138)
@@ -170,7 +171,7 @@ class Unittest(unittest.TestCase):
 		model = PolynomialLogisticRegression(niter=100, learning_rate=1, reg_param=0.01)
 		model.fit(x, y)
 
-		# model.plot_loss_history()
+		model.plot_loss_history()
 
 		# 测试数据
 		(test_x, test_y) = mnist(data_size=1, seed=138)
@@ -178,9 +179,9 @@ class Unittest(unittest.TestCase):
 		rescaled_test_x = scaler.rescale(reshaped_test_x)
 		y_hat = model.predict(rescaled_test_x)
 
-		# plt.imshow(test_x[0], cmap="grey")
-		# plt.title(f"Predicted Label: {y_hat[0]}, Real Label: {test_y[0]}")
-		# plt.show()
+		plt.imshow(test_x[0], cmap="grey")
+		plt.title(f"Predicted Label: {y_hat[0]}, Real Label: {test_y[0]}")
+		plt.show()
 
 		self.assertEqual(test_y[0], y_hat[0])
 

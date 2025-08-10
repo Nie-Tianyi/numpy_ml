@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 from numpy.typing import NDArray
 
 from algorithms.regularization import Regularization
-
+import seaborn
 
 class MachineLearningModel(ABC):
 	def __init__(
@@ -42,14 +42,11 @@ class MachineLearningModel(ABC):
 		"""
 		plot loss history
 		"""
-		plt.figure()  # 创建新的图形
-		plt.clf()  # 清除当前图形
-		plt.plot(np.array(self.loss_history))  # 确保使用numpy数组
+		seaborn.lineplot(self.loss_history)
 		plt.title(title)
 		plt.xlabel("Iteration")
 		plt.ylabel("Cross-Entropy Loss")
-		plt.draw()  # 绘制图形
-		plt.pause(0.1)  # 添加短暂暂停使图形能够显示
+		plt.show()  # 绘制图形
 
 	def save(self, path: str) -> None:
 		"""保存模型到文件（使用 pickle 格式）"""
