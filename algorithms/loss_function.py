@@ -59,6 +59,12 @@ class Unittest(unittest.TestCase):
 	def test_mean_square_error(self):
 		self.assertEqual(mean_square_error(np.array([1, 1, 1]), np.array([0, 0, 0])), 0.5)
 
+	def test_cross_entropy_loss(self):
+		loss1 = cross_entropy_loss(np.array([0.9988]), np.array([1.0]))  # 0.0012
+		loss2 = cross_entropy_loss(np.array([0.0012]), np.array([1.0]))  # 6.7254
+		self.assertLess(loss1, 0.1)
+		self.assertGreater(loss2, 6)
+
 
 if __name__ == "__main__":
 	unittest.main()
