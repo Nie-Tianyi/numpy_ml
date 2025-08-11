@@ -59,5 +59,6 @@ class MachineLearningModel(ABC):
 
 	@staticmethod
 	def load(path: str):
+		"""从文件加载模型（使用 pickle 格式）"""
 		with open(path, "rb") as f:
 			return pickle.load(f)
