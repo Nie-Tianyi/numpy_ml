@@ -109,7 +109,7 @@ class Unittest(unittest.TestCase):
 		print(f"Bias: {model.bias[0]:.4f}")
 
 		# 绘制损失曲线
-		model.plot_loss_history()
+		model.plot_loss_history(label="Mean Square Error")
 		# 允许数值误差
 		self.assertAlmostEqual(res, 4.29, delta=0.5)
 
@@ -130,7 +130,7 @@ class Unittest(unittest.TestCase):
 		print(f"Weights: {model.weights}")
 		print(f"Bias: {model.bias[0]:.4f}")
 
-		model.plot_loss_history()
+		model.plot_loss_history(title="Loss History", label="Mean Square Error")
 
 		# 允许数值误差
 		self.assertAlmostEqual(

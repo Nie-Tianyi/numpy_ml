@@ -39,14 +39,14 @@ class MachineLearningModel(ABC):
 	def evaluate(self, x_test, y_test) -> float:
 		pass
 
-	def plot_loss_history(self, title="Training Loss History") -> None:
+	def plot_loss_history(self, title="Training Loss History", label="Loss") -> None:
 		"""
 		plot loss history
 		"""
 		seaborn.lineplot(self.loss_history)
 		plt.title(title)
 		plt.xlabel("Iteration")
-		plt.ylabel("Cross-Entropy Loss")
+		plt.ylabel(label)
 		plt.show()  # 绘制图形
 
 	def save(self, path: str) -> None:
