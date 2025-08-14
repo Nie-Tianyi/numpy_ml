@@ -4,10 +4,11 @@
 
 import unittest
 
+import numba
 import numpy as np
 from numpy.typing import NDArray
 
-
+@numba.njit(parallel=True, fastmath=True)
 def sigmoid(x):
 	"""
 	sigmoid function
@@ -30,7 +31,7 @@ def relu(x):
 	:param x: x
 	:return: ReLU(x)
 	"""
-	return max(0, x)
+	return np.max(0, x)
 
 
 class Unittest(unittest.TestCase):

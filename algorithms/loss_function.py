@@ -47,7 +47,6 @@ def sparse_cross_entropy_loss(y_pred, y_real):
 	"""
 	assert y_pred.shape == y_real.shape, "Unmatched shape between predicted value and real label"
 	# y_pred.shape = y.shape = (m, k)
-	# 数值稳定关键步骤：裁剪概率值范围
 	epsilon = 1e-8  # 防止log(0)
 	y_pred_clipped = np.clip(y_pred, epsilon, 1.0 - epsilon)
 
