@@ -156,7 +156,7 @@ class Unittest(unittest.TestCase):
 		x_train, x_test = x[:60000], x[60000:]
 		y_train, y_test = y[:60000], y[60000:]
 
-		model = PolynomialLogisticRegression(niter=10000, learning_rate=0.3, reg_param=0.01)
+		model = PolynomialLogisticRegression(niter=10000, learning_rate=0.2, reg_param=0.01)
 		model.fit(x_train, y_train)
 		model.plot_loss_history()
 

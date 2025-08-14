@@ -1,7 +1,9 @@
 import numpy as np
+import numba
 from numpy.typing import NDArray
 
 
+@numba.njit(parallel=True)
 def compute_gradient(
 	x: NDArray[np.float64], y_pred: NDArray[np.float64], y_real: NDArray[np.float64]
 ):
