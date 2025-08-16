@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from numpy.typing import NDArray
 from tqdm import tqdm
 
-from algorithms.activation_functions import softmax
+from algorithms.activation_functions import Softmax
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import sparse_cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
@@ -79,7 +79,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 			raise ValueError("Model has not been initialised yet")
 		# x.shape = (m, n) self.weights.shape = (n, K)
 		z = np.dot(x, self.weights) + self.bias
-		return softmax(z)
+		return Softmax.cal(z)
 
 	def predict(self, x):
 		poss = self.predict_possibility(x)

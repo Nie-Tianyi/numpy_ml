@@ -11,7 +11,7 @@ import numpy as np
 
 class ActivationFunction(ABC):
 	@staticmethod
-	def calculate(x):
+	def cal(x):
 		pass
 
 	@staticmethod
@@ -24,7 +24,7 @@ class Sigmoid(ActivationFunction):
 
 	@staticmethod
 	@numba.njit(parallel=True, fastmath=True)
-	def calculate(x):
+	def cal(x):
 		"""
 		:param x: x, a scalar or a matrix
 		:return: a scalar or a matrix
@@ -38,14 +38,14 @@ class Sigmoid(ActivationFunction):
 		:param x: shape (m, n) 的2D NDArray
 		:return:
 		"""
-		return Sigmoid.calculate(x)(1 - Sigmoid.calculate(x))
+		return Sigmoid.cal(x)(1 - Sigmoid.cal(x))
 
 
 class Softmax(ActivationFunction):
 	"""Softmax 函数"""
 
 	@staticmethod
-	def calculate(x):
+	def cal(x):
 		"""
 		:param x: 应该是一个2D NDArray，默认沿着axis=1做Softmax计算
 		:return:
@@ -63,7 +63,7 @@ class ReLU(ActivationFunction):
 	"""ReLU Rectified Linear Unit 激活函数"""
 
 	@staticmethod
-	def calculate(x):
+	def cal(x):
 		"""
 		:param x: x
 		:return: ReLU(x)
@@ -85,7 +85,7 @@ class Unittest(unittest.TestCase):
 		x = np.array([-1, -0.1, 0, 0.1, 1])
 		self.assertTrue(
 			np.allclose(
-				Sigmoid.calculate(x),
+				Sigmoid.cal(x),
 				np.array([0.26894142, 0.47502081, 0.5, 0.52497919, 0.73105858]),
 			)
 		)
@@ -93,13 +93,13 @@ class Unittest(unittest.TestCase):
 	def test_softmax(self):
 		x = np.array([[999, 1000, 1001]], dtype=np.float64)
 		self.assertTrue(
-			np.allclose(Softmax.calculate(x), np.array([[0.09003057, 0.24472847, 0.66524096]]))
+			np.allclose(Softmax.cal(x), np.array([[0.09003057, 0.24472847, 0.66524096]]))
 		)
 
 	def test_relu(self):
 		x = np.array([[-0.1, 1, 2], [1, -1, 0.4]], dtype=np.float64)
 		self.assertTrue(
-			np.allclose(ReLU.calculate(x), np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 0.4]]))
+			np.allclose(ReLU.cal(x), np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 0.4]]))
 		)
 		self.assertTrue(np.allclose(ReLU.gradient(x), np.array([[0, 1, 1], [1, 0, 1]])))
 

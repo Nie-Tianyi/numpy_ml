@@ -44,7 +44,7 @@ class LogisticRegressionModel(MachineLearningModel):
 		"""
 		assert x.shape[1] == self.weights.shape[0]
 
-		return Sigmoid.calculate(np.dot(x, self.weights) + self.bias)
+		return Sigmoid.cal(np.dot(x, self.weights) + self.bias)
 
 	def predict(self, x):
 		"""
