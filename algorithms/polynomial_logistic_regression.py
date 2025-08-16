@@ -79,7 +79,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 			raise ValueError("Model has not been initialised yet")
 		# x.shape = (m, n) self.weights.shape = (n, K)
 		z = np.dot(x, self.weights) + self.bias
-		return softmax(z, axis=1)
+		return softmax(z)
 
 	def predict(self, x):
 		poss = self.predict_possibility(x)

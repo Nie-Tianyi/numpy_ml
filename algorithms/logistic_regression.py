@@ -8,7 +8,7 @@ import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
 
-from algorithms.activation_functions import sigmoid
+from algorithms.activation_functions import Sigmoid
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
@@ -44,7 +44,7 @@ class LogisticRegressionModel(MachineLearningModel):
 		"""
 		assert x.shape[1] == self.weights.shape[0]
 
-		return sigmoid(np.dot(x, self.weights) + self.bias)
+		return Sigmoid.calculate(np.dot(x, self.weights) + self.bias)
 
 	def predict(self, x):
 		"""
