@@ -17,7 +17,7 @@ class ActivationFunction(ABC):
 
 	@staticmethod
 	@abstractmethod
-	def gradient(x):
+	def derivative(x):
 		pass
 
 
@@ -35,7 +35,7 @@ class Sigmoid(ActivationFunction):
 
 	@staticmethod
 	@numba.njit(parallel=True, fastmath=True)
-	def gradient(x):
+	def derivative(x):
 		"""
 		:param x: shape (m, n) 的2D NDArray
 		:return:
@@ -57,7 +57,7 @@ class Softmax(ActivationFunction):
 		return ex / ex.sum(axis=1, keepdims=True)
 
 	@staticmethod
-	def gradient(x):
+	def derivative(x):
 		pass
 
 
@@ -73,7 +73,7 @@ class ReLU(ActivationFunction):
 		return np.maximum(x, 0)
 
 	@staticmethod
-	def gradient(x):
+	def derivative(x):
 		"""
 		ReLU's derivatives
 		:param x: x, numpy array
@@ -101,7 +101,7 @@ class Unittest(unittest.TestCase):
 	def test_relu(self):
 		x = np.array([[-0.1, 1, 2], [1, -1, 0.4]], dtype=np.float64)
 		self.assertTrue(np.allclose(ReLU.cal(x), np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 0.4]])))
-		self.assertTrue(np.allclose(ReLU.gradient(x), np.array([[0, 1, 1], [1, 0, 1]])))
+		self.assertTrue(np.allclose(ReLU.derivative(x), np.array([[0, 1, 1], [1, 0, 1]])))
 
 
 if __name__ == "__main__":
