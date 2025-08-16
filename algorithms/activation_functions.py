@@ -32,7 +32,16 @@ def relu(x):
 	:param x: x
 	:return: ReLU(x)
 	"""
-	return np.max(0, x)
+	return np.maximum(x, 0)
+
+
+def relu_gradient(x):
+	"""
+	ReLU's derivatives
+	:param x: x, numpy array
+	:return: x <=0 => 0; x > 0 => 1
+	"""
+	return np.greater(x, 0).astype(int)
 
 
 class Unittest(unittest.TestCase):
@@ -51,6 +60,11 @@ class Unittest(unittest.TestCase):
 		self.assertTrue(
 			np.allclose(softmax(x, axis=1), np.array([[0.09003057, 0.24472847, 0.66524096]]))
 		)
+
+	def test_relu(self):
+		x = np.array([[-0.1, 1, 2], [1, -1, 0.4]], dtype=np.float64)
+		self.assertTrue(np.allclose(relu(x), np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 0.4]])))
+		self.assertTrue(np.allclose(relu_gradient(x), np.array([[0, 1, 1], [1, 0, 1]])))
 
 
 if __name__ == "__main__":
