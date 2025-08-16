@@ -8,6 +8,7 @@ import numba
 import numpy as np
 from numpy.typing import NDArray
 
+
 @numba.njit(parallel=True, fastmath=True)
 def sigmoid(x):
 	"""
