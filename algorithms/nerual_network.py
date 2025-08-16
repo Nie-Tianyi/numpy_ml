@@ -1,10 +1,61 @@
 import unittest
+from abc import ABC, abstractmethod
+from typing import List
 
 import numpy as np
 
-from algorithms.activation_functions import relu
+from algorithms.activation_functions import ReLU, ActivationFunction
 from algorithms.model_abstract import MachineLearningModel
 from algorithms.regularization import Regularization
+
+
+class NeuralNetworkLayer(ABC):
+	@abstractmethod
+	def forward(self, x):
+		pass
+
+	@abstractmethod
+	def backward(self, error):
+		pass
+
+
+class LinearLayer(NeuralNetworkLayer):
+	"""
+	线性层，默认使用ReLU作为激活函数
+	"""
+
+	def __init__(self, num, activation_function: ActivationFunction = ReLU):
+		self.num = num  # 神经元数量
+		self.activation_function = activation_function  # 激活函数，默认是ReLU
+		self.weights = None  # 权重，形状为 (num, dim)
+		self.bias = None  # 偏置，形状为 (num,)
+		self.z = None  # 线性输出，形状为 (m, num)，m是输入数据的长度
+		self.inputs = None  # 上一层的激活输出，这一层的输入，形状为 (m, num)
+
+	def _init_weights_and_bias(self, dim):
+		self.weights = np.random.randn(self.num, dim)
+		self.bias = np.zeros(self.num)
+
+	def forward(self, x):
+		"""
+		前向传播
+		:param x: 输入，形状为 (m, dim)
+		:return: 输出，形状为 (m, num)
+		"""
+		self.inputs = x
+		# weights.shape = (num, dim) x.shape = (m, dim)
+		self.z = np.dot(x, self.weights.T) + self.bias
+		# z.shape = (m, num)
+		a = self.activation_function.cal(self.z)
+		return a
+
+	def backward(self, error):
+		"""
+		反向传播：更新自己的权重，然后返回下一层的误差 delta
+		:param error: 这一层的误差，**不包括这一层激活函数的梯度**，形状为 (1, num)
+		:return: 下一层的误差，**同样也不包括下一层的激活函数的梯度**，形状为 (1, dim)
+		"""
+		pass
 
 
 class NeuralNetwork(MachineLearningModel):
@@ -14,7 +65,7 @@ class NeuralNetwork(MachineLearningModel):
 
 	def __init__(
 		self,
-		layers,
+		layers: List[NeuralNetworkLayer],
 		niter=1000,
 		learning_rate=0.1,
 		reg_param: float = 0.3,
@@ -31,34 +82,6 @@ class NeuralNetwork(MachineLearningModel):
 
 	def evaluate(self, x_test, y_test) -> float:
 		pass
-
-
-class LinearLayer:
-	"""
-	线性层，默认使用ReLU作为激活函数
-	"""
-
-	def __init__(self, num, activation_function=relu):
-		self.num = num  # 一个线性层
-		self.activation_function = activation_function  # 激活函数，默认是ReLU
-		self.weights = None
-		self.bias = None
-
-	def _init_weights_and_bias(self, dim):
-		self.weights = np.random.randn(self.num, dim)
-		self.bias = np.zeros(self.num)
-
-	def forward(self, x):
-		"""
-		前向传播
-		:param x: 输入，形状为 (m, dim)
-		:return: 输出，形状为 (m, num)
-		"""
-		# weights.shape = (num, dim) x.shape = (n, dim)
-		z = np.dot(x, self.weights.T) + self.bias
-		# z.shape = (n, num)
-		a = self.activation_function(z)
-		return a
 
 
 class Unittest(unittest.TestCase):
