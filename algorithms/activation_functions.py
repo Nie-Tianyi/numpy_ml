@@ -3,7 +3,7 @@
 """
 
 import unittest
-from abc import ABC
+from abc import ABC, abstractmethod
 
 import numba
 import numpy as np
@@ -11,10 +11,12 @@ import numpy as np
 
 class ActivationFunction(ABC):
 	@staticmethod
+	@abstractmethod
 	def cal(x):
 		pass
 
 	@staticmethod
+	@abstractmethod
 	def gradient(x):
 		pass
 
@@ -98,9 +100,7 @@ class Unittest(unittest.TestCase):
 
 	def test_relu(self):
 		x = np.array([[-0.1, 1, 2], [1, -1, 0.4]], dtype=np.float64)
-		self.assertTrue(
-			np.allclose(ReLU.cal(x), np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 0.4]]))
-		)
+		self.assertTrue(np.allclose(ReLU.cal(x), np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 0.4]])))
 		self.assertTrue(np.allclose(ReLU.gradient(x), np.array([[0, 1, 1], [1, 0, 1]])))
 
 
