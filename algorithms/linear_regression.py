@@ -26,7 +26,7 @@ class LinearRegressionModel(MachineLearningModel):
 		niter=1000,
 		learning_rate=0.01,
 		reg_param=0.3,
-		regularization: type[Regularization]= Ridge,
+		regularization: type[Regularization] = Ridge,
 	):
 		super().__init__(regularization, niter, learning_rate, reg_param)
 
@@ -90,7 +90,9 @@ class Unittest(unittest.TestCase):
 	def test_linear_model(self):
 		x, y = linear_data(data_size=10000, seed=777)
 
-		model = LinearRegressionModel(niter=100, learning_rate=0.1, reg_param=0.1, regularization=NoReg)
+		model = LinearRegressionModel(
+			niter=100, learning_rate=0.1, reg_param=0.1, regularization=NoReg
+		)
 		model.fit(x, y)
 
 		# 测试点需要是2D数组

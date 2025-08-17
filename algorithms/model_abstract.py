@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from numpy.typing import NDArray
 
-from algorithms.regularization import Regularization, Ridge
+from algorithms.regularization import Regularization
 import seaborn
 
 
