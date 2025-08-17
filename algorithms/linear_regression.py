@@ -11,7 +11,7 @@ from tqdm import tqdm
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import mean_square_error
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.regularization import Regularization, Ridge
+from algorithms.regularization import Regularization, Ridge, NoReg
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.test_data_gen import linear_data
 
@@ -26,7 +26,7 @@ class LinearRegressionModel(MachineLearningModel):
 		niter=1000,
 		learning_rate=0.01,
 		reg_param=0.3,
-		regularization: Regularization = Ridge,
+		regularization: type[Regularization]= Ridge,
 	):
 		super().__init__(regularization, niter, learning_rate, reg_param)
 
@@ -90,7 +90,7 @@ class Unittest(unittest.TestCase):
 	def test_linear_model(self):
 		x, y = linear_data(data_size=10000, seed=777)
 
-		model = LinearRegressionModel(niter=100, learning_rate=0.1, reg_param=0.1)
+		model = LinearRegressionModel(niter=100, learning_rate=0.1, reg_param=0.1, regularization=NoReg)
 		model.fit(x, y)
 
 		# 测试点需要是2D数组

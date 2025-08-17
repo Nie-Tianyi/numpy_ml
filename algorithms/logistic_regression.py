@@ -12,7 +12,7 @@ from algorithms.activation_functions import Sigmoid
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.regularization import Regularization, Ridge
+from algorithms.regularization import Regularization, Ridge, NoReg
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.test_data_gen import binary_data
 
@@ -27,7 +27,7 @@ class LogisticRegressionModel(MachineLearningModel):
 		niter: int = 1000,
 		learning_rate: float = 0.01,
 		reg_param: float = 0.3,
-		regularization=Ridge,
+		regularization: type[Regularization] = Ridge,
 		threshold=0.5,
 	):
 		super().__init__(regularization, niter, learning_rate, reg_param)
@@ -109,7 +109,9 @@ class Unittest(unittest.TestCase):
 
 		rescaled_x, scalar = z_score_normalisation(x)
 
-		model = LogisticRegressionModel(niter=5000, learning_rate=0.1, reg_param=0.01)
+		model = LogisticRegressionModel(
+			niter=5000, learning_rate=0.1, reg_param=0.01, regularization=NoReg
+		)
 		model.fit(rescaled_x, y)
 
 		# 使用没有缩放过的数据训练的模型，作为对比
