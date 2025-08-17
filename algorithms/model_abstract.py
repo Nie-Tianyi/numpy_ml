@@ -7,18 +7,12 @@ import numpy as np
 from matplotlib import pyplot as plt
 from numpy.typing import NDArray
 
-from algorithms.regularization import Regularization
+from algorithms.regularization import Regularization, Ridge
 import seaborn
 
 
 class MachineLearningModel(ABC):
-	def __init__(
-		self,
-		niter=1000,
-		learning_rate: float = 1,
-		reg_param=0.03,
-		regularization=Regularization.RIDGE,
-	):
+	def __init__(self, regularization, niter=1000, learning_rate: float = 1, reg_param=0.03):
 		self.weights: Optional[NDArray[np.float64]] = None
 		self.bias: Optional[NDArray[np.float64]] = None
 		self.niter: int = niter

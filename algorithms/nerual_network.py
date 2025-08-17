@@ -6,7 +6,7 @@ import numpy as np
 
 from algorithms.activation_functions import ReLU, ActivationFunction
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.regularization import Regularization
+from algorithms.regularization import Regularization, Ridge
 
 
 class NeuralNetworkLayer(ABC):
@@ -24,9 +24,17 @@ class LinearLayer(NeuralNetworkLayer):
 	线性层，默认使用ReLU作为激活函数
 	"""
 
-	def __init__(self, num, activation_function: ActivationFunction = ReLU):
+	def __init__(
+		self,
+		num,
+		activation_function: ActivationFunction = ReLU,
+		reg: Regularization = Ridge,
+		reg_params=0.1,
+	):
 		self.num = num  # 神经元数量
 		self.activation_function = activation_function  # 激活函数，默认是ReLU
+		self.reg = reg  # 正则化，默认是L2正则
+		self.lambda_ = reg_params  # 正则化超参数，默认0.1
 		self.weights = None  # 权重，形状为 (num, dim)
 		self.bias = None  # 偏置，形状为 (num,)
 		self.z = None  # 线性输出，形状为 (m, num)，m是输入数据的长度
@@ -55,7 +63,15 @@ class LinearLayer(NeuralNetworkLayer):
 		:param error: 这一层的误差，**不包括这一层激活函数的梯度**，形状为 (m, num)
 		:return: 下一层的误差，**同样也不包括下一层的激活函数的梯度**，形状为 (m, dim)
 		"""
-		pass
+		m = error.shape[0]
+		error = error * self.activation_function.derivative(self.z)  # error.shape = (m, num)
+		dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
+		dlt_b = (1 / m) * np.sum(error)  # dlt_b.shape = (num,)
+
+		dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
+
+		self.weights -= dlt_w
+		self.bias -= dlt_b
 
 
 class NeuralNetwork(MachineLearningModel):
@@ -69,9 +85,9 @@ class NeuralNetwork(MachineLearningModel):
 		niter=1000,
 		learning_rate=0.1,
 		reg_param: float = 0.3,
-		regularization=Regularization.RIDGE,
+		regularization=Ridge,
 	):
-		super().__init__(niter, learning_rate, reg_param, regularization)
+		super().__init__(regularization, niter, learning_rate, reg_param)
 		self.layers = layers
 
 	def fit(self, x, y):

@@ -13,7 +13,7 @@ from algorithms.model_abstract import MachineLearningModel
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.mnist import mnist
 from test_data_set.test_data_gen import binary_data
-from algorithms.regularization import Regularization, lasso, ridge, lasso_gradient, ridge_gradient
+from algorithms.regularization import Ridge
 
 
 class PolynomialLogisticRegression(MachineLearningModel):
@@ -28,9 +28,9 @@ class PolynomialLogisticRegression(MachineLearningModel):
 		niter=1000,
 		learning_rate: float = 1,
 		reg_param=0.03,
-		regularization=Regularization.RIDGE,
+		regularization=Ridge,
 	):
-		super().__init__(niter, learning_rate, reg_param, regularization)
+		super().__init__(regularization, niter, learning_rate, reg_param)
 		self.labels = None
 
 	def __init_weights_and_bias(self, dim: int, k: int):
@@ -54,15 +54,9 @@ class PolynomialLogisticRegression(MachineLearningModel):
 			# 计算记录损失
 			loss = sparse_cross_entropy_loss(y_pred, y)
 			(dlt_w, dlt_b) = compute_gradient(x, y_pred, y)
-			match self.reg:
-				case Regularization.LASSO:
-					loss += lasso(self.weights, self.lambda_, m)
-					dlt_w += lasso_gradient(self.weights, self.lambda_, m)
-				case Regularization.RIDGE:
-					loss += ridge(self.weights, self.lambda_, m)
-					dlt_w += ridge_gradient(self.weights, self.lambda_, m)
-				case Regularization.NO_REGULARIZATION:
-					pass
+
+			loss += self.reg.loss(self.weights, self.lambda_, m)
+			dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
 
 			self.loss_history.append(loss)
 			# 更新梯度

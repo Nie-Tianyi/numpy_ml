@@ -2,60 +2,58 @@
 Regularization terms
 """
 
-from enum import Enum
+from abc import ABC, abstractmethod
 
 import numpy as np
 
 
-class Regularization(Enum):
-	"""
-	Enum class for regularization terms
-	"""
+class Regularization(ABC):
+	"""正则化基类"""
 
-	NO_REGULARIZATION = 0
-	LASSO = 1
-	RIDGE = 2
+	@staticmethod
+	@abstractmethod
+	def loss(weights, rg_param, m):
+		"""计算正则化项带来的损失，返回一个标量"""
+		pass
 
-
-def lasso(weights, rg_param, m):
-	"""
-	L1 regularization term
-	:param weights: model weights
-	:param rg_param: hyperparameter
-	:param m: number of data
-	:return: loss brought by regularization
-	"""
-	return (rg_param / m) * np.sum(weights)
+	@staticmethod
+	@abstractmethod
+	def derivative(weights, rg_param, m):
+		"""计算正则化项带来的梯度，一般是一个跟 weights 形状相同的矩阵"""
+		pass
 
 
-def lasso_gradient(weights, rg_param, m):
-	"""
-	L1 regularization gradient term
-	:param weights: model weights
-	:param rg_param: hyperparameter
-	:param m: number of data
-	:return: gradients brought by regularization
-	"""
-	return (rg_param / m) * np.sign(weights)
+class NoReg(Regularization):
+	"""表示不适用任何正则化手段，用来占位"""
+
+	@staticmethod
+	def loss(weights, rg_param, m):
+		return 0
+
+	@staticmethod
+	def derivative(weights, rg_param, m):
+		return np.zeros_like(weights)
 
 
-def ridge(weights, rg_param, m):
-	"""
-	L2 regularization term
-	:param weights: model weights
-	:param rg_param: hyperparameter
-	:param m: amount of data
-	:return: loss brought by regularization
-	"""
-	return (rg_param / 2 / m) * np.sum(weights**2)
+class LASSO(Regularization):
+	"""L1 正则化项"""
+
+	@staticmethod
+	def loss(weights, rg_param, m):
+		return (rg_param / m) * np.sum(weights)
+
+	@staticmethod
+	def derivative(weights, rg_param, m):
+		return (rg_param / m) * np.sign(weights)
 
 
-def ridge_gradient(weights, rg_param, m):
-	"""
-	L2 regularization gradient term
-	:param weights: model weights
-	:param rg_param: hyperparameter
-	:param m: number of data
-	:return: gradients brought by regularization
-	"""
-	return (rg_param / m) * weights
+class Ridge(Regularization):
+	"""L2 正则化"""
+
+	@staticmethod
+	def loss(weights, rg_param, m):
+		return (rg_param / 2 / m) * np.sum(weights**2)
+
+	@staticmethod
+	def derivative(weights, rg_param, m):
+		return (rg_param / m) * weights

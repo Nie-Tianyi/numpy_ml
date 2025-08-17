@@ -12,7 +12,7 @@ from algorithms.activation_functions import Sigmoid
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.regularization import Regularization, lasso, ridge, lasso_gradient, ridge_gradient
+from algorithms.regularization import Regularization, Ridge
 from algorithms.normaliser import z_score_normalisation
 from test_data_set.test_data_gen import binary_data
 
@@ -27,10 +27,10 @@ class LogisticRegressionModel(MachineLearningModel):
 		niter: int = 1000,
 		learning_rate: float = 0.01,
 		reg_param: float = 0.3,
-		regularization=Regularization.RIDGE,
+		regularization=Ridge,
 		threshold=0.5,
 	):
-		super().__init__(niter, learning_rate, reg_param, regularization)
+		super().__init__(regularization, niter, learning_rate, reg_param)
 		self.threshold = threshold
 
 	def __init_weights_and_bias(self, dim: int):
@@ -93,15 +93,9 @@ class LogisticRegressionModel(MachineLearningModel):
 			# 计算记录损失
 			loss = cross_entropy_loss(y_hat, y)
 			(dlt_w, dlt_b) = compute_gradient(x, y_hat, y)
-			match self.reg:
-				case Regularization.LASSO:
-					loss += lasso(self.weights, self.lambda_, m)
-					dlt_w += lasso_gradient(self.weights, self.lambda_, m)
-				case Regularization.RIDGE:
-					loss += ridge(self.weights, self.lambda_, m)
-					dlt_w += ridge_gradient(self.weights, self.lambda_, m)
-				case Regularization.NO_REGULARIZATION:
-					pass
+
+			loss += self.reg.loss(self.weights, self.lambda_, m)
+			dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
 
 			self.loss_history.append(loss)
 			# 更新梯度
