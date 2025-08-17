@@ -2,17 +2,14 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
-from algorithms.activation_functions import ActivationFunction, ReLU
+from algorithms.activation_functions import ActivationFunction, ReLU, Sigmoid
 from algorithms.regularization import Regularization, Ridge
 
 
 # 定义trait
 class NeuralNetworkLayer(ABC):
-	@property
-	@abstractmethod
-	def num(self):
-		"""获取这一层神经网络有多少个神经元"""
-		pass
+	def __init__(self, num):
+		self.num = num
 
 	@abstractmethod
 	def init_weights_and_bias(self, dim):
@@ -42,7 +39,7 @@ class LinearLayer(NeuralNetworkLayer):
 		reg: type[Regularization] = Ridge,
 		reg_params=0.1,
 	):
-		self.num = num  # 神经元数量
+		super().__init__(num)
 		self.activation_function = activation_function  # 激活函数，默认是ReLU
 		self.reg = reg  # 正则化，默认是L2正则
 		self.lambda_ = reg_params  # 正则化超参数，默认0.1
@@ -51,12 +48,9 @@ class LinearLayer(NeuralNetworkLayer):
 		self.z = None  # 线性输出，形状为 (m, num)，m是输入数据的长度
 		self.inputs = None  # 上一层的激活输出，这一层的输入，形状为 (m, num)
 
-	def num(self):
-		return self.num
-
 	def init_weights_and_bias(self, dim):
-		self.weights = np.random.randn(self.num, dim)
-		self.bias = np.zeros(self.num)
+		self.weights = np.random.randn(super().num, dim)
+		self.bias = np.zeros(super().num)
 
 	def forward(self, x):
 		"""
@@ -81,6 +75,44 @@ class LinearLayer(NeuralNetworkLayer):
 		# 先把激活函数的梯度算上
 		error = error * self.activation_function.derivative(self.z)  # error.shape = (m, num)
 
+		# 计算下一层的error（要在更新参数之前）
+		prev_layer_error = np.dot(error, self.weights)
+
+		# 计算梯度 更新参数
+		dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
+		dlt_b = (1 / m) * np.sum(error)  # dlt_b.shape = (num,)
+		# 加上正则化带来的梯度
+		dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
+		# 更新参数
+		self.weights -= dlt_w
+		self.bias -= dlt_b
+
+		return prev_layer_error
+
+
+class SigmoidOutputLayer(LinearLayer):
+	def __init__(
+		self,
+		num=1,
+		activation_function: type[ActivationFunction] = Sigmoid,
+		reg: type[Regularization] = Ridge,
+		reg_params=0.1,
+	):
+		super().__init__(num, activation_function, reg, reg_params)
+
+	def init_weights_and_bias(self, dim):
+		super().init_weights_and_bias(dim)
+
+	def forward(self, x):
+		super().forward(x)
+
+	def backward(self, error):
+		"""
+		反向传播：更新自己的权重，然后返回下一层的误差 delta
+		:param error: y_hat - y
+		:return: 下一层的误差，**不包括下一层的激活函数的梯度**，形状为 (m, dim)
+		"""
+		m = error.shape[0]
 		# 计算下一层的error（要在更新参数之前）
 		prev_layer_error = np.dot(error, self.weights)
 
