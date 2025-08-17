@@ -28,7 +28,7 @@ class LinearLayer(NeuralNetworkLayer):
 		self,
 		num,
 		activation_function: ActivationFunction = ReLU,
-		reg: Regularization = Ridge,
+		reg: type[Regularization] = Ridge,
 		reg_params=0.1,
 	):
 		self.num = num  # 神经元数量
@@ -85,7 +85,7 @@ class NeuralNetwork(MachineLearningModel):
 		niter=1000,
 		learning_rate=0.1,
 		reg_param: float = 0.3,
-		regularization=Ridge,
+		regularization: type[Regularization] = Ridge,
 	):
 		super().__init__(regularization, niter, learning_rate, reg_param)
 		self.layers = layers
