@@ -52,8 +52,8 @@ class LinearLayer(NeuralNetworkLayer):
 	def backward(self, error):
 		"""
 		反向传播：更新自己的权重，然后返回下一层的误差 delta
-		:param error: 这一层的误差，**不包括这一层激活函数的梯度**，形状为 (1, num)
-		:return: 下一层的误差，**同样也不包括下一层的激活函数的梯度**，形状为 (1, dim)
+		:param error: 这一层的误差，**不包括这一层激活函数的梯度**，形状为 (m, num)
+		:return: 下一层的误差，**同样也不包括下一层的激活函数的梯度**，形状为 (m, dim)
 		"""
 		pass
 
