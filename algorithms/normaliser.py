@@ -38,7 +38,7 @@ def z_score_normalisation(x):
 	使用z-score Normalisation 重新缩放数据，返回缩放后的数据
 	如果数据的标准差为0，则不做任何缩放
 	:param x: 需要缩放的数据
-	:return: 返回缩放后的数据，以及一个缩放器，用于缩放验证数据
+	:return: 返回 (rescaled_x, scaler)缩放后的数据，以及一个缩放器，用于缩放验证数据
 	"""
 	scaler = ZScoreNormaliser(np.mean(x, axis=0), np.std(x, axis=0))
 	return scaler.rescale(x), scaler
