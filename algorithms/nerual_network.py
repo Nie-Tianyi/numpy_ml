@@ -64,14 +64,22 @@ class LinearLayer(NeuralNetworkLayer):
 		:return: 下一层的误差，**同样也不包括下一层的激活函数的梯度**，形状为 (m, dim)
 		"""
 		m = error.shape[0]
+		# 先把激活函数的梯度算上
 		error = error * self.activation_function.derivative(self.z)  # error.shape = (m, num)
+
+		# 计算下一层的error（要在更新参数之前）
+		prev_layer_error = np.dot(error, self.weights)
+
+		# 计算梯度 更新参数
 		dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
 		dlt_b = (1 / m) * np.sum(error)  # dlt_b.shape = (num,)
-
+		# 加上正则化带来的梯度
 		dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
-
+		# 更新参数
 		self.weights -= dlt_w
 		self.bias -= dlt_b
+
+		return prev_layer_error
 
 
 class NeuralNetwork(MachineLearningModel):
