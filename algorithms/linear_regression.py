@@ -70,11 +70,12 @@ class LinearRegressionModel(MachineLearningModel):
 		assert x.shape[1] == self.weights.shape[0]
 		return np.dot(x, self.weights) + self.bias
 
-	def evaluate(self, x_test, y_test) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
 		"""
 		评估模型，返回测试数据集上的 Mean Square Error
 		:param x_test: 测试数据x
 		:param y_test: 测试数据y
+		:param evaluation_method: 默认使用MSE
 		:return: 返回 MSE
 		"""
 		y_hat = self.predict(x_test)

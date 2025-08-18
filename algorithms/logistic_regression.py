@@ -55,9 +55,10 @@ class LogisticRegressionModel(MachineLearningModel):
 		y_hat = self.predict_possibility(x)
 		return (y_hat >= self.threshold).astype(float)
 
-	def evaluate(self, x_test, y_test) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
 		"""
 		评估模型性能，计算准确率
+		:param evaluation_method: 默认是 Accuracy
 		:param x_test: 测试特征
 		:param y_test: 测试标签（0/1）
 		:return: 准确率 (0.0-1.0)

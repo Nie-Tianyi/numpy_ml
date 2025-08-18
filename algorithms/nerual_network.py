@@ -59,7 +59,7 @@ class NeuralNetwork(MachineLearningModel):
 		for layer in reversed(self.layers):
 			error = layer.backward(error)
 
-	def evaluate(self, x_test, y_test) -> float:
+	def evaluate(self, x_test, y_test, evalution_method=None) -> float:
 		pass
 
 

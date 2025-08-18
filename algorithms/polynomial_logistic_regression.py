@@ -79,11 +79,12 @@ class PolynomialLogisticRegression(MachineLearningModel):
 		poss = self.predict_possibility(x)
 		return self.labels[np.argmax(poss, axis=1)]
 
-	def evaluate(self, x_test, y_test) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
 		"""
 		评估模型性能，计算准确率
 		:param x_test: 测试特征
 		:param y_test: 测试标签（0/1）
+		:param evaluation_method: 默认使用Accuracy作为评估模型的方式
 		:return: 准确率 (0.0-1.0)
 		"""
 		# 预测并计算准确率

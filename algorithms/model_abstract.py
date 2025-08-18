@@ -36,7 +36,13 @@ class MachineLearningModel(ABC):
 		pass
 
 	@abstractmethod
-	def evaluate(self, x_test, y_test) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
+		"""
+		用测试数据评估模型
+		:param x_test: 测试输入数据
+		:param y_test: 测试label
+		:param evaluation_method: 可选参数，默认是None，可以是
+		"""
 		pass
 
 	def plot_loss_history(self, title="Training Loss History", label="Loss") -> None:
