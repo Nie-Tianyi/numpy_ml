@@ -1,19 +1,20 @@
 import unittest
 from typing import Optional
+
 import numpy as np
 from matplotlib import pyplot as plt
-
 from numpy.typing import NDArray
 from tqdm import tqdm
 
 from algorithms.activation_functions import Softmax
+from algorithms.evaluation import Accuracy, EvaluationMethod
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import sparse_cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
 from algorithms.normaliser import z_score_normalisation
+from algorithms.regularization import Ridge
 from test_data_set.mnist import mnist
 from test_data_set.test_data_gen import binary_data
-from algorithms.regularization import Ridge
 
 
 class PolynomialLogisticRegression(MachineLearningModel):
@@ -79,7 +80,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 		poss = self.predict_possibility(x)
 		return self.labels[np.argmax(poss, axis=1)]
 
-	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy) -> float:
 		"""
 		评估模型性能，计算准确率
 		:param x_test: 测试特征
@@ -89,8 +90,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 		"""
 		# 预测并计算准确率
 		y_hat = self.predict(x_test)
-		accuracy = np.mean(y_hat == y_test)
-		return float(accuracy)
+		return evaluation_method.evaluate(y_test, y_hat)
 
 
 class Unittest(unittest.TestCase):

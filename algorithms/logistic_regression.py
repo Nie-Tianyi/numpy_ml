@@ -9,11 +9,12 @@ from numpy.typing import NDArray
 from tqdm import tqdm
 
 from algorithms.activation_functions import Sigmoid
+from algorithms.evaluation import Accuracy, EvaluationMethod
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.regularization import Regularization, Ridge, NoReg
 from algorithms.normaliser import z_score_normalisation
+from algorithms.regularization import NoReg, Regularization, Ridge
 from test_data_set.test_data_gen import binary_data
 
 
@@ -55,7 +56,7 @@ class LogisticRegressionModel(MachineLearningModel):
 		y_hat = self.predict_possibility(x)
 		return (y_hat >= self.threshold).astype(float)
 
-	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy) -> float:
 		"""
 		评估模型性能，计算准确率
 		:param evaluation_method: 默认是 Accuracy
@@ -68,10 +69,7 @@ class LogisticRegressionModel(MachineLearningModel):
 
 		# 预测并计算准确率
 		y_hat = self.predict(x_test)
-		res = (y_hat == y_test).astype(float)
-		accuracy = np.mean(res)
-
-		return float(accuracy)
+		return evaluation_method.evaluate(y_test, y_hat)
 
 	def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]) -> None:
 		"""

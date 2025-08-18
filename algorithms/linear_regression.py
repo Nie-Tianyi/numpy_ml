@@ -8,11 +8,12 @@ import numpy as np
 from numpy.typing import NDArray
 from tqdm import tqdm
 
+from algorithms.evaluation import EvaluationMethod, MeanSquaredError
 from algorithms.gradient_descent import compute_gradient
 from algorithms.loss_function import mean_square_error
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.regularization import Regularization, Ridge, NoReg
 from algorithms.normaliser import z_score_normalisation
+from algorithms.regularization import NoReg, Regularization, Ridge
 from test_data_set.test_data_gen import linear_data
 
 
@@ -70,7 +71,7 @@ class LinearRegressionModel(MachineLearningModel):
 		assert x.shape[1] == self.weights.shape[0]
 		return np.dot(x, self.weights) + self.bias
 
-	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod] = MeanSquaredError) -> float:
 		"""
 		评估模型，返回测试数据集上的 Mean Square Error
 		:param x_test: 测试数据x
@@ -79,7 +80,7 @@ class LinearRegressionModel(MachineLearningModel):
 		:return: 返回 MSE
 		"""
 		y_hat = self.predict(x_test)
-		return mean_square_error(y_hat, y_test)
+		return evaluation_method.evaluate(y_test, y_hat)
 
 	def __init_weights_and_bias(self, dim: int):
 		# 初始化权重和偏置

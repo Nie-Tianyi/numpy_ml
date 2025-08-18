@@ -1,14 +1,15 @@
 import os
 import pickle
 from abc import ABC, abstractmethod
-from typing import Optional, List
+from typing import List, Optional
 
 import numpy as np
+import seaborn
 from matplotlib import pyplot as plt
 from numpy.typing import NDArray
 
+from algorithms.evaluation import EvaluationMethod
 from algorithms.regularization import Regularization
-import seaborn
 
 
 class MachineLearningModel(ABC):
@@ -36,7 +37,7 @@ class MachineLearningModel(ABC):
 		pass
 
 	@abstractmethod
-	def evaluate(self, x_test, y_test, evaluation_method=None) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod]) -> float:
 		"""
 		用测试数据评估模型
 		:param x_test: 测试输入数据
