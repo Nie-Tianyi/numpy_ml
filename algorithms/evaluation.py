@@ -34,5 +34,4 @@ class MeanSquaredError(EvaluationMethod):
 class Accuracy(EvaluationMethod):
     @staticmethod
     def evaluate(y_hat, y):
-        y_hat = (y_hat >= 0.5).astype(int)
         return np.mean(y_hat == y)

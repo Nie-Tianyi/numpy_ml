@@ -47,6 +47,10 @@ class LogisticRegressionModel(MachineLearningModel):
 
         return Sigmoid.cal(np.dot(x, self.weights) + self.bias)
 
+    def predict_label(self, x):
+        y_hat = self.predict(x)
+        return (y_hat >= self.threshold).astype(float)
+
     def evaluate(
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy
     ) -> float:
@@ -58,8 +62,8 @@ class LogisticRegressionModel(MachineLearningModel):
         :return: 准确率 (0.0-1.0)
         """
         # 预测并计算准确率
-        y_hat = self.predict(x_test)
-        return evaluation_method.evaluate(y_test, y_hat)
+        y_hat = self.predict_label(x_test)
+        return evaluation_method.evaluate(y_hat, y_test)
 
     def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]) -> None:
         """

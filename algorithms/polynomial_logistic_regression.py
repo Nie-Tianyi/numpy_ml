@@ -92,7 +92,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
         """
         # 预测并计算准确率
         y_hat = self.predict_label(x_test)
-        return evaluation_method.evaluate(y_test, y_hat)
+        return evaluation_method.evaluate(y_hat, y_test)
 
 
 class Unittest(unittest.TestCase):
