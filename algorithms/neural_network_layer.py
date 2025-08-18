@@ -93,12 +93,10 @@ class LinearLayer(NeuralNetworkLayer):
 class SigmoidOutputLayer(LinearLayer):
     def __init__(
         self,
-        num=1,
-        activation_function: type[ActivationFunction] = Sigmoid,
         reg: type[Regularization] = Ridge,
         reg_params=0.1,
     ):
-        super().__init__(num, activation_function, reg, reg_params)
+        super().__init__(1, Sigmoid, reg, reg_params)
 
     def init_weights_and_bias(self, dim):
         super().init_weights_and_bias(dim)
