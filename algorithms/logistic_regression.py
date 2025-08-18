@@ -64,9 +64,6 @@ class LogisticRegressionModel(MachineLearningModel):
 		:param y_test: 测试标签（0/1）
 		:return: 准确率 (0.0-1.0)
 		"""
-		# 确保y_test是整数类型（避免浮点比较问题）
-		y_test = y_test.astype(int)
-
 		# 预测并计算准确率
 		y_hat = self.predict(x_test)
 		return evaluation_method.evaluate(y_test, y_hat)
