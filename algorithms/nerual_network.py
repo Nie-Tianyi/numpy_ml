@@ -6,7 +6,9 @@ from tqdm import tqdm
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
 from algorithms.neural_network_layer import NeuralNetworkLayer, LinearLayer, SigmoidOutputLayer
+from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Regularization, Ridge
+from test_data_set.test_data_gen import binary_data
 
 
 class NeuralNetwork(MachineLearningModel):
@@ -37,7 +39,7 @@ class NeuralNetwork(MachineLearningModel):
 		# 先初始化神经网络的参数
 		(m, dim) = x.shape
 		self.__init_weights_and_bias(dim)
-
+		y = y.reshape(-1, 1)
 		for _ in tqdm(range(self.niter)):
 			y_hat = self.forward_propagation(x)
 			self.backward_propagation(y_hat - y)
@@ -64,6 +66,11 @@ class Unittest(unittest.TestCase):
 		neural_network = NeuralNetwork(
 			[LinearLayer(4), LinearLayer(3), SigmoidOutputLayer()], loss_function=cross_entropy_loss
 		)
+
+		(x, y) = binary_data(data_size=10000, seed=78)
+		rescaled_x, scaler = z_score_normalisation(x)
+		neural_network.fit(rescaled_x, y)
+		neural_network.plot_loss_history()
 
 		self.assertEqual(1 + 1, 2)
 

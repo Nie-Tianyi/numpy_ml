@@ -35,6 +35,9 @@ def cross_entropy_loss(y_pred, y_true):
 	:param y_pred: predicted value, a scalar or a numpy array
 	:param y_true: true label value, a scalar or a numpy array
 	"""
+	# 添加数值稳定性处理，避免log(0)错误
+	epsilon = 1e-10
+	y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
 	return np.mean(-y_true * np.log(y_pred) - (1 - y_true) * np.log(1 - y_pred))
 
 

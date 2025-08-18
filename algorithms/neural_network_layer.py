@@ -49,8 +49,8 @@ class LinearLayer(NeuralNetworkLayer):
 		self.inputs = None  # 上一层的激活输出，这一层的输入，形状为 (m, num)
 
 	def init_weights_and_bias(self, dim):
-		self.weights = np.random.randn(super().num, dim)
-		self.bias = np.zeros(super().num)
+		self.weights = np.random.randn(self.num, dim)
+		self.bias = np.zeros(self.num)
 
 	def forward(self, x):
 		"""
@@ -104,7 +104,7 @@ class SigmoidOutputLayer(LinearLayer):
 		super().init_weights_and_bias(dim)
 
 	def forward(self, x):
-		super().forward(x)
+		return super().forward(x)
 
 	def backward(self, error):
 		"""
