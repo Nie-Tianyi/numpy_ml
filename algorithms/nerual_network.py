@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.neural_network_layer import NeuralNetworkLayer, LinearLayer, SigmoidOutputLayer
+from algorithms.neural_network_layer import LinearLayer, NeuralNetworkLayer, SigmoidOutputLayer
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.test_data_gen import binary_data
@@ -46,6 +46,8 @@ class NeuralNetwork(MachineLearningModel):
 			self.loss_history.append(self.loss_function(y_hat, y))
 
 	def predict(self, x):
+		if self.weights is None or self.bias is None:
+			raise ValueError("Model has not been initialized yet")
 		return self.forward_propagation(x)
 
 	def forward_propagation(self, x):
@@ -70,7 +72,7 @@ class Unittest(unittest.TestCase):
 		(x, y) = binary_data(data_size=10000, seed=78)
 		rescaled_x, scaler = z_score_normalisation(x)
 		neural_network.fit(rescaled_x, y)
-		neural_network.plot_loss_history()
+		neural_network.plot_loss_history(label="Cross Entropy Loss")
 
 		self.assertEqual(1 + 1, 2)
 
