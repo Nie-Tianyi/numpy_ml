@@ -32,6 +32,8 @@ class PolynomialLogisticRegression(MachineLearningModel):
         regularization=Ridge,
     ):
         super().__init__(regularization, niter, learning_rate, reg_param)
+        self.weights: Optional[NDArray[np.float64]] = None
+        self.bias: Optional[NDArray[np.float64]] = None
         self.labels = None
 
     def __init_weights_and_bias(self, dim: int, k: int):

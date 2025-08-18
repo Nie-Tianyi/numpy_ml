@@ -3,6 +3,7 @@ Fixed Linear Regression Model
 """
 
 import unittest
+from typing import Optional
 
 import numpy as np
 from numpy.typing import NDArray
@@ -30,6 +31,8 @@ class LinearRegressionModel(MachineLearningModel):
         regularization: type[Regularization] = Ridge,
     ):
         super().__init__(regularization, niter, learning_rate, reg_param)
+        self.weights: Optional[NDArray[np.float64]] = None
+        self.bias: Optional[NDArray[np.float64]] = None
 
     def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]):
         """

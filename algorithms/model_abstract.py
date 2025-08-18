@@ -1,12 +1,10 @@
 import os
 import pickle
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List
 
-import numpy as np
 import seaborn
 from matplotlib import pyplot as plt
-from numpy.typing import NDArray
 
 from algorithms.evaluation import EvaluationMethod
 from algorithms.regularization import Regularization
@@ -20,8 +18,6 @@ class MachineLearningModel(ABC):
         learning_rate: float = 1,
         reg_param=0.03,
     ):
-        self.weights: Optional[NDArray[np.float64]] = None
-        self.bias: Optional[NDArray[np.float64]] = None
         self.niter: int = niter
         self.lr: float = learning_rate
         self.lambda_: float = reg_param

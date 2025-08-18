@@ -3,6 +3,7 @@ logistic regression model
 """
 
 import unittest
+from typing import Optional
 
 import numpy as np
 from numpy.typing import NDArray
@@ -32,6 +33,8 @@ class LogisticRegressionModel(MachineLearningModel):
         threshold=0.5,
     ):
         super().__init__(regularization, niter, learning_rate, reg_param)
+        self.weights: Optional[NDArray[np.float64]] = None
+        self.bias: Optional[NDArray[np.float64]] = None
         self.threshold = threshold
 
     def __init_weights_and_bias(self, dim: int):
