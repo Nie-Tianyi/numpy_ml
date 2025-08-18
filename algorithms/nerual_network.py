@@ -1,6 +1,8 @@
 import unittest
+from abc import ABC
 from typing import List
 
+from overrides import overrides
 from tqdm import tqdm
 
 from algorithms.evaluation import Accuracy, EvaluationMethod
@@ -12,7 +14,7 @@ from algorithms.regularization import Regularization, Ridge
 from test_data_set.test_data_gen import binary_data
 
 
-class NeuralNetwork(MachineLearningModel):
+class NeuralNetwork(MachineLearningModel, ABC):
     """
     神经网络
     """
@@ -58,16 +60,37 @@ class NeuralNetwork(MachineLearningModel):
         for layer in reversed(self.layers):
             error = layer.backward(error)
 
-    def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod]) -> float:
+
+class BinaryClassificationNeuralNetwork(NeuralNetwork):
+    def evaluate(
+        self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy
+    ) -> float:
         y_hat = self.predict(x_test)
+        y_hat = (y_hat >= self.threshold).astype(int)
         return evaluation_method.evaluate(y_hat, y_test)
+
+    def __init__(
+        self,
+        threshold: float = 0.5,
+        niter=1000,
+        learning_rate=0.1,
+        reg_param: float = 0.3,
+        regularization: type[Regularization] = Ridge,
+    ):
+        super().__init__(
+            [LinearLayer(4), LinearLayer(3), SigmoidOutputLayer()],
+            cross_entropy_loss,
+            niter,
+            learning_rate,
+            reg_param,
+            regularization,
+        )
+        self.threshold = threshold
 
 
 class Unittest(unittest.TestCase):
     def test_neural_network(self):
-        neural_network = NeuralNetwork(
-            [LinearLayer(4), LinearLayer(3), SigmoidOutputLayer()], loss_function=cross_entropy_loss
-        )
+        neural_network = BinaryClassificationNeuralNetwork(threshold=0.5)
 
         (x, y) = binary_data(data_size=10000, seed=78)
         rescaled_x, scaler = z_score_normalisation(x)
@@ -76,7 +99,7 @@ class Unittest(unittest.TestCase):
 
         (test_x, test_y) = binary_data(data_size=1000, seed=79)
         rescaled_test_x = scaler.rescale(test_x)
-        acc = neural_network.evaluate(rescaled_test_x, test_y, evaluation_method=Accuracy)
+        acc = neural_network.evaluate(rescaled_test_x, test_y)
         print("Model Accuracy: ", acc)
 
         self.assertEqual(1 + 1, 2)
