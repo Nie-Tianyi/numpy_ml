@@ -45,8 +45,9 @@ class NeuralNetwork(MachineLearningModel, ABC):
         y = y.reshape(-1, 1)
         for _ in tqdm(range(self.niter)):
             y_hat = self.forward_propagation(x)
-            self.backward_propagation(y_hat - y)
-            self.loss_history.append(self.loss_function(y_hat, y))
+            reg_loss = self.backward_propagation(y_hat - y)
+            print(reg_loss)
+            self.loss_history.append(self.loss_function(y_hat, y) + reg_loss)
 
     def predict(self, x):
         return self.forward_propagation(x)
@@ -57,8 +58,11 @@ class NeuralNetwork(MachineLearningModel, ABC):
         return x
 
     def backward_propagation(self, error):
+        reg_loss = 0
         for layer in reversed(self.layers):
             error = layer.backward(error)
+            reg_loss += layer.reg_loss
+        return reg_loss
 
 
 class BinaryClassificationNeuralNetwork(NeuralNetwork):
@@ -78,7 +82,7 @@ class BinaryClassificationNeuralNetwork(NeuralNetwork):
         regularization: type[Regularization] = Ridge,
     ):
         super().__init__(
-            [LinearLayer(4), LinearLayer(3), SigmoidOutputLayer()],
+            [LinearLayer(4), LinearLayer(5), SigmoidOutputLayer()],
             cross_entropy_loss,
             niter,
             learning_rate,
@@ -90,7 +94,9 @@ class BinaryClassificationNeuralNetwork(NeuralNetwork):
 
 class Unittest(unittest.TestCase):
     def test_neural_network(self):
-        neural_network = BinaryClassificationNeuralNetwork(threshold=0.5)
+        neural_network = BinaryClassificationNeuralNetwork(
+            threshold=0.5, niter=1000, learning_rate=0.001
+        )
 
         (x, y) = binary_data(data_size=10000, seed=78)
         rescaled_x, scaler = z_score_normalisation(x)

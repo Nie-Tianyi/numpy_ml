@@ -10,6 +10,7 @@ from algorithms.regularization import Regularization, Ridge
 class NeuralNetworkLayer(ABC):
     def __init__(self, num):
         self.num = num
+        self.reg_loss = 0
 
     @abstractmethod
     def init_weights_and_bias(self, dim):
@@ -77,6 +78,7 @@ class LinearLayer(NeuralNetworkLayer):
 
         # 计算下一层的error（要在更新参数之前）
         prev_layer_error = np.dot(error, self.weights)
+        self.reg_loss = self.reg.loss(self.weights, self.lambda_, m)
 
         # 计算梯度 更新参数
         dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
