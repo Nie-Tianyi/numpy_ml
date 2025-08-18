@@ -50,7 +50,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 
 		self.__init_weights_and_bias(n, k)
 		for _ in tqdm(range(self.niter)):
-			y_pred = self.predict_possibility(x)
+			y_pred = self.predict(x)
 
 			# 计算记录损失
 			loss = sparse_cross_entropy_loss(y_pred, y)
@@ -64,7 +64,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 			self.weights -= self.lr * dlt_w
 			self.bias -= self.lr * dlt_b
 
-	def predict_possibility(self, x):
+	def predict(self, x):
 		"""
 		预测概率，返回一个softmax处理后的概率NDArray
 		:param x: 训练数据
@@ -76,11 +76,13 @@ class PolynomialLogisticRegression(MachineLearningModel):
 		z = np.dot(x, self.weights) + self.bias
 		return Softmax.cal(z)
 
-	def predict(self, x):
-		poss = self.predict_possibility(x)
+	def predict_label(self, x):
+		poss = self.predict(x)
 		return self.labels[np.argmax(poss, axis=1)]
 
-	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy) -> float:
+	def evaluate(
+		self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy
+	) -> float:
 		"""
 		评估模型性能，计算准确率
 		:param x_test: 测试特征
@@ -89,7 +91,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 		:return: 准确率 (0.0-1.0)
 		"""
 		# 预测并计算准确率
-		y_hat = self.predict(x_test)
+		y_hat = self.predict_label(x_test)
 		return evaluation_method.evaluate(y_test, y_hat)
 
 
@@ -102,7 +104,7 @@ class Unittest(unittest.TestCase):
 		model.fit(x, y)
 		# 测试数据
 		test_point = np.array([[1, 1]])
-		res = model.predict_possibility(test_point)
+		res = model.predict(test_point)
 		# 检验结果
 		model.plot_loss_history(label="Sparse Cross Entropy Loss")
 		self.assertGreaterEqual(res[0, 1], 0.9)  # 确保类别1的概率 > 90%
@@ -130,7 +132,7 @@ class Unittest(unittest.TestCase):
 		(test_x, test_y) = mnist(data_size=1, seed=138)
 		reshaped_test_x = reshape_x(test_x)
 		rescaled_test_x = scaler.rescale(reshaped_test_x)
-		y_hat = model.predict(rescaled_test_x)
+		y_hat = model.predict_label(rescaled_test_x)
 
 		plt.imshow(test_x[0], cmap="grey")
 		plt.title(f"Predicted Label: {y_hat[0]}, Real Label: {test_y[0]}")

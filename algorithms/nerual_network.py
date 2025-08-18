@@ -58,9 +58,9 @@ class NeuralNetwork(MachineLearningModel):
 		for layer in reversed(self.layers):
 			error = layer.backward(error)
 
-	def evaluate(self, x_test, y_test, evalution_method: type[EvaluationMethod]) -> float:
+	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod]) -> float:
 		y_hat = self.predict(x_test)
-		return evalution_method.evaluate(y_hat, y_test)
+		return evaluation_method.evaluate(y_hat, y_test)
 
 
 class Unittest(unittest.TestCase):
@@ -76,7 +76,7 @@ class Unittest(unittest.TestCase):
 
 		(test_x, test_y) = binary_data(data_size=1000, seed=79)
 		rescaled_test_x = scaler.rescale(test_x)
-		acc = neural_network.evaluate(rescaled_test_x, test_y, Accuracy)
+		acc = neural_network.evaluate(rescaled_test_x, test_y, evaluation_method=Accuracy)
 		print("Model Accuracy: ", acc)
 
 		self.assertEqual(1 + 1, 2)

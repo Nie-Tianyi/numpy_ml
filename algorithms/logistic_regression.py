@@ -38,7 +38,7 @@ class LogisticRegressionModel(MachineLearningModel):
 		self.weights = np.random.randn(dim)
 		self.bias = np.zeros(1)
 
-	def predict_possibility(self, x: NDArray[np.float64]) -> NDArray[np.float64]:
+	def predict(self, x: NDArray[np.float64]) -> NDArray[np.float64]:
 		"""
 		:params x: 需要预测的数据， shape应该是(m,n)
 		:returns: 返回模型预测值
@@ -47,16 +47,9 @@ class LogisticRegressionModel(MachineLearningModel):
 
 		return Sigmoid.cal(np.dot(x, self.weights) + self.bias)
 
-	def predict(self, x):
-		"""
-		预测数据，大于 self.threshold 的预测为1，其余为0
-		:param x: 需要预测的数据，最好是二维NDArray
-		:return: 返回一个一维的预测结果 0 或者是 1
-		"""
-		y_hat = self.predict_possibility(x)
-		return (y_hat >= self.threshold).astype(float)
-
-	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy) -> float:
+	def evaluate(
+		self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy
+	) -> float:
 		"""
 		评估模型性能，计算准确率
 		:param evaluation_method: 默认是 Accuracy
@@ -84,7 +77,7 @@ class LogisticRegressionModel(MachineLearningModel):
 		)
 
 		for _ in tqdm(range(self.niter)):
-			y_hat = self.predict_possibility(x)
+			y_hat = self.predict(x)
 
 			# 计算记录损失
 			loss = cross_entropy_loss(y_hat, y)
@@ -116,7 +109,7 @@ class Unittest(unittest.TestCase):
 
 		# 处于 x_1 + x_2 = 1 右边的点预测结果应该大于0.5，并且离决策边际越远，预测结果越接近于1
 		test_point = np.array([[1, 1]])
-		res = model.predict_possibility(scalar.rescale(test_point))[0]
+		res = model.predict(scalar.rescale(test_point))[0]
 		print("\nFinal Results:")
 		print(f"Predicted: {res:.4f}")  # 0.9967，有99.67%的概率这个点是1
 		print(f"Weights: {model.weights}")

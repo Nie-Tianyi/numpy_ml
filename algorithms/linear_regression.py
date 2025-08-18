@@ -71,7 +71,9 @@ class LinearRegressionModel(MachineLearningModel):
 		assert x.shape[1] == self.weights.shape[0]
 		return np.dot(x, self.weights) + self.bias
 
-	def evaluate(self, x_test, y_test, evaluation_method: type[EvaluationMethod] = MeanSquaredError) -> float:
+	def evaluate(
+		self, x_test, y_test, evaluation_method: type[EvaluationMethod] = MeanSquaredError
+	) -> float:
 		"""
 		评估模型，返回测试数据集上的 Mean Square Error
 		:param x_test: 测试数据x
