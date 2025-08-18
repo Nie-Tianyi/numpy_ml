@@ -17,7 +17,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "ruff>=0.12.8",
+    "ruff>=0.12.9",
 ]
 
 [tool.ruff]
@@ -25,5 +25,4 @@ line-length = 100
 
 [tool.ruff.format]
 quote-style = "double"
-indent-style = "tab"
 docstring-code-format = true

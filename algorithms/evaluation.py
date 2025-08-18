@@ -10,28 +10,29 @@ from algorithms.loss_function import mean_square_error
 
 
 class EvaluationMethod(ABC):
-	"""
-	评估模型的方法
-	"""
+    """
+    评估模型的方法
+    """
 
-	@staticmethod
-	@abstractmethod
-	def evaluate(y_hat, y):
-		"""
-		评估模型
-		:param y_hat: 模型预测值
-		:param y: 实际标签
-		"""
-		pass
+    @staticmethod
+    @abstractmethod
+    def evaluate(y_hat, y):
+        """
+        评估模型
+        :param y_hat: 模型预测值
+        :param y: 实际标签
+        """
+        pass
 
 
 class MeanSquaredError(EvaluationMethod):
-	@staticmethod
-	def evaluate(y_hat, y):
-		return mean_square_error(y_hat, y)
+    @staticmethod
+    def evaluate(y_hat, y):
+        return mean_square_error(y_hat, y)
 
 
 class Accuracy(EvaluationMethod):
-	@staticmethod
-	def evaluate(y_hat, y):
-		return np.mean(y_hat == y)
+    @staticmethod
+    def evaluate(y_hat, y):
+        y_hat = (y_hat >= 0.5).astype(int)
+        return np.mean(y_hat == y)
