@@ -13,15 +13,6 @@ from algorithms.regularization import Regularization, Ridge
 from test_data_set.test_data_gen import binary_data
 
 
-class SigmoidOutputLayer(LinearLayer):
-    def __init__(
-        self,
-        reg: type[Regularization] = Ridge,
-        reg_params=0.1,
-    ):
-        super().__init__(1, Sigmoid, reg, reg_params)
-
-
 class BinaryClassificationNeuralNetwork(NeuralNetwork):
     def evaluate(
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy
@@ -42,8 +33,8 @@ class BinaryClassificationNeuralNetwork(NeuralNetwork):
         if layers is None:
             layers = [
                 LinearLayer(4, activation_function=ReLU),
-                LinearLayer(5, activation_function=ReLU),
-                SigmoidOutputLayer(),
+                LinearLayer(2, activation_function=ReLU),
+                LinearLayer(1, activation_function=Sigmoid),
             ]
 
         super().__init__(
@@ -82,7 +73,9 @@ class Unittest(unittest.TestCase):
             "Neural Network Model's Accuracy:", acc_nn
         )  # 神经网络的Accuracy反而比Logistic Model少一点，可能有点过拟合
         print("Logistic Model's Accuracy:", acc_logs)
-        print("Neural Network Final Loss:", neural_network.loss_history[-1]) # 神经网络Final Loss少点
+        print(
+            "Neural Network Final Loss:", neural_network.loss_history[-1]
+        )  # 神经网络Final Loss少点
         print("Logistic Model Final Loss:", logistic_model.loss_history[-1])
         print("---------------------------------------------------")
         print("Test Point (1,1) predicted result should be close to 1")
