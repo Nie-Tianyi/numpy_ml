@@ -26,7 +26,10 @@ def mean_square_error(y_pred, y_true):
     :param y_true: real label value, a scalar or a numpy array
     :return: MSE loss
     """
-    return 0.5 * np.mean((y_pred - y_true) ** 2)
+    diff = y_pred - y_true
+    # 分解平方计算防止溢出
+    safe_diff = np.clip(diff, -1e4, 1e4) # 限制差值范围
+    return 0.5 * np.mean(safe_diff * diff)  # 使用分解后的安全值计算
 
 
 def cross_entropy_loss(y_pred, y_true):
