@@ -18,6 +18,6 @@ class NeuralNetworkLayer(ABC):
         pass
 
     @abstractmethod
-    def backward(self, error):
+    def backward(self, error, no_activation=False):
         """反向传播，跟新参数"""
         pass

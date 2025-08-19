@@ -50,9 +50,12 @@ class NeuralNetwork(MachineLearningModel, ABC):
             x = layer.forward(x)
         return x
 
-    def backward_propagation(self, error):
-        reg_loss = 0
+    def backward_propagation(self, error) -> float:
+        reg_loss = 0  # 记录每一层的正则化项带来的损失
         for layer in reversed(self.layers):
-            error = layer.backward(error)
+            if layer is self.layers[-1]:
+                error = layer.backward(error, no_activation=True)
+            else:
+                error = layer.backward(error)
             reg_loss += layer.reg_loss
         return reg_loss
