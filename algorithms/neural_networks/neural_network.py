@@ -53,6 +53,7 @@ class NeuralNetwork(MachineLearningModel, ABC):
     def backward_propagation(self, error) -> float:
         reg_loss = 0  # 记录每一层的正则化项带来的损失
         for layer in reversed(self.layers):
+            # 最后一层神经网络不计算激活函数的梯度，因为error里面已经包含了
             if layer is self.layers[-1]:
                 error = layer.backward(error, no_activation=True)
             else:

@@ -43,15 +43,17 @@ class LinearLayer(NeuralNetworkLayer):
         a = self.activation_function.cal(self.z)
         return a
 
-    def backward(self, error):
+    def backward(self, error, no_activation=False):
         """
         反向传播：更新自己的权重，然后返回下一层的误差 delta
         :param error: 这一层的误差，**不包括这一层激活函数的梯度**，形状为 (m, num)
         :return: 下一层的误差，**同样也不包括下一层的激活函数的梯度**，形状为 (m, dim)
+        :param no_activation: 时候计算激活函数的梯度，默认计算。
         """
         m = error.shape[0]
         # 先把激活函数的梯度算上
-        error = error * self.activation_function.derivative(self.z)  # error.shape = (m, num)
+        if not no_activation:
+            error = error * self.activation_function.derivative(self.z)  # error.shape = (m, num)
 
         # 计算下一层的error（要在更新参数之前）
         prev_layer_error = np.dot(error, self.weights)
