@@ -106,10 +106,10 @@ class Unittest(unittest.TestCase):
         acc_nn = neural_network.evaluate(rescaled_test_x, test_y)
         acc_logs = logistic_model.evaluate(rescaled_test_x, test_y)
         print(
-            "Neural Network Model's Accuracy: ", acc_nn
+            "Neural Network Model's Accuracy:", acc_nn
         )  # 神经网络的Accuracy反而比Logistic Model少一点，可能有点过拟合
         print("Logistic Model's Accuracy:", acc_logs)
-        print("Neural Network Final Loss:", neural_network.loss_history[-1])
+        print("Neural Network Final Loss:", neural_network.loss_history[-1]) # 神经网络Final Loss少点
         print("Logistic Model Final Loss:", logistic_model.loss_history[-1])
         print("---------------------------------------------------")
         print("Test Point (1,1) predicted result should be close to 1")
