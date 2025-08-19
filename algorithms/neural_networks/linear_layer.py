@@ -1,7 +1,7 @@
 import numpy as np
 
 from algorithms.activation_functions import ActivationFunction, ReLU
-from algorithms.neural_networks.neural_network_layer import NeuralNetworkLayer
+from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayer
 from algorithms.regularization import Regularization, Ridge
 
 

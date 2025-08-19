@@ -7,7 +7,7 @@ from algorithms.evaluation import EvaluationMethod, Accuracy
 from algorithms.logistic_regression import LogisticRegressionModel
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.neural_networks.linear_layer import LinearLayer
-from algorithms.neural_networks.nerual_network import NeuralNetwork
+from algorithms.neural_networks.neural_network import NeuralNetwork
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.test_data_gen import binary_data

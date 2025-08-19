@@ -4,13 +4,13 @@ from typing import List
 from tqdm import tqdm
 
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.neural_networks.neural_network_layer import NeuralNetworkLayer
+from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayer
 from algorithms.regularization import Regularization, Ridge
 
 
 class NeuralNetwork(MachineLearningModel, ABC):
     """
-    神经网络
+    neural network base model, any other neural network inherit from this base model
     """
 
     def __init__(
