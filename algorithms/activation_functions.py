@@ -21,6 +21,18 @@ class ActivationFunction(ABC):
         pass
 
 
+class LinearUnit(ActivationFunction):
+    """y=x，相当于没有任何激活函数"""
+
+    @staticmethod
+    def cal(x):
+        return x
+
+    @staticmethod
+    def derivative(x):
+        return 1
+
+
 class Sigmoid(ActivationFunction):
     """Sigmoid 函数"""
 
