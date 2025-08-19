@@ -1,31 +1,8 @@
-from abc import ABC, abstractmethod
-
 import numpy as np
 
-from algorithms.activation_functions import ActivationFunction, ReLU, Sigmoid
+from algorithms.activation_functions import ActivationFunction, ReLU
+from algorithms.neural_networks.neural_network_layer import NeuralNetworkLayer
 from algorithms.regularization import Regularization, Ridge
-
-
-# 定义trait
-class NeuralNetworkLayer(ABC):
-    def __init__(self, num):
-        self.num = num
-        self.reg_loss = 0
-
-    @abstractmethod
-    def init_weights_and_bias(self, dim):
-        """初始化这一层的参数"""
-        pass
-
-    @abstractmethod
-    def forward(self, x):
-        """前向传播"""
-        pass
-
-    @abstractmethod
-    def backward(self, error):
-        """反向传播，跟新参数"""
-        pass
 
 
 class LinearLayer(NeuralNetworkLayer):
@@ -79,42 +56,6 @@ class LinearLayer(NeuralNetworkLayer):
         # 计算下一层的error（要在更新参数之前）
         prev_layer_error = np.dot(error, self.weights)
         self.reg_loss = self.reg.loss(self.weights, self.lambda_, m)
-
-        # 计算梯度 更新参数
-        dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
-        dlt_b = (1 / m) * np.sum(error)  # dlt_b.shape = (num,)
-        # 加上正则化带来的梯度
-        dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
-        # 更新参数
-        self.weights -= dlt_w
-        self.bias -= dlt_b
-
-        return prev_layer_error
-
-
-class SigmoidOutputLayer(LinearLayer):
-    def __init__(
-        self,
-        reg: type[Regularization] = Ridge,
-        reg_params=0.1,
-    ):
-        super().__init__(1, Sigmoid, reg, reg_params)
-
-    def init_weights_and_bias(self, dim):
-        super().init_weights_and_bias(dim)
-
-    def forward(self, x):
-        return super().forward(x)
-
-    def backward(self, error):
-        """
-        反向传播：更新自己的权重，然后返回下一层的误差 delta
-        :param error: y_hat - y
-        :return: 下一层的误差，**不包括下一层的激活函数的梯度**，形状为 (m, dim)
-        """
-        m = error.shape[0]
-        # 计算下一层的error（要在更新参数之前）
-        prev_layer_error = np.dot(error, self.weights)
 
         # 计算梯度 更新参数
         dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)

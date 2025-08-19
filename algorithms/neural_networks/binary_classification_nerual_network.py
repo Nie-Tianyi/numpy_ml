@@ -1,68 +1,52 @@
 import unittest
-from abc import ABC
-from typing import List
 
 import numpy as np
-from tqdm import tqdm
 
-from algorithms.evaluation import Accuracy, EvaluationMethod
+from algorithms.activation_functions import ReLU, Sigmoid
+from algorithms.evaluation import EvaluationMethod, Accuracy
 from algorithms.logistic_regression import LogisticRegressionModel
 from algorithms.loss_function import cross_entropy_loss
-from algorithms.model_abstract import MachineLearningModel
-from algorithms.neural_network_layer import LinearLayer, NeuralNetworkLayer, SigmoidOutputLayer
+from algorithms.neural_networks.linear_layer import LinearLayer
+from algorithms.neural_networks.nerual_network import NeuralNetwork
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.test_data_gen import binary_data
 
 
-class NeuralNetwork(MachineLearningModel, ABC):
-    """
-    神经网络
-    """
-
+class SigmoidOutputLayer(LinearLayer):
     def __init__(
         self,
-        layers: List[NeuralNetworkLayer],
-        loss_function,
-        niter=1000,
-        learning_rate=0.1,
-        reg_param: float = 0.3,
-        regularization: type[Regularization] = Ridge,
+        reg: type[Regularization] = Ridge,
+        reg_params=0.1,
     ):
-        super().__init__(regularization, niter, learning_rate, reg_param)
-        self.layers = layers
-        self.loss_function = loss_function
+        super().__init__(1, Sigmoid, reg, reg_params)
 
-    def __init_weights_and_bias(self, dim):
-        # 逐层初始化权重和bias
-        for layer in self.layers:
-            layer.init_weights_and_bias(dim)
-            dim = layer.num
+    def init_weights_and_bias(self, dim):
+        super().init_weights_and_bias(dim)
 
-    def fit(self, x, y):
-        # 先初始化神经网络的参数
-        (m, dim) = x.shape
-        self.__init_weights_and_bias(dim)
-        y = y.reshape(-1, 1)
-        for _ in tqdm(range(self.niter)):
-            y_hat = self.forward_propagation(x)
-            reg_loss = self.backward_propagation(y_hat - y)
-            self.loss_history.append(self.loss_function(y_hat, y) + reg_loss)
+    def forward(self, x):
+        return super().forward(x)
 
-    def predict(self, x):
-        return self.forward_propagation(x)
+    def backward(self, error):
+        """
+        跟普通LinearLayer唯一不同的是，这个不计算激活函数的梯度，因为error里面已经计算过了
+        :param error: y_hat - y
+        :return: 下一层的误差，**不包括下一层的激活函数的梯度**，形状为 (m, dim)
+        """
+        m = error.shape[0]
+        # 计算下一层的error（要在更新参数之前）
+        prev_layer_error = np.dot(error, self.weights)
 
-    def forward_propagation(self, x):
-        for layer in self.layers:
-            x = layer.forward(x)
-        return x
+        # 计算梯度 更新参数
+        dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
+        dlt_b = (1 / m) * np.sum(error)  # dlt_b.shape = (num,)
+        # 加上正则化带来的梯度
+        dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
+        # 更新参数
+        self.weights -= dlt_w
+        self.bias -= dlt_b
 
-    def backward_propagation(self, error):
-        reg_loss = 0
-        for layer in reversed(self.layers):
-            error = layer.backward(error)
-            reg_loss += layer.reg_loss
-        return reg_loss
+        return prev_layer_error
 
 
 class BinaryClassificationNeuralNetwork(NeuralNetwork):
@@ -83,7 +67,11 @@ class BinaryClassificationNeuralNetwork(NeuralNetwork):
         regularization: type[Regularization] = Ridge,
     ):
         if layers is None:
-            layers = [LinearLayer(4), LinearLayer(5), SigmoidOutputLayer()]
+            layers = [
+                LinearLayer(4, activation_function=ReLU),
+                LinearLayer(5, activation_function=ReLU),
+                SigmoidOutputLayer(),
+            ]
 
         super().__init__(
             layers,
