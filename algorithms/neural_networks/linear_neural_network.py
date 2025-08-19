@@ -47,8 +47,12 @@ class Unittest(unittest.TestCase):
         neural_network.fit(x, y)
         linear_model.fit(x, y)
 
-        neural_network.plot_loss_history(title="Neural Network's Loss History", label="Mean Square Error")
-        linear_model.plot_loss_history(title="Linear Regression Model' Loss History", label="Mean Square Error")
+        neural_network.plot_loss_history(
+            title="Neural Network's Loss History", label="Mean Square Error"
+        )
+        linear_model.plot_loss_history(
+            title="Linear Regression Model' Loss History", label="Mean Square Error"
+        )
 
         test_x, test_y = linear_data(data_size=1000, seed=123)
         mse_nn = neural_network.evaluate(test_x, test_y)

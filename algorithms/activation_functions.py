@@ -115,6 +115,15 @@ class Unittest(unittest.TestCase):
         self.assertTrue(np.allclose(ReLU.cal(x), np.array([[0.0, 1.0, 2.0], [1.0, 0.0, 0.4]])))
         self.assertTrue(np.allclose(ReLU.derivative(x), np.array([[0, 1, 1], [1, 0, 1]])))
 
+    def test_linear_unit(self):
+        x = np.array([[1, 2, 3], [-1, 2, -4]], dtype=np.float64)
+        self.assertTrue(np.allclose(LinearUnit.cal(x), x))
+        self.assertTrue(
+            np.allclose(
+                LinearUnit.derivative(x), np.array([[1, 1, 1], [1, 1, 1]], dtype=np.float64)
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
