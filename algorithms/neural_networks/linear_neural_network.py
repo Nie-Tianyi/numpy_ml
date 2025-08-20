@@ -39,10 +39,10 @@ class LinearNeuralNetwork(NeuralNetworkBaseModel):
 
 class Unittest(unittest.TestCase):
     def test_linear_neural_network(self):
-        x, y = linear_data(data_size=10000, seed=78)
+        x, y = linear_data(data_size=100000, seed=78)
 
-        neural_network = LinearNeuralNetwork(learning_rate=0.01)
-        linear_model = LinearRegressionModel()  # benchmark
+        neural_network = LinearNeuralNetwork(niter=3000, learning_rate=0.001)
+        linear_model = LinearRegressionModel(niter=3000, learning_rate=0.001)  # benchmark
 
         neural_network.fit(x, y)
         linear_model.fit(x, y)
