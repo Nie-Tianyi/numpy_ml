@@ -42,17 +42,20 @@ class FCLinearLayer(NeuralNetworkLayerAbstract):
         a = self.activation_function.cal(self.z)
         return a
 
-    def backward(self, error, no_activation=False):
+    def backward(self, error, learning_rate, no_activation=False):
         """
         反向传播：更新自己的权重，然后返回下一层的误差 delta
         :param error: 这一层的误差，**不包括这一层激活函数的梯度**，形状为 (m, num)
         :return: 下一层的误差，**同样也不包括下一层的激活函数的梯度**，形状为 (m, dim)
         :param no_activation: 时候计算激活函数的梯度，默认计算。
+        :param learning_rate: 学习率
         """
         m = error.shape[0]
         # 先把激活函数的梯度算上
+        # print("before activation gradient:", error) # 梯度爆炸
         if not no_activation:
             error = error * self.activation_function.derivative(self.z)  # error.shape = (m, num)
+        # print("after:", error)
 
         # 计算下一层的error（要在更新参数之前）
         prev_layer_error = np.dot(error, self.weights)
@@ -63,8 +66,9 @@ class FCLinearLayer(NeuralNetworkLayerAbstract):
         dlt_b = (1 / m) * np.sum(error)  # dlt_b.shape = (num,)
         # 加上正则化带来的梯度
         dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
+
         # 更新参数
-        self.weights -= dlt_w
-        self.bias -= dlt_b
+        self.weights -= learning_rate * dlt_w
+        self.bias -= learning_rate * dlt_b
 
         return prev_layer_error

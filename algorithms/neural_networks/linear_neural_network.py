@@ -2,7 +2,7 @@ import unittest
 from typing import List
 
 
-from algorithms.activation_functions import LinearUnit, ReLU
+from algorithms.activation_functions import LinearUnit
 from algorithms.evaluation import EvaluationMethod, MeanSquaredError
 from algorithms.linear_regression import LinearRegressionModel
 from algorithms.loss_function import mean_square_error
@@ -41,7 +41,7 @@ class Unittest(unittest.TestCase):
     def test_linear_neural_network(self):
         x, y = linear_data(data_size=10000, seed=78)
 
-        neural_network = LinearNeuralNetwork(learning_rate=0.0000001)
+        neural_network = LinearNeuralNetwork(learning_rate=0.01)
         linear_model = LinearRegressionModel()  # benchmark
 
         neural_network.fit(x, y)

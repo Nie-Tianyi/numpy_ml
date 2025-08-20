@@ -51,10 +51,10 @@ class BinaryClassificationNeuralNetwork(NeuralNetworkBaseModel):
 class Unittest(unittest.TestCase):
     def test_neural_network(self):
         neural_network = BinaryClassificationNeuralNetwork(
-            threshold=0.5, niter=2000, learning_rate=0.01
+            threshold=0.5, niter=2000, learning_rate=0.2
         )
         logistic_model = LogisticRegressionModel(
-            threshold=0.5, niter=2000, learning_rate=0.01
+            threshold=0.5, niter=2000, learning_rate=0.1
         )  # benchmark
 
         (x, y) = binary_data(data_size=10000, seed=78)
