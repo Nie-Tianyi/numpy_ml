@@ -2,10 +2,12 @@ from abc import ABC, abstractmethod
 
 
 # 定义trait
-class NeuralNetworkLayer(ABC):
+class NeuralNetworkLayerAbstract(ABC):
     def __init__(self, num):
         self.num = num
         self.reg_loss = 0
+        self.weights = None
+        self.bias = None
 
     @abstractmethod
     def init_weights_and_bias(self, dim):

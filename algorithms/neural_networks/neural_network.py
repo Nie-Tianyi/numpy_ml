@@ -4,18 +4,19 @@ from typing import List
 from tqdm import tqdm
 
 from algorithms.model_abstract import MachineLearningModel
-from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayer
+from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
 from algorithms.regularization import Regularization, Ridge
 
 
-class NeuralNetwork(MachineLearningModel, ABC):
+class NeuralNetworkBaseModel(MachineLearningModel, ABC):
     """
-    neural network base model, any other neural network inherit from this base model
+    神经网络基础模型，任何其他模型继承自这个基础模型
+    继承这个模型至少需要自己实现 __init__() 以及 evaluate()
     """
 
     def __init__(
         self,
-        layers: List[NeuralNetworkLayer],
+        layers: List[NeuralNetworkLayerAbstract],
         loss_function,
         niter=1000,
         learning_rate=0.1,
@@ -60,3 +61,11 @@ class NeuralNetwork(MachineLearningModel, ABC):
                 error = layer.backward(error)
             reg_loss += layer.reg_loss
         return reg_loss
+
+    @property
+    def weights(self):
+        return [layer.weights for layer in self.layers]
+
+    @property
+    def biases(self):
+        return [layer.bias for layer in self.layers]

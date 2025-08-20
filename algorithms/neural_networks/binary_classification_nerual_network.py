@@ -6,14 +6,14 @@ from algorithms.activation_functions import ReLU, Sigmoid
 from algorithms.evaluation import EvaluationMethod, Accuracy
 from algorithms.logistic_regression import LogisticRegressionModel
 from algorithms.loss_function import cross_entropy_loss
-from algorithms.neural_networks.linear_layer import LinearLayer
-from algorithms.neural_networks.neural_network import NeuralNetwork
+from algorithms.neural_networks.linear_layer import FCLinearLayer
+from algorithms.neural_networks.neural_network import NeuralNetworkBaseModel
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.test_data_gen import binary_data
 
 
-class BinaryClassificationNeuralNetwork(NeuralNetwork):
+class BinaryClassificationNeuralNetwork(NeuralNetworkBaseModel):
     def evaluate(
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy
     ) -> float:
@@ -32,9 +32,9 @@ class BinaryClassificationNeuralNetwork(NeuralNetwork):
     ):
         if layers is None:
             layers = [
-                LinearLayer(4, activation_function=ReLU),
-                LinearLayer(2, activation_function=ReLU),
-                LinearLayer(1, activation_function=Sigmoid),
+                FCLinearLayer(4, activation_function=ReLU),
+                FCLinearLayer(2, activation_function=ReLU),
+                FCLinearLayer(1, activation_function=Sigmoid),
             ]
 
         super().__init__(

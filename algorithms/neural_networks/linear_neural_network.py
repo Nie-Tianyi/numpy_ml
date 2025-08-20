@@ -2,18 +2,18 @@ import unittest
 from typing import List
 
 
-from algorithms.activation_functions import LinearUnit
+from algorithms.activation_functions import LinearUnit, ReLU
 from algorithms.evaluation import EvaluationMethod, MeanSquaredError
 from algorithms.linear_regression import LinearRegressionModel
 from algorithms.loss_function import mean_square_error
-from algorithms.neural_networks.linear_layer import LinearLayer
-from algorithms.neural_networks.neural_network import NeuralNetwork
-from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayer
+from algorithms.neural_networks.linear_layer import FCLinearLayer
+from algorithms.neural_networks.neural_network import NeuralNetworkBaseModel
+from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.test_data_gen import linear_data
 
 
-class LinearNeuralNetwork(NeuralNetwork):
+class LinearNeuralNetwork(NeuralNetworkBaseModel):
     def evaluate(
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = MeanSquaredError
     ) -> float:
@@ -22,7 +22,7 @@ class LinearNeuralNetwork(NeuralNetwork):
 
     def __init__(
         self,
-        layers: List[NeuralNetworkLayer] = None,
+        layers: List[NeuralNetworkLayerAbstract] = None,
         niter=1000,
         learning_rate=0.1,
         reg_param=0.3,
@@ -30,9 +30,9 @@ class LinearNeuralNetwork(NeuralNetwork):
     ):
         if layers is None:
             layers = [
-                LinearLayer(4, activation_function=LinearUnit),
-                LinearLayer(2, activation_function=LinearUnit),
-                LinearLayer(1, activation_function=LinearUnit),
+                FCLinearLayer(4, activation_function=LinearUnit),
+                FCLinearLayer(2, activation_function=LinearUnit),
+                FCLinearLayer(1, activation_function=LinearUnit),
             ]
         super().__init__(layers, mean_square_error, niter, learning_rate, reg_param, regularization)
 
@@ -41,11 +41,13 @@ class Unittest(unittest.TestCase):
     def test_linear_neural_network(self):
         x, y = linear_data(data_size=10000, seed=78)
 
-        neural_network = LinearNeuralNetwork()
+        neural_network = LinearNeuralNetwork(learning_rate=0.0000001)
         linear_model = LinearRegressionModel()  # benchmark
 
         neural_network.fit(x, y)
         linear_model.fit(x, y)
+
+        print(neural_network.weights)
 
         neural_network.plot_loss_history(
             title="Neural Network's Loss History", label="Mean Square Error"

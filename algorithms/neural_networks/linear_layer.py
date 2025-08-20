@@ -1,12 +1,13 @@
 import numpy as np
 
 from algorithms.activation_functions import ActivationFunction, ReLU
-from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayer
+from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
 from algorithms.regularization import Regularization, Ridge
 
 
-class LinearLayer(NeuralNetworkLayer):
+class FCLinearLayer(NeuralNetworkLayerAbstract):
     """
+    Fully Connected Linear Layer
     全连接线性层，默认使用ReLU作为激活函数
     """
 
@@ -21,8 +22,6 @@ class LinearLayer(NeuralNetworkLayer):
         self.activation_function = activation_function  # 激活函数，默认是ReLU
         self.reg = reg  # 正则化，默认是L2正则
         self.lambda_ = reg_params  # 正则化超参数，默认0.1
-        self.weights = None  # 权重，形状为 (num, dim)
-        self.bias = None  # 偏置，形状为 (num,)
         self.z = None  # 线性输出，形状为 (m, num)，m是输入数据的长度
         self.inputs = None  # 上一层的激活输出，这一层的输入，形状为 (m, num)
 
