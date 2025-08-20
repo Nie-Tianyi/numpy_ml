@@ -3,18 +3,18 @@
 """
 
 import unittest
-from enum import Enum
+from abc import abstractmethod, ABC
 
 import numpy as np
 
 
-class Normaliser(Enum):
-    NoRescale = 0
-    ZScore = 1
-    MaxMin = 2
+class Normaliser(ABC):
+    @abstractmethod
+    def rescale(self, x):
+        pass
 
 
-class ZScoreNormaliser:
+class ZScoreNormaliser(Normaliser):
     """
     Z-score Normalisation scaler
     """
@@ -41,6 +41,26 @@ def z_score_normalisation(x):
     :return: 返回 (rescaled_x, scaler)缩放后的数据，以及一个缩放器，用于缩放验证数据
     """
     scaler = ZScoreNormaliser(np.mean(x, axis=0), np.std(x, axis=0))
+    return scaler.rescale(x), scaler
+
+
+class MaxMinNormaliser(Normaliser):
+    """
+    Max-Min normaliser scaler
+    """
+
+    def __init__(self, maximum, minimum):
+        self.max = maximum
+        self.min = minimum
+        self.gap = maximum - minimum
+        self.gap[self.gap == 0] = 1
+
+    def rescale(self, x):
+        return (x - self.min) / self.gap
+
+
+def max_min_normalisation(x):
+    scaler = MaxMinNormaliser(np.max(x, axis=0), np.min(x, axis=0))
     return scaler.rescale(x), scaler
 
 
