@@ -27,4 +27,4 @@ def mnist(data_size: int = 1000, seed=1):
     # 无放回随机采样索引
     indices = rng.choice(len(x), size=data_size, replace=False)
 
-    return x[indices], y[indices]
+    return x[indices], y[indices].reshape(-1, 1)

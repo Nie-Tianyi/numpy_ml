@@ -37,7 +37,6 @@ class NeuralNetworkBaseModel(MachineLearningModel, ABC):
         # 先初始化神经网络的参数
         (m, dim) = x.shape
         self.__init_weights_and_bias(dim)
-        y = y.reshape(-1, 1)
         for _ in tqdm(range(self.niter)):
             y_hat = self.forward_propagation(x)
             reg_loss = self.backward_propagation(y_hat - y)

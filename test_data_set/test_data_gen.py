@@ -11,7 +11,7 @@ def linear_data(data_size: int = 1000, seed=1):
     noise符合正态分布
     :param data_size: 生成多少条数据
     :param seed: 随机数生成的种子
-    :return: [x_1, x_2], y
+    :return: [x_1, x_2], [y]
     """
     np.random.seed(seed)
     x_1 = np.random.rand(data_size)
@@ -20,8 +20,10 @@ def linear_data(data_size: int = 1000, seed=1):
 
     # 创建特征矩阵 (1000, 2)
     x = np.stack([x_1, x_2], axis=1)
-    # 创建目标值 (1000,)
-    y = 0.99 * x_1 + 2.3 * x_2 + noise + 1
+    # 创建目标值 (1000,1)
+    y = 0.99 * x_1 + 2.3 * x_2 + noise + 1  # y.shape = (1000,)
+    y = y.reshape(-1, 1)  # y.shape = (1000,1)
+
     return x, y
 
 
@@ -36,6 +38,7 @@ def binary_data(data_size=1000, seed=1):
     noise = np.random.rand(data_size)
 
     x = np.stack([x_1, x_2], axis=1)
-    y = np.where(x_1 + x_2 + noise <= 1.5, 0, 1)
+    y = np.where(x_1 + x_2 + noise <= 1.5, 0, 1)  # y.shape = (1000,)
+    y = y.reshape(-1, 1) # y.shape = (1000,1)
 
     return x, y

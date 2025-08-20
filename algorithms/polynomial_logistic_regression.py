@@ -39,13 +39,13 @@ class PolynomialLogisticRegression(MachineLearningModel):
     def __init_weights_and_bias(self, dim: int, k: int):
         # dim 数据有多少个维度；k 多分类问题里面有多少个预测分类
         self.weights = np.random.rand(dim, k)
-        self.bias = np.zeros(k)
+        self.bias = np.zeros((1, k))
 
     def fit(self, x: NDArray[np.float64], y: NDArray[np.float64]):
         self.labels = np.unique(y)
         print("possible labels:", self.labels)
         # 把 y 从标签转换成 one-hot 编码 e.g. 9 => [0,0,0,0,0,0,0,0,0,1]
-        y = (y.reshape(-1, 1) == self.labels).astype(np.float64)
+        y = (y == self.labels).astype(np.float64)
 
         k = len(self.labels)
         (m, n) = x.shape
@@ -80,7 +80,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
 
     def predict_label(self, x):
         poss = self.predict(x)
-        return self.labels[np.argmax(poss, axis=1)]
+        return self.labels[np.argmax(poss, axis=1)].reshape(-1, 1)
 
     def evaluate(
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy

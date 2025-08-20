@@ -16,5 +16,5 @@ def compute_gradient(
     """
     m = x.shape[0]
     dlt_w = (1 / m) * np.dot(x.T, (y_pred - y_real))
-    dlt_b = (1 / m) * np.sum(y_pred - y_real)
+    dlt_b = (1 / m) * np.sum(y_pred - y_real, axis=0)
     return dlt_w, dlt_b

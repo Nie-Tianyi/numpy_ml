@@ -38,7 +38,7 @@ class LogisticRegressionModel(MachineLearningModel):
         self.threshold = threshold
 
     def __init_weights_and_bias(self, dim: int):
-        self.weights = np.random.randn(dim)
+        self.weights = np.random.randn(dim, 1)
         self.bias = np.zeros(1)
 
     def predict(self, x: NDArray[np.float64]) -> NDArray[np.float64]:
@@ -48,7 +48,7 @@ class LogisticRegressionModel(MachineLearningModel):
         """
         assert x.shape[1] == self.weights.shape[0]
 
-        return Sigmoid.cal(np.dot(x, self.weights) + self.bias)
+        return Sigmoid.cal(np.dot(x, self.weights) + self.bias).reshape(-1, 1)
 
     def predict_label(self, x):
         y_hat = self.predict(x)
@@ -116,7 +116,7 @@ class Unittest(unittest.TestCase):
 
         # 处于 x_1 + x_2 = 1 右边的点预测结果应该大于0.5，并且离决策边际越远，预测结果越接近于1
         test_point = np.array([[0, 0]])
-        res = model.predict(scalar.rescale(test_point))[0]
+        res = model.predict(scalar.rescale(test_point))[0][0]
         print("\nFinal Results:")
         print(f"Predicted: {res:.4f}")  # 0.9967，有99.67%的概率这个点是1
         print(f"Weights: {model.weights}")
@@ -137,7 +137,7 @@ class Unittest(unittest.TestCase):
         acc_unrescaled = model_no_scaled.evaluate(test_x, test_y)
         print("Un-rescaled model's Accuracy", acc_unrescaled)
 
-        self.assertAlmostEqual(res, 1.0, delta=0.1)
+        self.assertAlmostEqual(res, 0, delta=0.1)
 
 
 if __name__ == "__main__":

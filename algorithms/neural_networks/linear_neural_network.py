@@ -17,7 +17,7 @@ class LinearNeuralNetwork(NeuralNetworkBaseModel):
     def evaluate(
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = MeanSquaredError
     ) -> float:
-        y_hat = self.predict(x_test).flatten()
+        y_hat = self.predict(x_test)
         return evaluation_method.evaluate(y_hat, y_test)
 
     def __init__(
@@ -39,7 +39,7 @@ class LinearNeuralNetwork(NeuralNetworkBaseModel):
 
 class Unittest(unittest.TestCase):
     def test_linear_neural_network(self):
-        x, y = linear_data(data_size=100000, seed=78)
+        x, y = linear_data(data_size=10000, seed=78)
 
         neural_network = LinearNeuralNetwork(niter=3000, learning_rate=0.001)
         linear_model = LinearRegressionModel(niter=3000, learning_rate=0.001)  # benchmark

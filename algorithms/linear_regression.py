@@ -42,7 +42,6 @@ class LinearRegressionModel(MachineLearningModel):
         """
         assert x.shape[0] == y.shape[0], "x and y must be the same length"
         (m, dim) = x.shape
-        y = y.flatten()
 
         self.__init_weights_and_bias(dim)
         assert self.weights is not None and self.bias is not None, (
@@ -71,8 +70,7 @@ class LinearRegressionModel(MachineLearningModel):
         """
         if self.weights is None:
             raise ValueError("Model has not been initialised yet")
-        assert x.shape[1] == self.weights.shape[0]
-        return np.dot(x, self.weights) + self.bias
+        return (np.dot(x, self.weights) + self.bias).reshape(-1, 1)
 
     def evaluate(
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = MeanSquaredError
@@ -89,7 +87,7 @@ class LinearRegressionModel(MachineLearningModel):
 
     def __init_weights_and_bias(self, dim: int):
         # 初始化权重和偏置
-        self.weights = np.random.rand(dim)
+        self.weights = np.random.rand(dim, 1)
         self.bias = np.zeros(1)
 
 
@@ -104,7 +102,7 @@ class Unittest(unittest.TestCase):
 
         # 测试点需要是2D数组
         test_point = np.array([[1, 1]])
-        res = model.predict(test_point)[0]
+        res = model.predict(test_point)[0][0]
 
         print("\nFinal Results:")
         print(f"Predicted: {res:.4f}")
@@ -126,7 +124,7 @@ class Unittest(unittest.TestCase):
 
         # 测试点需要是2D数组
         test_point = np.array([[1, 1]])
-        res = model.predict(scaler.rescale(test_point))[0]
+        res = model.predict(scaler.rescale(test_point))[0][0]
 
         print("\nFinal Results:")
         print(f"Predicted: {res:.4f}")

@@ -18,7 +18,7 @@ class BinaryClassificationNeuralNetwork(NeuralNetworkBaseModel):
         self, x_test, y_test, evaluation_method: type[EvaluationMethod] = Accuracy
     ) -> float:
         y_hat = self.predict(x_test)
-        y_hat = (y_hat >= self.threshold).astype(float).flatten()
+        y_hat = (y_hat >= self.threshold).astype(float)
         return evaluation_method.evaluate(y_hat, y_test)
 
     def __init__(
