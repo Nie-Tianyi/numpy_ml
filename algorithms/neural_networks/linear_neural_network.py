@@ -47,8 +47,6 @@ class Unittest(unittest.TestCase):
         neural_network.fit(x, y)
         linear_model.fit(x, y)
 
-        print(neural_network.weights)
-
         neural_network.plot_loss_history(
             title="Neural Network's Loss History", label="Mean Square Error"
         )
