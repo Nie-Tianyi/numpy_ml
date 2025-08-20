@@ -39,6 +39,6 @@ def binary_data(data_size=1000, seed=1):
 
     x = np.stack([x_1, x_2], axis=1)
     y = np.where(x_1 + x_2 + noise <= 1.5, 0, 1)  # y.shape = (1000,)
-    y = y.reshape(-1, 1) # y.shape = (1000,1)
+    y = y.reshape(-1, 1)  # y.shape = (1000,1)
 
     return x, y

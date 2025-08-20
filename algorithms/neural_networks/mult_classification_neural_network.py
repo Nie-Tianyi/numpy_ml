@@ -9,7 +9,7 @@ from algorithms.loss_function import sparse_cross_entropy_loss
 from algorithms.neural_networks.linear_layer import FCLinearLayer
 from algorithms.neural_networks.neural_network import NeuralNetworkBaseModel
 from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
-from algorithms.normaliser import z_score_normalisation, max_min_normalisation
+from algorithms.normaliser import max_min_normalisation
 from algorithms.polynomial_logistic_regression import PolynomialLogisticRegression
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.mnist import mnist
