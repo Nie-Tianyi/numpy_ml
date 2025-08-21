@@ -94,6 +94,27 @@ class ReLU(ActivationFunction):
         return np.greater(x, 0).astype(int)
 
 
+class LeakyReLU(ActivationFunction):
+    """Leaky ReLU 激活函数"""
+
+    @staticmethod
+    def cal(x):
+        """
+        :param x: x
+        :return: ReLU(x)
+        """
+        return np.where(x > 0, x, 0.1 * x)
+
+    @staticmethod
+    def derivative(x):
+        """
+        ReLU's derivatives
+        :param x: x, numpy array
+        :return: x <=0 => 0.01; x > 0 => 1
+        """
+        return np.where(x > 0, 1, 0.1)
+
+
 class Unittest(unittest.TestCase):
     def test_sigmoid(self):
         x = np.array([-1, -0.1, 0, 0.1, 1])

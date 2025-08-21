@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from algorithms.activation_functions import Softmax, ReLU
+from algorithms.activation_functions import Softmax, ReLU, LinearUnit, LeakyReLU
 from algorithms.evaluation import EvaluationMethod, Accuracy
 from algorithms.loss_function import sparse_cross_entropy_loss
 from algorithms.neural_networks.linear_layer import FCLinearLayer
@@ -68,7 +68,6 @@ class MultiClassificationNeuralNetwork(NeuralNetworkBaseModel):
 
     def predict_label(self, x):
         poss = self.predict(x)
-        print("poss:", poss)
         return self.labels[np.argmax(poss, axis=1)].reshape(-1, 1)
 
 
@@ -106,10 +105,10 @@ class Unittest(unittest.TestCase):
         y_train, y_test = y[:60000], y[60000:]
 
         neural_network = MultiClassificationNeuralNetwork(k=10,layers=[
-            FCLinearLayer(128, activation_function=ReLU),
-            FCLinearLayer(64, activation_function=ReLU),
+            FCLinearLayer(128, activation_function=LeakyReLU),
+            FCLinearLayer(64, activation_function=LeakyReLU),
             FCLinearLayer(10, activation_function=Softmax),
-        ], niter=1000, learning_rate=0.001)
+        ], niter=1000, learning_rate=0.01)
         neural_network.fit(x_train, y_train)
         neural_network.plot_loss_history(title="MNIST", label="Sparse Cross Entropy Loss")
         print("Model's Final Loss:", neural_network.loss_history[-1])
