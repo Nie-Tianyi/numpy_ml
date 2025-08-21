@@ -158,7 +158,7 @@ class Unittest(unittest.TestCase):
         model = PolynomialLogisticRegression(niter=10000, learning_rate=0.2, reg_param=0.01)
         model.fit(x_train, y_train)
         model.plot_loss_history()
-
+        print("Model's Final Loss:", model.loss_history[-1]) # 13050.647211006897
         acc = model.evaluate(x_test, y_test)
         print("Accuracy:", acc)  # 0.9153
         self.assertGreaterEqual(acc, 0.9)  # 确保准确率 > 90%

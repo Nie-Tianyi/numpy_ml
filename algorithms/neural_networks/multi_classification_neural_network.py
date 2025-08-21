@@ -68,6 +68,7 @@ class MultiClassificationNeuralNetwork(NeuralNetworkBaseModel):
 
     def predict_label(self, x):
         poss = self.predict(x)
+        print("poss:", poss)
         return self.labels[np.argmax(poss, axis=1)].reshape(-1, 1)
 
 
@@ -104,9 +105,14 @@ class Unittest(unittest.TestCase):
         x_train, x_test = x[:60000], x[60000:]
         y_train, y_test = y[:60000], y[60000:]
 
-        neural_network = MultiClassificationNeuralNetwork(k=10, niter=100)
+        neural_network = MultiClassificationNeuralNetwork(k=10,layers=[
+            FCLinearLayer(128, activation_function=ReLU),
+            FCLinearLayer(64, activation_function=ReLU),
+            FCLinearLayer(10, activation_function=Softmax),
+        ], niter=1000, learning_rate=0.001)
         neural_network.fit(x_train, y_train)
         neural_network.plot_loss_history(title="MNIST", label="Sparse Cross Entropy Loss")
+        print("Model's Final Loss:", neural_network.loss_history[-1])
 
         acc = neural_network.evaluate(x_test, y_test)
         print("Accuracy:", acc)
