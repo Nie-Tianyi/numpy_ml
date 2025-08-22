@@ -279,12 +279,13 @@ class Unittest(unittest.TestCase):
 
     # 测试螺旋问题
     def test_spiral_problem(self):
+        n_classes = 9
         # 生成数据
-        x, y = spiral_data(300, 3)  # 3类螺旋
+        x, y = spiral_data(300, n_classes)
 
         # 可视化数据
-        colors = ["red", "blue", "green"]
-        for i in range(3):
+        colors = ["red", "blue", "green", "yellow", "grey", "purple", "black", "orange", "indigo"]
+        for i in range(n_classes):
             plt.scatter(
                 x[y.flatten() == i, 0], x[y.flatten() == i, 1], color=colors[i], label=f"Class {i}"
             )
