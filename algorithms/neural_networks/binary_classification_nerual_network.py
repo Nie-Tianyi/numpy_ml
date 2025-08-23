@@ -10,7 +10,7 @@ from algorithms.neural_networks.linear_layer import FCLinearLayer
 from algorithms.neural_networks.neural_network import NeuralNetworkBaseModel
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Regularization, Ridge
-from test_data_set.test_data_gen import binary_data
+from test_data_set.linear_data import binary_data
 
 
 class BinaryClassificationNeuralNetwork(NeuralNetworkBaseModel):

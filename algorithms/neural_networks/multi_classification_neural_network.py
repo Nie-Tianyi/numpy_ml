@@ -13,7 +13,7 @@ from algorithms.normaliser import max_min_normalisation
 from algorithms.polynomial_logistic_regression import PolynomialLogisticRegression
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.mnist import mnist
-from test_data_set.test_data_gen import binary_data
+from test_data_set.linear_data import binary_data
 
 
 class MultiClassificationNeuralNetwork(NeuralNetworkBaseModel):

@@ -10,7 +10,7 @@ from algorithms.neural_networks.linear_layer import FCLinearLayer
 from algorithms.neural_networks.neural_network import NeuralNetworkBaseModel
 from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
 from algorithms.regularization import Regularization, Ridge
-from test_data_set.test_data_gen import linear_data
+from test_data_set.linear_data import linear_data
 
 
 class LinearNeuralNetwork(NeuralNetworkBaseModel):

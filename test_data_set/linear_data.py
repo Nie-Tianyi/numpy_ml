@@ -49,71 +49,6 @@ def binary_data(data_size=1000, seed=1):
     return x, y
 
 
-def xor_data(size=1000, noise=0.1):
-    """生成XOR问题数据集"""
-    x = np.random.randn(size, 2)
-    y = np.zeros(size)
-
-    # 定义XOR逻辑
-    for i in range(size):
-        if (x[i, 0] > 0 > x[i, 1]) or (x[i, 0] < 0 < x[i, 1]):
-            y[i] = 1
-
-    # 添加一些噪声
-    noise_mask = np.random.rand(size) < noise
-    y[noise_mask] = 1 - y[noise_mask]
-
-    return x, y.reshape(-1, 1)
-
-
-def concentric_circles(n_samples=1000, noise=0.1):
-    """生成同心圆数据集"""
-    # 生成角度
-    angles = np.random.rand(n_samples) * 2 * np.pi
-
-    # 生成两个半径不同的圆
-    n_inner = n_samples // 2
-    n_outer = n_samples - n_inner
-
-    # 内圆
-    r_inner = np.random.rand(n_inner) * 0.4 + 0.1
-    x_inner = r_inner * np.cos(angles[:n_inner])
-    y_inner = r_inner * np.sin(angles[:n_inner])
-    inner_points = np.vstack([x_inner, y_inner]).T
-    inner_labels = np.zeros(n_inner)
-
-    # 外圆
-    r_outer = np.random.rand(n_outer) * 0.4 + 0.6
-    x_outer = r_outer * np.cos(angles[n_inner:])
-    y_outer = r_outer * np.sin(angles[n_inner:])
-    outer_points = np.vstack([x_outer, y_outer]).T
-    outer_labels = np.ones(n_outer)
-
-    # 合并数据
-    x = np.vstack([inner_points, outer_points])
-    y = np.hstack([inner_labels, outer_labels])
-
-    # 添加噪声
-    x += np.random.randn(*x.shape) * noise
-
-    return x, y.reshape(-1, 1)
-
-
-def spiral_data(n_samples=1000, n_classes=3, noise=0.1):
-    """生成螺旋数据集"""
-    x = np.zeros((n_samples * n_classes, 2))
-    y = np.zeros(n_samples * n_classes, dtype="int")
-
-    for j in range(n_classes):
-        ix = range(n_samples * j, n_samples * (j + 1))
-        r = np.linspace(0.0, 1, n_samples)  # 半径
-        t = np.linspace(j * 4, (j + 1) * 4, n_samples) + np.random.randn(n_samples) * noise  # 角度
-        x[ix] = np.c_[r * np.sin(t), r * np.cos(t)]
-        y[ix] = j
-
-    return x, y.reshape(-1, 1)
-
-
 class Unittest(unittest.TestCase):
     def test_linear_data(self):
         x, y = linear_data(data_size=1000, seed=1)
@@ -241,56 +176,6 @@ class Unittest(unittest.TestCase):
             backgroundcolor="white",
         )
 
-        plt.show()
-
-        self.assertEqual(1 + 1, 2)
-
-    # 测试XOR问题
-    def test_xor_problem(self):
-        # 生成数据
-        x, y = xor_data(1000)
-
-        # 可视化数据
-        plt.scatter(x[y.flatten() == 0, 0], x[y.flatten() == 0, 1], color="red", label="Class 0")
-        plt.scatter(x[y.flatten() == 1, 0], x[y.flatten() == 1, 1], color="blue", label="Class 1")
-        plt.title("XOR Problem - Linearly Inseparable")
-        plt.legend()
-        plt.show()
-
-        self.assertEqual(1 + 1, 2)
-
-    # 测试同心圆问题
-    def test_concentric_circles(self):
-        # 生成数据
-        x, y = concentric_circles(1000)
-
-        # 可视化数据
-        plt.scatter(
-            x[y.flatten() == 0, 0], x[y.flatten() == 0, 1], color="red", label="Inner Circle"
-        )
-        plt.scatter(
-            x[y.flatten() == 1, 0], x[y.flatten() == 1, 1], color="blue", label="Outer Circle"
-        )
-        plt.title("Concentric Circles - Linearly Inseparable")
-        plt.legend()
-        plt.show()
-
-        self.assertEqual(1 + 1, 2)
-
-    # 测试螺旋问题
-    def test_spiral_problem(self):
-        n_classes = 9
-        # 生成数据
-        x, y = spiral_data(300, n_classes)
-
-        # 可视化数据
-        colors = ["red", "blue", "green", "yellow", "grey", "purple", "black", "orange", "indigo"]
-        for i in range(n_classes):
-            plt.scatter(
-                x[y.flatten() == i, 0], x[y.flatten() == i, 1], color=colors[i], label=f"Class {i}"
-            )
-        plt.title("Spiral Problem - Linearly Inseparable")
-        plt.legend()
         plt.show()
 
         self.assertEqual(1 + 1, 2)

@@ -15,7 +15,7 @@ from algorithms.loss_function import mean_square_error
 from algorithms.model_abstract import MachineLearningModel
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import NoReg, Regularization, Ridge
-from test_data_set.test_data_gen import linear_data
+from test_data_set.linear_data import linear_data
 
 
 class LinearRegressionModel(MachineLearningModel):
