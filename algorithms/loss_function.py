@@ -44,7 +44,7 @@ def cross_entropy_loss(y_pred, y_true):
     return np.mean(-y_true * np.log(y_pred) - (1 - y_true) * np.log(1 - y_pred))
 
 
-def sparse_cross_entropy_loss(y_pred, y_real):
+def sparse_categorical_cross_entropy_loss(y_pred, y_real):
     """
     sparse cross-entropy loss
     :param y_pred: predicted value, a scalar or a numpy array

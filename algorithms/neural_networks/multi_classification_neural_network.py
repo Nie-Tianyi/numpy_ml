@@ -5,7 +5,7 @@ import numpy as np
 
 from algorithms.activation_functions import Softmax, ReLU, LeakyReLU
 from algorithms.evaluation import EvaluationMethod, Accuracy
-from algorithms.loss_function import sparse_cross_entropy_loss
+from algorithms.loss_function import sparse_categorical_cross_entropy_loss
 from algorithms.neural_networks.linear_layer import FCLinearLayer
 from algorithms.neural_networks.neural_network import NeuralNetworkBaseModel
 from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
@@ -50,7 +50,7 @@ class MultiClassificationNeuralNetwork(NeuralNetworkBaseModel):
 
         super().__init__(
             layers,
-            sparse_cross_entropy_loss,
+            sparse_categorical_cross_entropy_loss,
             niter=niter,
             learning_rate=learning_rate,
             reg_param=reg_param,

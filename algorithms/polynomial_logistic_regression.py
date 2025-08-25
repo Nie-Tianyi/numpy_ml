@@ -9,7 +9,7 @@ from tqdm import tqdm
 from algorithms.activation_functions import Softmax
 from algorithms.evaluation import Accuracy, EvaluationMethod
 from algorithms.gradient_descent import compute_gradient
-from algorithms.loss_function import sparse_cross_entropy_loss
+from algorithms.loss_function import sparse_categorical_cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Ridge
@@ -55,7 +55,7 @@ class PolynomialLogisticRegression(MachineLearningModel):
             y_pred = self.predict(x)
 
             # 计算记录损失
-            loss = sparse_cross_entropy_loss(y_pred, y)
+            loss = sparse_categorical_cross_entropy_loss(y_pred, y)
             (dlt_w, dlt_b) = compute_gradient(x, y_pred, y)
 
             loss += self.reg.loss(self.weights, self.lambda_, m)
