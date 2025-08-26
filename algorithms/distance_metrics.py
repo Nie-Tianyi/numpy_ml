@@ -70,6 +70,12 @@ class Unittest(unittest.TestCase):
 
         self.assertTrue(np.allclose(EuclidianDistance.distance(x, y), np.array([1, 1, 1, 0])))
 
+    def test_manhattan_distance(self):
+        x = np.array([[1, 2], [1, 0], [2, 1], [1, 1]])
+        y = np.array([[1, 1]])
+
+        self.assertTrue(np.allclose(ManhattanDistance.distance(x, y), np.array([1, 1, 1, 0])))
+
     def test_cosine_distance(self):
         x = np.array([[1, 2], [1, 0], [2, 1], [1, 1]])
         y = np.array([[1, 1]])
