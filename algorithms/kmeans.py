@@ -12,9 +12,12 @@ class LossRecord:
     记录每一次KMeans的损失
     """
 
-    def __init__(self, centroid, loss):
-        self.centroid = centroid
+    def __init__(self, centroids, loss):
+        self.centroids = centroids
         self.loss = loss
+
+    def __str__(self):
+        return f"Centroids: {self.centroids}, Loss: {self.loss}"
 
 
 class KMeans:
@@ -65,9 +68,8 @@ class KMeans:
                 self.centroids[i] = x[labels == i].mean(axis=0)
 
             # 检查是否收敛
-            if (
-                len(self.loss_history) > 1
-                and self.loss_history[-1].loss == self.loss_history[-2].loss
+            if len(self.loss_history) > 1 and np.allclose(
+                self.centroids, self.loss_history[-1].centroids
             ):
                 break
 
