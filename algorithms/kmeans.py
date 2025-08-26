@@ -89,18 +89,24 @@ class KMeans:
             distances[:, i] = self.metrics.distance(x, centroid)
         return np.argmin(distances, axis=1)
 
+    @property
+    def final_loss(self):
+        return self.loss_history[-1].loss
+
 
 class Unittest(unittest.TestCase):
     def test_kmeans(self):
         data, real_label = cluster_points_data(k=3, data_size=150, seed=135, min_distance=10)
         model = KMeans(k=3, max_iter=1000, distance_metrics=EuclidianDistance)
-        model.fit(data)
+        model.fit(data, random_state=9)
         predicted_label = model.predict(data)
 
         plt.scatter(data[:, 0], data[:, 1], c=real_label)
+        plt.title(label="Real Cluster")
         plt.show()
         plt.scatter(data[:, 0], data[:, 1], c=predicted_label)
-        plt.show()
+        plt.title(label="Predicted Cluster")
+        plt.show()  # 很容易卡在Local Minimum啊
 
         self.assertEqual(1 + 1, 2)
 
