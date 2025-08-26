@@ -1,10 +1,12 @@
 import unittest
 from typing import List, Optional
 
+import matplotlib.pyplot as plt
 import numpy as np
 from numpy.typing import NDArray
 
 from algorithms.distance_metrics import EuclidianDistance, Metric
+from test_data_set.cluster_points import cluster_points_data
 
 
 class LossRecord:
@@ -81,15 +83,25 @@ class KMeans:
         """
         预测x所属的类别
         """
-        (m, n) = x.shape()
+        (m, n) = x.shape
         distances = np.zeros(shape=(m, self.k))
         for i, centroid in enumerate(self.centroids):
-            distances[:i] = self.metrics.distance(x, centroid)
+            distances[:, i] = self.metrics.distance(x, centroid)
         return np.argmin(distances, axis=1)
 
 
 class Unittest(unittest.TestCase):
     def test_kmeans(self):
+        data, real_label = cluster_points_data(k=3, data_size=150, seed=135, min_distance=10)
+        model = KMeans(k=3, max_iter=1000, distance_metrics=EuclidianDistance)
+        model.fit(data)
+        predicted_label = model.predict(data)
+
+        plt.scatter(data[:, 0], data[:, 1], c=real_label)
+        plt.show()
+        plt.scatter(data[:, 0], data[:, 1], c=predicted_label)
+        plt.show()
+
         self.assertEqual(1 + 1, 2)
 
 

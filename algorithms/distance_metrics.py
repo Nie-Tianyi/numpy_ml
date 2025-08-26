@@ -26,8 +26,6 @@ class EuclidianDistance(Metric):
 
     @staticmethod
     def distance(x: NDArray[np.float64], y: NDArray[np.float64]):
-        assert x.shape[1] == y.shape[1]
-
         return np.sqrt(np.sum((x - y) ** 2, axis=1))
 
 
@@ -38,8 +36,6 @@ class ManhattanDistance(Metric):
 
     @staticmethod
     def distance(x, y):
-        assert x.shape[1] == y.shape[1]
-
         return np.sum(np.absolute(x - y), axis=1)
 
 
@@ -50,14 +46,10 @@ class CosineDistance(Metric):
 
     @staticmethod
     def distance(x, y):
-        assert x.shape[1] == y.shape[1]
-
         return 1 - CosineDistance.similarity(x, y)
 
     @staticmethod
     def similarity(x, y):
-        assert x.shape[1] == y.shape[1]
-
         return np.sum(x * y, axis=1) / (
             np.sqrt(np.sum(x**2, axis=1)) * np.sqrt(np.sum(y**2, axis=1))
         )

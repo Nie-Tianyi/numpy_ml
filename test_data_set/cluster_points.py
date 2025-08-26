@@ -42,7 +42,7 @@ def cluster_points_data(k=3, data_size=1000, seed=1, min_distance=5):
 
 class UnitTest(unittest.TestCase):
     def test_cluster_points_data(self):
-        data, labels = cluster_points_data(k=4, data_size=150, seed=10, min_distance=3)
+        data, labels = cluster_points_data(k=4, data_size=150, seed=135, min_distance=3)
 
         plt.scatter(data[:, 0], data[:, 1], c=labels)
         plt.show()
