@@ -31,6 +31,18 @@ class EuclidianDistance(Metric):
         return np.sqrt(np.sum((x - y) ** 2, axis=1))
 
 
+class ManhattanDistance(Metric):
+    """
+    曼哈顿距离
+    """
+
+    @staticmethod
+    def distance(x, y):
+        assert x.shape[1] == y.shape[1]
+
+        return np.sum(np.absolute(x - y), axis=1)
+
+
 class CosineDistance(Metric):
     """
     余弦相似度
