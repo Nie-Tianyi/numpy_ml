@@ -50,6 +50,7 @@ class KMeans:
         :param x: 需要聚类的数据
         :param random_state: 随机值，如果不设置则随机取值
         """
+        (m, n) = x.shape
         if random_state is None:
             random_state = np.random.randint(1e6)
 
@@ -61,7 +62,7 @@ class KMeans:
             # 计算损失
             loss = 0
             for i in range(self.k):
-                loss += self.metrics.distance(x[labels == i], self.centroids[i]).sum()
+                loss += self.metrics.distance(x[labels == i], self.centroids[i]).sum() / m
             self.loss_history.append(LossRecord(self.centroids.copy(), loss))
             # 更新centroid
             for i in range(self.k):
