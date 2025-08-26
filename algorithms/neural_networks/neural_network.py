@@ -55,7 +55,7 @@ class NeuralNetworkBaseModel(MachineLearningModel, ABC):
         for layer in reversed(self.layers):
             # 最后一层神经网络不计算激活函数的梯度，因为error里面已经包含了
             if layer is self.layers[-1]:
-                error = layer.backward(error, learning_rate=self.lr, no_activation=True)
+                error = layer.backward(error, learning_rate=self.lr, no_activation_grad=True)
             else:
                 error = layer.backward(error, learning_rate=self.lr)
             reg_loss += layer.reg_loss
