@@ -51,6 +51,11 @@ class LogisticRegressionModel(MachineLearningModel):
         return Sigmoid.cal(np.dot(x, self.weights) + self.bias).reshape(-1, 1)
 
     def predict_label(self, x):
+        """
+        预测标签，输出0或者1
+        :param x: 输入数据
+        :return: 0/1
+        """
         y_hat = self.predict(x)
         return (y_hat >= self.threshold).astype(float)
 

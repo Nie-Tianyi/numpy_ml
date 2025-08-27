@@ -10,6 +10,10 @@ from numpy.typing import NDArray
 
 
 class Metric(ABC):
+    """
+    衡量向量距离的算法接口
+    """
+
     @staticmethod
     @abstractmethod
     def distance(x, y):
