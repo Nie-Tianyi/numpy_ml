@@ -1,3 +1,7 @@
+"""
+K-Means clustering algorithm
+"""
+
 import unittest
 from typing import List, Optional
 
@@ -67,7 +71,7 @@ class KMeans:
             loss = 0
             for i in range(self.k):
                 loss += self.metrics.distance(x[labels == i], self.centroids[i]).sum()
-            loss = loss / m
+            loss /= m
             self.loss_history.append(LossRecord(self.centroids.copy(), loss))
 
             # 更新centroid

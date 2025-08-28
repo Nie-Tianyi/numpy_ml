@@ -11,6 +11,10 @@ from algorithms.regularization import Regularization
 
 
 class MachineLearningModel(ABC):
+    """
+    监督学习模型基础接口
+    """
+
     def __init__(
         self,
         regularization: type[Regularization],
@@ -26,10 +30,20 @@ class MachineLearningModel(ABC):
 
     @abstractmethod
     def fit(self, x, y):
+        """
+        训练模型
+        :param x: 训练数据
+        :param y: 预测标签
+        """
         pass
 
     @abstractmethod
     def predict(self, x):
+        """
+        预测，如果是分类问题输出的是概率，如果需要直接输出标签，调用`predict_label()`方法
+        :param x: 输入数据
+        :return: 模型预测
+        """
         pass
 
     @abstractmethod

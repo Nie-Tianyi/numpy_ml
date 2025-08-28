@@ -46,11 +46,21 @@ class NeuralNetworkBaseModel(MachineLearningModel, ABC):
         return self.forward_propagation(x)
 
     def forward_propagation(self, x):
+        """
+        前向传播
+        :param x: 输入数据
+        :return: 预测结果
+        """
         for layer in self.layers:
             x = layer.forward(x)
         return x
 
     def backward_propagation(self, error) -> float:
+        """
+        反向传播，更新模型参数
+        :param error: y_hat - y
+        :return: 返回每一层正则化的损失
+        """
         reg_loss = 0  # 记录每一层的正则化项带来的损失
         for layer in reversed(self.layers):
             # 最后一层神经网络不计算激活函数的梯度，因为error里面已经包含了
@@ -63,8 +73,15 @@ class NeuralNetworkBaseModel(MachineLearningModel, ABC):
 
     @property
     def weights(self):
+        """
+        每一层神经网络权重
+        :return: 返回每一层神经网络权重
+        """
         return [layer.weights for layer in self.layers]
 
     @property
     def biases(self):
+        """
+        :return: 返回每一层神经网络偏置
+        """
         return [layer.bias for layer in self.layers]

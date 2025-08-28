@@ -13,8 +13,8 @@ from algorithms.loss_function import sparse_categorical_cross_entropy_loss
 from algorithms.model_abstract import MachineLearningModel
 from algorithms.normaliser import z_score_normalisation
 from algorithms.regularization import Ridge
-from test_data_set.mnist import mnist
 from test_data_set.linear_data import binary_data
+from test_data_set.mnist import mnist
 
 
 class PolynomialLogisticRegression(MachineLearningModel):
@@ -79,6 +79,11 @@ class PolynomialLogisticRegression(MachineLearningModel):
         return Softmax.cal(z)
 
     def predict_label(self, x):
+        """
+        预测标签
+        :param x: 输入数据
+        :return: 输出标签
+        """
         poss = self.predict(x)
         return self.labels[np.argmax(poss, axis=1)].reshape(-1, 1)
 
