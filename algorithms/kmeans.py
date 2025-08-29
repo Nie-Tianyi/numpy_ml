@@ -51,17 +51,49 @@ class KMeans:
         indices = rng.choice(len(x), size=self.k, replace=False)
         self.centroids = x[indices]
 
-    def fit(self, x: NDArray[np.float64], random_state: Optional[int] = None):
+    def __init_centroids_with_kmeans_pp(self, x: NDArray[np.float64], seed: int):
+        """
+        用KMeans++初始化centroids
+        :param x: 输入数据
+        :param seed: 随机数种子
+        :return: None
+        """
+        (m, n) = x.shape
+        indices = []
+        rng = np.random.default_rng(seed)
+
+        for i in range(self.k):
+            if i == 0:
+                indices.append(rng.choice(len(x), size=1, replace=False))
+            else:
+                distances = np.zeros(shape=(m, i))
+                for j in range(i):
+                    distances[:, j] = self.metrics.distance(x, x[indices[j]])
+                min_distance = distances.min(axis=1)
+                min_distance = min_distance**2
+                p = min_distance / min_distance.sum()
+                indices.append(rng.choice(len(x), size=1, replace=False, p=p))
+
+        self.centroids = x[indices]
+
+    def fit(
+        self, x: NDArray[np.float64], random_state: Optional[int] = None, use_kmeans_pp: bool = True
+    ):
         """
         开始聚类
         :param x: 需要聚类的数据
         :param random_state: 随机值，如果不设置则随机取值
+        :param use_kmeans_pp: 是否用KMeans++初始化centroids，默认使用
+        :return: None
         """
         (m, n) = x.shape
         if random_state is None:
             random_state = np.random.randint(1e6)
 
-        self.__init_centroids(x, seed=random_state)  # 随机选择k个点作为centroid
+        if use_kmeans_pp:
+            self.__init_centroids_with_kmeans_pp(x, seed=random_state)
+        else:
+            self.__init_centroids(x, seed=random_state)  # 随机选择k个点作为centroid
 
         for _ in range(self.max_iter):
             # 计算每个点到centroid的距离，分组
