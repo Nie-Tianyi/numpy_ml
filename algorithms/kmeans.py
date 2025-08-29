@@ -70,7 +70,7 @@ class KMeans:
                 for j in range(i):
                     distances[:, j] = self.metrics.distance(x, x[indices[j]])
                 min_distance = distances.min(axis=1)
-                min_distance = min_distance**2
+                min_distance **= 2
                 p = min_distance / min_distance.sum()
                 indices.append(rng.choice(len(x), size=1, replace=False, p=p))
 
