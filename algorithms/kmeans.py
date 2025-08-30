@@ -11,6 +11,7 @@ from numpy.typing import NDArray
 from tqdm import tqdm
 
 from algorithms.distance_metrics import EuclidianDistance, Metric
+from algorithms.loss_function import distortion_loss
 from test_data_set.cluster_points import cluster_points_data
 
 
@@ -97,18 +98,13 @@ class KMeans:
 
         for _ in range(self.max_iter):
             # 计算每个点到centroid的距离，分组
-            labels = self.predict(x)
-
-            # 计算损失
-            loss = 0
-            for i in range(self.k):
-                loss += self.metrics.distance(x[labels == i], self.centroids[i]).sum()
-            loss /= m
+            y_hat = self.predict(x)
+            loss = distortion_loss(x, y_hat, self.centroids, self.metrics)
             self.loss_history.append(LossRecord(self.centroids.copy(), loss))
 
             # 更新centroid
             for i in range(self.k):
-                self.centroids[i] = x[labels == i].mean(axis=0)
+                self.centroids[i] = x[y_hat == i].mean(axis=0)
 
             # 检查是否收敛
             if len(self.loss_history) > 1 and np.allclose(

@@ -7,6 +7,8 @@ from enum import Enum
 
 import numpy as np
 
+from algorithms.distance_metrics import Metric
+
 
 class LossFunctions(Enum):
     """
@@ -58,6 +60,25 @@ def sparse_categorical_cross_entropy_loss(y_pred, y_real):
 
     res = -y_real * np.log(y_pred_clipped)
     return np.sum(res)
+
+
+def distortion_loss(x, y, centroids, metric: type[Metric]):
+    """
+    distortion loss, 衡量聚类算法的损失函数。每个类内的点到其中心的平均距离
+    :param x: x
+    :param y: labels
+    :param centroids: 中心
+    :param metric: 用什么算法衡量两个向量之间的距离
+    :return: loss value, a scalar
+    """
+    (m, n) = x.shape
+
+    losses = []
+    labels = np.unique(y)
+    for i in labels:
+        losses.append(metric.distance(x[y == i], centroids[i]).sum())
+    loss = sum(losses) / m
+    return loss
 
 
 class Unittest(unittest.TestCase):
