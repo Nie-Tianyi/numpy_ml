@@ -45,7 +45,7 @@ class ManhattanDistance(Metric):
 
 class CosineDistance(Metric):
     """
-    余弦相似度
+    余弦相似度距离
     """
 
     @staticmethod
@@ -54,6 +54,12 @@ class CosineDistance(Metric):
 
     @staticmethod
     def similarity(x, y):
+        """
+        余弦相似度
+        :param x: 一个向量
+        :param y: 另一个向量
+        :return: 向量相似度
+        """
         return np.sum(x * y, axis=1) / (
             np.sqrt(np.sum(x**2, axis=1)) * np.sqrt(np.sum(y**2, axis=1))
         )

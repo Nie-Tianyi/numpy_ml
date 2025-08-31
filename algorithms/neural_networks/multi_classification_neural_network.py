@@ -1,4 +1,9 @@
+"""
+多分类神经网络，可以自定义神经网络结构，单输出层必须是个数为K，而且激活函数为Softmax的神经元
+"""
+
 import unittest
+
 from typing import List, Optional
 
 import numpy as np

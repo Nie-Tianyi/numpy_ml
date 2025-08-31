@@ -1,3 +1,7 @@
+"""
+用于线形预测的神经网络，可以自定义神经网络结构，但是输出层必须是一个输出函数为LinearUnit的神经元
+"""
+
 import unittest
 from typing import List
 

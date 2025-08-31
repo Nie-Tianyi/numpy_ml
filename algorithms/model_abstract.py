@@ -1,3 +1,7 @@
+"""
+所有机器学习模型的抽象接口
+"""
+
 import os
 import pickle
 from abc import ABC, abstractmethod

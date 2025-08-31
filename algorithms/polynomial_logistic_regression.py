@@ -1,3 +1,7 @@
+"""
+多项式逻辑回归算法
+"""
+
 import unittest
 from typing import Optional
 

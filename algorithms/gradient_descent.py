@@ -1,3 +1,7 @@
+"""
+计算梯度
+"""
+
 import numpy as np
 import numba
 from numpy.typing import NDArray

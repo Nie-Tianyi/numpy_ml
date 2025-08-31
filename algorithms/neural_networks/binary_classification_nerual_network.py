@@ -1,9 +1,13 @@
+"""
+用于二分类的神经网络，可以自定义神经网络结构，但输出曾必须是一个激活函数为Sigmoid函数的神经元
+"""
+
 import unittest
 
 import numpy as np
 
 from algorithms.activation_functions import ReLU, Sigmoid
-from algorithms.evaluation import EvaluationMethod, Accuracy
+from algorithms.evaluation import Accuracy, EvaluationMethod
 from algorithms.logistic_regression import LogisticRegressionModel
 from algorithms.loss_function import cross_entropy_loss
 from algorithms.neural_networks.linear_layer import FCLinearLayer

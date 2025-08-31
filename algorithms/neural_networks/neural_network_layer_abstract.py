@@ -1,8 +1,16 @@
+"""
+神经网络层抽象
+"""
+
 from abc import ABC, abstractmethod
 
 
 # 定义trait
 class NeuralNetworkLayerAbstract(ABC):
+    """
+    神经网络单层抽象接口
+    """
+
     def __init__(self, num):
         self.num = num
         self.reg_loss = 0

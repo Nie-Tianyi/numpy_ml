@@ -1,3 +1,7 @@
+"""
+线性层神经网络
+"""
+
 import numpy as np
 
 from algorithms.activation_functions import ActivationFunction, ReLU

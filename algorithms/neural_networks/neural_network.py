@@ -1,3 +1,7 @@
+"""
+神经网络基础模型
+"""
+
 from abc import ABC
 from typing import List
 

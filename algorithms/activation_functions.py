@@ -10,14 +10,28 @@ import numpy as np
 
 
 class ActivationFunction(ABC):
+    """
+    激活函数抽象接口
+    """
+
     @staticmethod
     @abstractmethod
     def cal(x):
+        """
+        正向传播
+        :param x: 输入
+        :return: 输出
+        """
         pass
 
     @staticmethod
     @abstractmethod
     def derivative(x):
+        """
+        计算激活函数的梯度
+        :param x: 输入
+        :return: 梯度
+        """
         pass
 
 
