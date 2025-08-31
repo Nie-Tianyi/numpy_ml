@@ -5,7 +5,7 @@
 from abc import ABC, abstractmethod
 
 
-# 定义trait
+# 定义接口
 class NeuralNetworkLayerAbstract(ABC):
     """
     神经网络单层抽象接口
