@@ -125,7 +125,7 @@ class Unittest(unittest.TestCase):
         print("Model's Final Loss:", neural_network.loss_history[-1])
 
         acc = neural_network.evaluate(x_test, y_test)
-        print("Accuracy:", acc)
+        print("Accuracy:", acc) # 91.44%
 
         self.assertEqual(1 + 1, 2)
 
