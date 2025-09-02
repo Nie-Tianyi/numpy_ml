@@ -3,6 +3,7 @@
 """
 
 import numpy as np
+import numba
 
 from algorithms.activation_functions import ActivationFunction, ReLU
 from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
@@ -66,8 +67,7 @@ class FCLinearLayer(NeuralNetworkLayerAbstract):
         self.reg_loss = self.reg.loss(self.weights, self.lambda_, m)
 
         # 计算梯度 更新参数
-        dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
-        dlt_b = (1 / m) * np.sum(error, axis=0)  # dlt_b.shape = (num,)
+        dlt_w, dlt_b = _compute_gradient(error, self.inputs, m)
         # 加上正则化带来的梯度
         dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
 
@@ -76,3 +76,11 @@ class FCLinearLayer(NeuralNetworkLayerAbstract):
         self.bias -= learning_rate * dlt_b
 
         return prev_layer_error
+
+
+# 最关键的计算部分用numba加速
+@numba.njit(parallel=True, fastmath=True)
+def _compute_gradient(error, inputs, m):
+    dlt_w = (1 / m) * np.dot(error.T, inputs)  # dlt_w.shape = (num, dim)
+    dlt_b = (1 / m) * np.sum(error, axis=0)  # dlt_b.shape = (num,)
+    return dlt_w, dlt_b
