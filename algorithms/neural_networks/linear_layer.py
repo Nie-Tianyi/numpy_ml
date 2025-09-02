@@ -30,7 +30,7 @@ class FCLinearLayer(NeuralNetworkLayerAbstract):
         self.inputs = None  # 上一层的激活输出，这一层的输入，形状为 (m, num)
 
     def init_weights_and_bias(self, dim):
-        self.weights = np.random.randn(self.num, dim)
+        self.weights = np.random.randn(self.num, dim) * np.sqrt(2.0 / dim)  # 使用He初始化权重
         self.bias = np.zeros(self.num)
 
     def forward(self, x):
@@ -67,7 +67,7 @@ class FCLinearLayer(NeuralNetworkLayerAbstract):
 
         # 计算梯度 更新参数
         dlt_w = (1 / m) * np.dot(error.T, self.inputs)  # dlt_w.shape = (num, dim)
-        dlt_b = (1 / m) * np.sum(error)  # dlt_b.shape = (num,)
+        dlt_b = (1 / m) * np.sum(error, axis=0)  # dlt_b.shape = (num,)
         # 加上正则化带来的梯度
         dlt_w += self.reg.derivative(self.weights, self.lambda_, m)
 

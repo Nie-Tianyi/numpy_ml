@@ -14,7 +14,7 @@ from algorithms.loss_function import sparse_categorical_cross_entropy_loss
 from algorithms.neural_networks.linear_layer import FCLinearLayer
 from algorithms.neural_networks.neural_network import NeuralNetworkBaseModel
 from algorithms.neural_networks.neural_network_layer_abstract import NeuralNetworkLayerAbstract
-from algorithms.normaliser import max_min_normalisation
+from algorithms.normaliser import max_min_normalisation, z_score_normalisation
 from algorithms.polynomial_logistic_regression import PolynomialLogisticRegression
 from algorithms.regularization import Regularization, Ridge
 from test_data_set.mnist import mnist
@@ -79,7 +79,7 @@ class MultiClassificationNeuralNetwork(NeuralNetworkBaseModel):
 class Unittest(unittest.TestCase):
     def test_binary(self):
         (x, y) = binary_data(data_size=1000, seed=1)
-        x, scaler = max_min_normalisation(x)
+        x, scaler = z_score_normalisation(x)
 
         neural_network = MultiClassificationNeuralNetwork(2)
         pl_model = PolynomialLogisticRegression()
@@ -112,6 +112,7 @@ class Unittest(unittest.TestCase):
         neural_network = MultiClassificationNeuralNetwork(
             k=10,
             layers=[
+                FCLinearLayer(256, activation_function=LeakyReLU),
                 FCLinearLayer(128, activation_function=LeakyReLU),
                 FCLinearLayer(64, activation_function=LeakyReLU),
                 FCLinearLayer(10, activation_function=Softmax),
